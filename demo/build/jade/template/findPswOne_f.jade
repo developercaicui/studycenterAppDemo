@@ -1,0 +1,230 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    //color-f1
+    .ndy
+        .indexFom
+            .img_captcha.clear-fix.none
+                input.txt-validate.img_captcha(type='text', placeholder='图形验证码', name='captcha')
+                img.validate-img.get_img(tapmode='', onclick='get_img(this)')
+            .hasright
+                input.input-txt(type='text', placeholder='手机号', name='phone',maxlength='11')
+                span.get.msg_code.inputbug(onclick='get_code(this)', tapmode='') 获取验证码
+            input.input-txt(type='text', placeholder='验证码', name='code')
+            input.land.next(type='button', value='下一步', tapmode='', onclick='my_next()')
+            input(type='hidden', name='has_img', value='')
+block scripts
+    script(type='text/javascript').
+        //表单问题bug
+        $('.inputbug').click(function () {
+            $(".input-txt").unbind();
+        });
+        //下一步
+        function my_next() {
+            var phone = $.trim($('input[name=phone]').val());
+            var code = $.trim($('input[name=code]').val());
+            if (phone == '') {
+                api.toast({
+                    msg: '请输入手机号',
+                    location: 'middle'
+                });
+                return false;
+            }
+            //var regex = /^0?(13[0-9]|15[012356789]|18[0123456789]|17[0]|14[57])[0-9]{8}$/;
+            var regex = /^1[0-9]{10}$/i;
+            if (!regex.test(phone)) {
+                api.toast({
+                    msg: '手机号格式错误',
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (code == '') {
+                api.toast({
+                    msg: '请输入验证码',
+                    location: 'middle'
+                });
+                return false;
+            }
+            api.showProgress({
+                title: '处理中',
+                modal: true
+            });
+            set_token(function (res, error) {
+                if (error) {
+                    is_ok = true;
+                    api.toast({
+                        msg: error.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (res.state == 'success') {
+                    var param = {};
+                    param.phone = phone;
+                    param.type = 'validate';
+                    param.code = code;
+                    param.token = res.data.token;
+                    ajaxRequest('api/v2.1/msg/code', 'post', param, function (ret, err) {//007.007 发送手机验证码地址
+                        api.hideProgress();
+                        if (err) {
+                            api.toast({
+                                msg: err.msg,
+                                location: 'middle'
+                            });
+                            return false;
+                        }
+                        if (ret && ret.state == 'success') {
+                            api.openWin({
+                                name: 'findPswTwo',
+                                url: './findPswTwo.html',
+                                pageParam: {phone: phone, code: code},
+                                delay: 200
+                            });
+                        } else {
+                            if (ret.msg == 'false') {
+                                api.toast({
+                                    msg: '验证码错误',
+                                    location: 'middle'
+                                });
+                            } else if (ret.msg == '1000') {
+                                api.toast({
+                                    msg: 'type类型错误',
+                                    location: 'middle'
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    var err = '';
+                    if (!isEmpty(err_conf_007[res.msg])) {
+                        err = err_conf_007[res.msg];
+                        api.toast({
+                            msg: err,
+                            location: 'middle'
+                        });
+                    }
+
+                }
+            });
+        }
+        var is_ok = true;
+        var img = common_url + '/api/v2.1/captcha?s=' + Math.random();
+        function get_img(obj) {
+            $(obj).attr('src', img);
+        }
+        function get_code(obj) {
+            var phone = $.trim($('input[name=phone]').val());
+            if (phone == '') {
+                api.toast({
+                    msg: '请输入手机号',
+                    location: 'middle'
+                });
+                return false;
+            }
+            var regex = /^1[0-9]{10}$/i;
+            if (!regex.test(phone)) {
+                api.toast({
+                    msg: '手机号格式错误',
+                    location: 'middle'
+                });
+                return false;
+            }
+            var param = {};
+            if ($('input[name=has_img]').val() == 1) {
+                var captcha = $.trim($('input[name=captcha]').val());
+                if (captcha == '') {
+                    api.toast({
+                        msg: '请输入图形验证码',
+                        location: 'middle'
+                    });
+                    return false;
+                } else {
+                    param.j_captcha = captcha;
+                }
+            }
+            if (is_ok) {
+                is_ok = false;
+                api.showProgress({
+                    title: '获取中',
+                    modal: true
+                });
+                set_token(function (res, error) {
+                    if (error) {
+                        if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                            is_ok = true;
+                        }
+                        api.toast({
+                            msg: error.msg,
+                            location: 'middle'
+                        });
+                        return false;
+                    }
+                    if (res.state == 'success') {
+                        param.token = res.data.token;
+                        param.phone = phone;
+                        param.type = 'send';
+                        ajaxRequest('api/v2.1/msg/code', 'post', param, function (ret, err) {//007.007 发送手机验证码地址
+                            api.hideProgress();
+                            if (err) {
+                                if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                                    is_ok = true;
+                                }
+                                api.toast({
+                                    msg: err.msg,
+                                    location: 'middle'
+                                });
+                                return false;
+                            }
+                            if (ret && ret.state == 'success' && ret.data == 'true') {
+                                var x = 60;
+                                var t;
+                                t = setInterval(function () {
+                                    x--;
+                                    if (x < 1) {
+                                        $('.msg_code').html('获取验证码');
+                                        is_ok = true;
+                                        clearInterval(t);
+                                    } else {
+                                        $('.msg_code').html(x + 's');
+                                    }
+                                }, 1000);
+                            } else {
+                                if (ret.msg == 'false') {
+                                    is_ok = true;
+                                    api.toast({
+                                        msg: '发送短信过于频繁,请您稍后再试',
+                                        location: 'middle'
+                                    });
+                                } else if (ret.msg == '1000') {
+                                    is_ok = true;
+                                    api.toast({
+                                        msg: 'type类型错误',
+                                        location: 'middle'
+                                    });
+                                } else if (ret.msg == 3) {
+                                    is_ok = true;
+                                    $('.get_img').attr('src', img);
+                                    $('.img_captcha').removeClass('none');
+                                    $('input[name=has_img]').val(1);
+                                }
+                            }
+                        });
+                    } else {
+                        var err = '';
+                        if (!isEmpty(err_conf_007[res.msg])) {
+                            err = err_conf_007[res.msg];
+                            api.toast({
+                                msg: err,
+                                location: 'middle'
+                            });
+                        }
+
+                    }
+                });
+            }
+        }
+        apiready = function () {
+            commonFun.adjustHeight(0.077);
+        };

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/common-component.css">
+    <link rel="stylesheet" href="../css/about-note.css">
+    <link rel="stylesheet" href="../css/Sstyle.css">
+  </head>
+  <body>
+    <!--(style='font-size: 0;background-color:#f1f1f1')-->
+    <div class="my-talk">
+      <!-- 广告-->
+      <div class="Advertisement"><img src="../image/s14.jpg" class="AdvertisementPic"><img src="../image/close.png" class="closeAdvertisement"></div>
+      <!-- 置顶列表-->
+      <ul class="toTopList">
+        <li><span class="toTop">置顶</span>
+          <p>财萃网最新优惠活动，快来参加免费送课啦</p>
+        </li>
+        <li><span class="toTop">置顶</span>
+          <p>财萃网最新优惠活动，快来参加免费送课啦</p>
+        </li>
+      </ul>
+      <div class="talk-content my-talk-content">
+        <div class="my-talk-list">
+          <!-- 用户信息-->
+          <div class="my-talk-wrap">
+            <div class="talk-user clear-fix">
+              <div class="takl-user-photo"><img src="../image/test-talk-photo.png" alt=""></div>
+              <div class="talk-user-message clear-fix">
+                <p class="line-1"><span>迟来的关爱</span><img src="../image/user-edge-1.png" alt=""><span class="talk-right"><img src="../image/note-message-o.png" alt="" class="t-img-message"><b>25</b></span></p>
+                <p><span>2015-08-02</span><span>12:34</span></p>
+              </div>
+            </div>
+            <!-- 讨论内容-->
+            <div class="talk-content-describe">
+              <div class="current-talk">
+                <h5>财政部称，政府采购规模呈现增速放缓、结构</h5>
+                <p>财政部称，政府采购规模呈现增速放缓、结构优化现增速放缓的特点推进政府购买服务改革财政部称，政府采购规模呈、结构优化的特点推进。</p>
+              </div>
+              <div tapmode url="{{=it[p].soundPath}}" onclick="playAudio(this)" bg time="{{=it[p].soundlen}}" class="voice-player">
+                <ul class="pic-group">
+                  <li style="background-image:url(../image/text-talk-content.png)"></li>
+                  <li style="background-image:url(../image/text-talk-content.png)"></li><b>共5张</b>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="my-talk-bottm"><span>ACCA F1 Accountant in Business Unnamed</span></div>
+        </div>
+        <div class="my-talk-list">
+          <div class="my-talk-wrap">
+            <!-- 用户信息-->
+            <div class="talk-user clear-fix">
+              <div class="takl-user-photo"><img src="../image/test-talk-photo.png" alt=""></div>
+              <div class="talk-user-message clear-fix">
+                <p class="line-1"><span>迟来的关爱</span><img src="../image/user-edge-1.png" alt=""><span class="talk-right"><img src="../image/note-message-o.png" alt="" class="t-img-message"><b>25</b></span></p>
+                <p><span>2015-08-02</span><span>12:34</span></p>
+              </div>
+            </div>
+            <!-- 讨论内容-->
+            <div class="talk-content-describe">
+              <div class="current-talk">
+                <h5>财政部称，政府采购规模呈现增速放缓、结构</h5>
+                <p>财政部称，政府采购规模呈现增速放缓、结构优化的特点推进政府购买服务改革财政部称，政府采购规模呈现增速放缓、结构优化的特点推进。</p>
+              </div>
+              <div tapmode url="{{=it[p].soundPath}}" onclick="playAudio(this)" bg time="{{=it[p].soundlen}}" class="voice-player"></div>
+              <ul class="talk-photo-show">
+                <li style="background-image:url(../image/text-talk-content.png)"></li>
+                <li style="background-image:url(../image/text-talk-content.png)"></li>
+                <div class="photo-number">共5张</div>
+              </ul>
+            </div>
+          </div>
+          <div class="my-talk-bottm"><span>ACCA F1 Accountant in Business Unnamed</span></div>
+        </div>
+      </div>
+    </div>
+    <div onclick="more('course-talk-f')" class="courseStudyMore">更多讨论（23）</div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      //控制根元素字体大小，按设计图高度计算
+      window.onload = function () {
+          var docHeight = document.documentElement.clientHeight;
+          //      document.documentElement.style.fontSize = (docHeight/1280)*100 +'px';
+          var playerBtn = $getAll('.voice-player-inner');
+          for (var i = 0; i < playerBtn.length; i++) {
+              (function (i) {
+                  var music = playerBtn[i].parentNode.lastElementChild;
+                  var totalTime = music.duration.toFixed(0);
+                  playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML = totalTime + '"';
+                  var second = playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML;
+                  var secondNumber = parseInt(second);
+                  //点击播放
+                  playerBtn[i].addEventListener('click', function () {
+                      if (music.paused) {
+                          music.play();
+                          play = setInterval(function () {
+                              secondNumber--;
+                              playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML = secondNumber + '"';
+                              if (secondNumber == 0) {
+                                  clearInterval(play);
+                              }
+                          }, 1000);
+                      } else {
+                          music.pause();
+                          clearInterval(play);
+                      }
+                  }, false);
+              })(i);
+          }
+          var talkDetail = $getAll('.talk-photo-show');
+          for (var j = 0; j < talkDetail.length; j++) {
+              talkDetail[j].addEventListener('click', function () {
+                  api.openWin({
+                      name: 'talk-detail',
+                      url: "./talk-detail.html"
+                  });
+              }, false);
+          }
+      };
+      var data = {
+          "totalCount": 5, //总记录数
+          "pageNo": 1, //当前页码
+          "pageSize": 5,  //每页记录数
+          "data": [{
+              "id": "ff8080814f0b3403014f5868f8af76fe", //讨论主题的id
+              "categoryId": "证书Id",
+              "subjectId": "科目id",
+              "courseId": "ff8080814dc1dc4e014dff8681a62900",  //保存讨论时的课程id
+              "coursename": "ACCA F1 Accountant in Business",  //保存讨论时的课程名称
+              "chapterId": "ff8080814dc1dc4e014dff8681a62900",  //保存讨论时的章节id
+              "chaptername": "instraction",  //保存讨论时的章节id
+              "taskId": "ff8080814dc1dc4e014dff8681b22903", //保存讨论时的任务id
+              "taskType": "video",  //保存讨论时任务的类型任务类型: 视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+              "taskprogress": 2626, //保存讨论时的任务进度，视频为播放时间点，测试为试题序号，文档为页码，词汇页码
+              "praiseCount": 0, //讨论的点赞次数
+              "favoriteCount": 0,//讨论的收藏次数
+              "replyCount": 0, //讨论的回复个数
+              "clickCount": 0,  //浏览次数
+              "updateTime": 1440297318000, //更新时间
+              "title": "标题",  //讨论的标题
+              "contentSummary": "老师你好：......",    // 讨论的内容概述
+              "imgPath": "",  //讨论的图片，用，分开
+              "soundPath": "",  //提问的声音文件（单一）
+              "soundlen": 123, //声音文件的长度
+              "memberId": "ff8080814ec246bb014ecfa2698e2c87", //作者用户id
+              "headImg": "/upload/avatar/big_8.png", //作者头像
+              "nikeName": "andrea", //作者用户名
+              "userlevel": 1, //作者等级,不同的等级可以用不同的图像来显示
+              "levelimg": "image/sdfds.jpg", //等级头像
+              "denyReply": false, //是否已禁止回复
+              "clientType": "iPhone", //iphone移动app
+              "toporder": "", //固顶排序序号
+              "bestorder": "", //精华排序序号
+              "adpic": "", //广告图
+              "isdisplay": false//是否显示，true：显示，false：不显示
+          }],
+          "state": "success",
+          "msg": ""
+      };
+      function getData(page) {
+          //            var param = {};
+          //            param.page = page;
+          //            param.pageNo = pageNum;
+          //            param.pageSize=5;
+          //            param.self=0;
+          //            param.ordertype=1;
+          //            param.token = $api.getStorage('token');
+          //                        ajaxRequest('api/v2.1/studytools/discusslist', 'get', param, function (ret, err) {
+          //                            api.hideProgress();
+          //                            api.parseTapmode();
+          //                            if (err) {
+          //                                api.toast({
+          //                                    msg: err.msg,
+          //                                    location: 'middle'
+          //                                });
+          //                                return false;
+          //                            }
+          //                            var tpl = $('#tpl').html();
+          //                            var content = doT.template(tpl);
+          //                            if (ret && ret.state == 'success') {
+          //                                    $('#content').html(content(ret.data));
+          //                            } else {
+          //                                api.toast({
+          //                                    msg: ret.msg,
+          //                                    location: 'middle'
+          //                                });
+          //                            }
+          //                        });
+          var tpl = $('#tpl').html();
+          var content = doT.template(tpl);
+          api.toast({
+              msg: data.data
+          });
+          $('#content').html(content(data.data));
+      }
+      //点击关闭广告
+      document.querySelector('.closeAdvertisement').addEventListener('click', function () {
+          document.querySelector('.Advertisement').style.display = 'none';
+      }, false);
+      function more(link) {
+          api.openWin({
+              name: link,
+              url: link + '.html',
+              bgColor: '#000',
+              opaque: true,
+              reload: true,
+              softInputMode: 'resize',
+              pageParam: {tag: 1},
+              vScrollBarEnabled: false
+          });
+      }
+      apiready = function () {
+          getData();
+      
+      };
+    </script>
+  </body>
+</html>

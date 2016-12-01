@@ -1,0 +1,49 @@
+extends ../layout/layout
+
+block body
+    -var cont = '课程问答'
+    include ../modules/header
+        .right(onclick="open_search('search')",tapmode)
+            i.icon-search
+
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            var header = $api.dom('#header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'course-question-content',
+                url: 'course-question-content.html',
+                bounces: false,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                },
+                pageParam: api.pageParam
+            });
+        };
+        function open_search(link) {
+            api.openWin({
+                name: link,
+                url: link + '.html',
+                bgColor: '#000',
+                opaque: true,
+                reload: true,
+                softInputMode: 'resize',
+                pageParam: {name: 'question'},
+                vScrollBarEnabled: false,
+                animation: {
+                    type: "push",                //动画类型（详见动画类型常量）
+                    subType: "from_right",       //动画子类型（详见动画子类型常量）
+                    duration: 300                //动画过渡时间，默认300毫秒
+                }
+            });
+        }

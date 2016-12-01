@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <ul class="list-group">
+      <li tapmode onclick="modify()"><span>修改资料</span>
+        <div class="right"><i class="icon-arrow-right"></i></div>
+      </li>
+      <li tapmode onclick="openSetVideo()"><span>视频质量</span>
+        <div class="right"><span class="quilty">普通</span><i class="icon-arrow-right"></i></div>
+      </li>
+      <!--li(tapmode onclick="clearCache()")
+      span 清理缓存
+      .right
+          span.cache 81.2MB
+      -->
+    </ul>
+    <ul tapmode="" onclick="about()" class="list-group">
+      <li><span>关于财萃</span>
+        <div class="right"><i class="icon-arrow-right"></i></div>
+      </li>
+    </ul>
+    <input type="button" value="退出登录" tapmode onclick="out()" class="btn btn-block">
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      function modify() {
+          api.openWin({
+              name: 'modify',
+              url: 'modify.html',
+              delay: 200
+          });
+      }
+      function out() {
+          api.sendEvent({
+              name: 'to_login',
+              extra:{'out':true}
+          });
+      }
+      function about() {
+          api.openWin({
+              name: 'about-caicui',
+              url: 'about-caicui.html',
+              delay: 200
+          });
+      }
+      function openSetVideo() {
+          api.openWin({
+              name: 'set-video',
+              url: 'set-video.html',
+              delay: 200
+          });
+      }
+      function clearCache() {
+          api.clearCache(
+                  function (ret, err) {
+                      $('.cache').html('0.00MB');
+                      api.toast({
+                          msg: '清除成功',
+                          location: 'middle'
+                      });
+                  }
+          );
+      }
+      var quilty;
+      apiready = function () {
+          api.getCacheSize(
+                  function (ret, err) {
+                      var size = ret.size;
+                      var M = size / 1000 / 100;
+                      var cache = M.toFixed(2);
+                      $('.cache').html(cache + 'MB');
+                      switch ($api.getStorage('Video_quilty')) {
+                              /*case '0':
+                               quilty = '普通';
+                               break;*/
+                          case '1':
+                              quilty = '标清';
+                              break;
+                          case '2':
+                              quilty = '高清';
+                              break;
+                          default :
+                              $api.setStorage('Video_quilty', 1);
+                              quilty = '标清';
+                              break;
+                      }
+                      $('.quilty').html(quilty);
+                      $('.list-group').removeClass('none');
+                  }
+          );
+          api.addEventListener({name: 'Video_quilty'}, function (ret, err) {
+              switch ($api.getStorage('Video_quilty')) {
+                      /*case '0':
+                       quilty='普通';
+                       break;*/
+                  case '1':
+                      quilty = '标清';
+                      break;
+                  case '2':
+                      quilty = '高清';
+                      break;
+              }
+              $('.quilty').html(quilty);
+          });
+      };
+    </script>
+  </body>
+</html>

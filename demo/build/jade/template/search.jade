@@ -1,0 +1,164 @@
+extends ../layout/layout
+block head
+
+    link(rel='stylesheet', href='../css/about-note.css')
+block body
+    .header#header
+        .left(tapmode,onclick="api.closeWin();")
+            i.icon-back
+        input(name='keyword',type='text',tapmode,oninput='search()').Searchbox.center
+        span.Search(tapmode,onclick='search()') 搜索
+block scripts
+    script(type="text/javascript").
+        function search() {
+            var zs = $.trim($('input[name=keyword]').val());
+            //            if(zs.length < 2){
+            //                api.toast({msg:'搜索内容不能小于两个汉字'});
+            //                return;
+            //            }
+            var keyword = zs;
+            if (keyword == '') {
+                api.toast({
+                    msg: '请输入搜索关键字',
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (findtype == 1) {
+                api.sendEvent({
+                    name: 'notes',
+                    extra: {keyword: keyword}
+                });
+                return false;
+            } else if (findtype == 2) {
+                api.sendEvent({
+                    name: 'lx_question',
+                    extra: {keyword: keyword}
+                });
+                return false;
+            } else if (findtype == 3) {
+                api.sendEvent({
+                    name: 'talk',
+                    extra: {keyword: keyword}
+                });
+                return;
+            }
+            var param = {
+                token: $api.getStorage('token'),
+                keywords: keyword,
+                findType: findtype,
+                pageNo: 1,
+                pageSize: 5
+            };
+            api.showProgress({
+                title: '搜索中',
+                modal: false
+            });
+            ajaxRequest('api/studytools/findcontent/v2.1', 'get', param, function (ret, err) {//003.002 内容搜索
+                api.hideProgress();
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (ret && ret.state == 'success') {
+                    /*api.alert({
+                     msg:ret.data
+                     });*/
+                    if (findType == 1) {
+                        api.sendEvent({
+                            name: 'notes',
+                            extra: {data: ret.data, num: totalCount}
+                        });
+                    } else if (findType == 2) {
+                        api.sendEvent({
+                            name: 'lx_question',
+                            extra: {data: ret.data, num: totalCount}
+                        });
+                    } else if (findType == 3) {
+                        api.sendEvent({
+                            name: 'talk',
+                            extra: {data: ret.data, num: totalCount}
+                        });
+                    }
+                }
+            });
+        }
+        var findtype = 0;
+        apiready = function () {
+            var name = api.pageParam['name'];
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            switch (name) {
+                case 'notes'://笔记
+                    findtype = 1;
+                    api.pageParam.lx = 'lx';
+                    api.openFrame({
+                        //name: 'search-notes-f',
+                        //url: 'search-notes-f.html',
+                        name: 'chapter-notes-f',
+                        url: 'chapter-notes-f.html',
+                        bounces: true,
+                        opaque: true,
+                        reload: true,
+                        bgColor: '#fff',
+                        vScrollBarEnabled: false,
+                        pageParam: api.pageParam,
+                        rect: {
+                            x: 0,
+                            y: headerPos.h,
+                            w: width,
+                            h: height
+                        }
+                    });
+                    break;
+                case 'question'://问答
+                    findtype = 2;
+                    api.openFrame({
+                        name: 'search-question-f',
+                        url: 'search-question-f.html',
+                        bounces: true,
+                        opaque: true,
+                        reload: true,
+                        bgColor: '#fff',
+                        vScrollBarEnabled: false,
+                        pageParam: api.pageParam,
+                        rect: {
+                            x: 0,
+                            y: headerPos.h,
+                            w: width,
+                            h: height
+                        }
+                    });
+                    break;
+                case 'talk'://讨论
+                    findtype = 3;
+                    api.openFrame({
+                        name: 'search-talk-f',
+                        url: 'search-talk-f.html',
+                        bounces: true,
+                        opaque: true,
+                        reload: true,
+                        bgColor: '#fff',
+                        vScrollBarEnabled: false,
+                        pageParam: api.pageParam,
+                        rect: {
+                            x: 0,
+                            y: headerPos.h,
+                            w: width,
+                            h: height
+                        }
+                    });
+                    break;
+                default :
+                    findtype = 0;
+                    break;
+            }
+        };
+
+

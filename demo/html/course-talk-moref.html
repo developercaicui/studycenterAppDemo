@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/about-note.css">
+  </head>
+  <body>
+    <div class="my-talk">
+      <!-- 广告-->
+      <div id="content"></div>
+    </div>
+    <script id="tpl" type="text/x-dot-template">{{if(it[0].adpic) { }}
+          <div class="Advertisement"><img src="{{=static_url+it[0].adpic}}" class="AdvertisementPic"><img src="../image/close.png" onclick="close_ad()" tapmode class="closeAdvertisement"></div>{{ } }}
+          {{for(var p in it) { }}
+          {{ if(!isEmpty(it[p].toporder)&&it[p].toporder){ }}
+          <ul class="toTopList">
+            <li tapmode onclick="to_detail(this)" data-id="{{=it[p].id}}" chapterId="{{=it[p].charpterId}}" memberId="{{=it[p].memberId}}" subjectId="{{=it[p].subjectId}}" categoryId="{{=it[p].categoryId}}" courseId="{{=it[p].courseId}}"><span class="toTop">置顶</span><span>{{=it[p].title}}</span></li>
+          </ul>{{ }else { }}
+          <div class="talk-content my-talk-content">
+            <div class="my-talk-list">
+              <!-- 用户信息-->
+              <div class="my-talk-wrap">
+                <div class="talk-user clear-fix">{{if(it[p].headImg) { }}
+                  <div class="takl-user-photo"><img src="{{=static_url+it[p].headImg}}" alt=""></div>{{ } }}
+                  <div class="talk-user-message clear-fix">
+                    <p class="line-1"><span>{{=it[p].nikeName}}</span>{{if(it[p].levelimg) { }}<img src="{{=static_url+it[p].levelimg}}" alt="">{{ } }}<span class="talk-right"><img src="../image/note-message-o.png" alt="" class="t-img-message"><b>{{=!isEmpty(it[p].replyCount)?it[p].replyCount:0}}</b></span></p>
+                    <p><span>{{ if(!isEmpty(it[p].updateTime)) { }} {{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></p>
+                  </div>
+                </div>
+                <!-- 讨论内容-->
+                <div class="talk-content-describe">
+                  <div tapmode onclick="to_detail(this)" data-id="{{=it[p].id}}" chapterId="{{=it[p].charpterId}}" memberId="{{=it[p].memberId}}" subjectId="{{=it[p].subjectId}}" categoryId="{{=it[p].categoryId}}" taskId="{{=it[p].taskId}}" taskProgress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" courseId="{{=it[p].courseId}}" class="current-talk">
+                    <h5>{{=it[p].title}}</h5>
+                    <p>{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</p>
+                  </div>{{ if(!isEmpty(it[p].imgPath)) { }}
+                  <ul class="pic-group">
+                    {{ var imgPath=it[p].imgPath.split(','); }}
+                    {{ for(var i in imgPath) { }}
+                    {{if(i<=2) { }}
+                    <li style="background-image:url({{=static_url+imgPath[i]}})" alt="" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                    {{ } }}
+                    {{ if(imgPath.length>=3) { }}<b>共{{=imgPath.length}}张</b>{{ } }}
+                  </ul>{{ } }}
+                </div>
+              </div>{{if(it[p].coursename) { }}
+              <div class="my-talk-bottm none"><span>{{=it[p].coursename}}</span></div>{{ } }}
+            </div>
+          </div>{{ } }}
+          {{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      //控制根元素字体大小，按设计图高度计算
+      window.onload = function () {
+          var docHeight = document.documentElement.clientHeight;
+          //      document.documentElement.style.fontSize = (docHeight/1280)*100 +'px';
+          var playerBtn = $getAll('.voice-player-inner');
+          for (var i = 0; i < playerBtn.length; i++) {
+              (function (i) {
+                  var music = playerBtn[i].parentNode.lastElementChild;
+                  var totalTime = music.duration.toFixed(0);
+                  playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML = totalTime + '"';
+                  var second = playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML;
+                  var secondNumber = parseInt(second);
+                  //点击播放
+                  playerBtn[i].addEventListener('click', function () {
+                      if (music.paused) {
+                          music.play();
+                          play = setInterval(function () {
+                              secondNumber--;
+                              playerBtn[i].firstElementChild.lastElementChild.firstElementChild.innerHTML = secondNumber + '"';
+                              if (secondNumber == 0) {
+                                  clearInterval(play);
+                              }
+                          }, 1000);
+                      } else {
+                          music.pause();
+                          clearInterval(play);
+                      }
+                  }, false);
+              })(i);
+          }
+          var talkDetail = $getAll('.talk-photo-show');
+          for (var j = 0; j < talkDetail.length; j++) {
+              talkDetail[j].addEventListener('click', function () {
+                  api.openWin({
+                      name: 'talk-detail',
+                      url: "./talk-detail.html"
+                  });
+              }, false);
+          }
+      };
+      var pageSize = 10;
+      var is_loding = false;
+      function getData(order_by, page) {
+          //            var tpl = $('#tpl').html();
+          //            var content = doT.template(tpl);
+          //            if (page == 1) {
+          //                $('#content').html(content(data.data));
+          //            } else {
+          //                $('#content').append(content(data.data));
+          //            }
+          //            return;
+          var param = {};
+          param.pageNo = page;
+          param.pageSize = pageSize;
+          param.self = 0;
+          param.ordertype = order_by;
+          param.categoryId = api.pageParam.categoryId;
+          param.subjectId = api.pageParam.subjectId;
+          param.courseid = api.pageParam.course_id;
+          param.token = $api.getStorage('token');
+          if (page == 1 && show_pro && !is_loding) {
+              api.showProgress({
+                  title: '加载中',
+                  modal: false
+              });
+          }
+          ajaxRequest('api/studytools/discusslist/v2.1', 'get', param, function (ret, err) {//003.300.2
+              is_loding = true;
+              api.refreshHeaderLoadDone();
+              if (show_pro) {
+                  api.hideProgress();
+              }
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              if (ret && ret.state == 'success') {
+                  total = ret.totalCount;
+                  if (page == 1) {
+                      if (isEmpty(ret.data)) {
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('body').removeClass('null');
+                      $('#content').html(content(ret.data));
+                  }
+                  else {
+                      if (isEmpty(ret.data)) {
+                          return false;
+                      }
+                      $('#content').append(content(ret.data));
+                  }
+                  audioDom();
+                  api.parseTapmode();
+      
+              }
+              /*else {
+               api.toast({
+               msg: ret.msg,
+               location: 'middle'
+               });
+               }*/
+          });
+      
+      
+      }
+      //点击关闭广告
+      function close_ad() {
+          $('.Advertisement').css({'display': 'none'});
+      }
+      //        document.querySelector('.closeAdvertisement').addEventListener('click',function(){
+      //            document.querySelector('.Advertisement').style.display='none';
+      //        },false);
+      function more(link) {
+          api.openWin({
+              name: link,
+              url: link + '.html',
+              bgColor: '#fff',
+              opaque: true,
+              reload: true,
+              softInputMode: 'resize',
+              pageParam: {tag: 1},
+              vScrollBarEnabled: false
+          });
+          $('.courseStudyMore').css('display', 'none');
+      }
+      function to_detail(e) {
+          var param = {
+              memberId: $(e).attr('memberId'),
+              id: $(e).data('id'),
+              categoryId: $(e).attr('categoryId'),//讨论id
+              subjectId: $(e).attr('subjectId'),
+              chapterId: $(e).attr('chapterId'),//章节id
+              taskId: $(e).attr('taskId'),
+              taskProgress: isEmpty($(e).attr('taskProgress')) ? 0 : $(e).attr('taskProgress'),
+              taskType: $(e).attr('taskType'),
+              courseId: isEmpty($(e).attr('courseId')) || $(e).attr('courseId') == undefined || $(e).attr('courseId') == 'undefined' ? '课程id' : $(e).attr('courseId'),
+              qf: 'talk-detail'
+          };
+          api.openWin({
+              name: 'talk-detail',
+              url: 'talk-detail.html',
+              bgColor: '#000',
+              opaque: true,
+              reload: true,
+              softInputMode: 'resize',
+              pageParam: param,
+              vScrollBarEnabled: false,
+              animation: {
+                  type: "push",                //动画类型（详见动画类型常量）
+                  subType: "from_right",       //动画子类型（详见动画子类型常量）
+                  duration: 300                //动画过渡时间，默认300毫秒
+              }
+          });
+      
+      }
+      var total = 0;
+      apiready = function () {
+          api.addEventListener({
+              name: 'talk_detail_f_lx'
+          }, function (ret, err) {
+              getData(order_by, 1);
+          });
+          api.addEventListener({
+              name: 'talk_detail_lx'
+          }, function (ret, err) {
+              getData(order_by, 1);
+          });
+          //监听删除讨论
+          api.addEventListener({
+              name: 'my-talk-lx'
+          }, function (ret, err) {
+              getData(order_by, 1);
+          });
+          var order_by = 1;
+          if (api.pageParam.order_by) {
+              switch (api.pageParam.order_by) {
+                  case '发帖时间':
+                      order_by = 1;
+                      break;
+                  case '最新回复':
+                      order_by = 2;
+                      break;
+                  case '回复数量':
+                      order_by = 3;
+                      break;
+                  case '精华讨论':
+                      order_by = 4;
+                      break;
+              }
+          }
+          getData(order_by, 1);
+          var currentPage = 1;
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              getData(order_by, 1);
+              currentPage = 1;
+          });
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if (currentPage < Math.ceil(total / pageSize)) {
+                  currentPage++;
+                  getData(order_by, currentPage);
+              } else {
+                  api.toast({
+                      msg: '加载完成',
+                      location: 'middle'
+                  });
+              }
+          });
+      
+      };
+    </script>
+  </body>
+</html>

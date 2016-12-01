@@ -1,0 +1,242 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/reset.css')
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+    link(rel='stylesheet', type='text/css', href='../css/api.css')
+block body
+    .warp2
+        .notes
+            .classnotes#content
+            include ../modules/_chapter_module
+block scripts
+    script(src='../script/fx.js', type='text/javascript', charset='utf-8')
+    script(type='text/javascript').
+        function bet(obj) {
+            if ($(obj).children('span').attr("class") == 'bewritesp1') {
+                $(obj).children('span').addClass('bewritesp2');
+                $(obj).children('span').addClass('bewritesp2');
+                $(obj).children('span').removeClass('bewritesp1');
+                $(obj).parent().next('.download').hide();
+            } else {
+                $(obj).children('span').addClass('bewritesp1');
+                $(obj).children('span').removeClass('bewritesp2');
+                $(obj).parent().next('.download').show();
+            }
+        }
+        function sum_num() {
+            $('.note-chapter').each(function (m) {
+                var num = 0;
+                $('.note-chapter').eq(m).find('.one_chapter').each(function (n) {
+                    num += parseInt($('.note-chapter').eq(m).find('.one_chapter').eq(n).attr('one_id'));
+                });
+                if (num == 0) {
+                    $('.note-chapter').eq(m).find('.cache-list-title .msg-mark').html(0).addClass('none');
+
+                } else {
+                    if (num > 99) {
+                        num = '99+';
+                    }
+                    if (!isEmpty(num)) {
+                        $('.note-chapter').eq(m).find('.cache-list-title .msg-mark').html(0).addClass('none');
+                    }
+                    $('.note-chapter').eq(m).find('.cache-list-title .msg-mark').html(num);
+                }
+            });
+        }
+        var pageSize = 10;
+        var is_loding = false;
+        function getData(page) {
+            var data1;
+            var param = {};
+            param.token = $api.getStorage('token');
+            param.categoryId = api.pageParam.categoryId;
+            param.subjectId = api.pageParam.subjectId;
+            param.courseid = api.pageParam.course_id;
+            param.self = 1;
+            if (page == 1 && show_pro && !is_loding) {
+                api.showProgress({
+                    title: '加载中',
+                    modal: false
+                });
+            }
+            ajaxRequest('api/studytools/myallcoursechapternodecount/v2.1', 'post', param, function (ret, err) {//003.115.1
+                is_loding = true;
+                api.refreshHeaderLoadDone();
+                if (show_pro) {
+                    api.hideProgress();
+                }
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (ret && ret.state == 'success') {
+                    //                            return ret.info;
+                    if (isEmpty(ret.data)) {
+                        $('body').addClass('null');
+                        return false;
+                    }
+                    var da = ret.data;
+                    var chapter_ids = [];
+                    if (!isEmpty(da)) {
+                        for (var p in da) {
+                            if (!isEmpty(da[p].children)) {
+                                for (var p1 in da[p].children) {
+                                    chapter_ids.push(da[p].children[p1].id);
+                                    if (!isEmpty(da[p].children[p1].children)) {
+                                        for (var p2 in da[p].children[p1].children) {
+                                            chapter_ids.push(da[p].children[p1].children[p2].id);
+                                            if (!isEmpty(da[p].children[p1].children[p2].children)) {
+                                                for (var p3 in da[p].children[p1].children[p2].children) {
+                                                    chapter_ids.push(da[p].children[p1].children[p2].children[p3].id);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    var param = {};
+                    param.token = $api.getStorage('token');
+                    param.charpterids = chapter_ids.join(",");
+                    ajaxRequest('api/studytools/nodenotread/v2.1', 'post', param, function (ret, err) {//003.119
+                        api.parseTapmode();
+                        if (err) {
+                            api.toast({
+                                msg: err.msg,
+                                location: 'middle'
+                            });
+                            return false;
+                        }
+                        var tpl = $('#tpl').html();
+                        var content = doT.template(tpl);
+                        if (ret && ret.state == 'success') {
+                            if (isEmpty(ret.data)) {
+                                return false;
+                            }
+                            total = ret.totalCount;
+                            var data3 = ret.data;
+                            var data4 = {};
+                            var data5 = {};
+                            for (var p in data3) {
+                                var t = (data3[p].id).replace("", "");
+                                data4[t] = data3[p].count;
+                            }
+                            if (page == 1) {
+                                data1 = da;
+                                $('#content').html(content({'res1': data1, 'res2': data4}));
+                            }
+                            else {
+                                $('#content').append(content({'res1': data1, 'res2': data4}));
+                            }
+                            sum_num();
+                            num_99();
+
+                        } else {
+                            /*api.toast({
+                             msg: ret.msg,
+                             location: 'middle'
+                             });*/
+                        }
+                    });
+                } else {
+                    /*api.toast({
+                     msg: ret.msg,
+                     location: 'middle'
+                     });*/
+                }
+            });
+            api.parseTapmode();
+        }
+        var a = 0;
+        var total = 0;
+        apiready = function () {
+            getData(1);
+            var currentPage = 1;
+            api.setRefreshHeaderInfo({
+                visible: true,
+                loadingImg: 'widget://image/arrow-down-o.png',
+                bgColor: '#f3f3f3',
+                textColor: '#787b7c',
+                textDown: '下拉更多',
+                textUp: '松开刷新',
+                showTime: false
+            }, function (ret, err) {
+                sum_num();
+                num_99();
+                getData(1);
+                currentPage = 1;
+            });
+            //滚动到底部
+            api.addEventListener({
+                name: 'scrolltobottom'
+            }, function (ret, err) {
+
+                if (currentPage < Math.ceil(total / pageSize)) {
+                    currentPage++;
+                    getData(currentPage);
+                    sum_num();
+                    num_99();
+                } else {
+                    api.toast({
+                        msg: '加载完成!'
+                    });
+                }
+            });
+            api.addEventListener({
+                name: 'get_notes'
+            }, function (ret) {
+                getData(1);
+            });
+            api.addEventListener({
+                name: 'mynotes'
+            }, function (ret) {
+                getData(1);
+            });
+        };
+        function to_list(obj) {
+            var par = api.pageParam;
+            par.title = $(obj).attr('title');
+            par.typ = 'self';
+            par.courseId = $(obj).attr('key');//课程id
+            par.id = $(obj).attr('id');//章节id
+            if (!isEmpty(api.pageParam)) {
+                for (var p in api.pageParam) {
+                    par[p] = api.pageParam[p];
+                }
+            }
+            api.openWin({
+                name: 'chapter-notes',
+                url: 'chapter-notes.html',
+                pageParam: par
+            });
+            //            var courseId = $(obj).attr('key');//课程id
+            //            var id = $(obj).attr('id') ;//章节id
+            //            var title = $(obj).attr('title');
+            //            var typ = 'self';
+            //            api.openWin({
+            //                name: 'chapter-notes',
+            //                url: 'chapter-notes.html',
+            //               // pageParam: {courseId: courseId,id:id,chapterId:chapterId,courseName:courseName,chapterName:chapterName,typ:typ,title:title}
+            //                pageParam : {courseId:courseId,id:id,title:title,typ:typ}
+            //            });
+        }
+//        function to_list(courseI, id, chapterId, courseName, chapterName,title,courseId) {
+//            //alert(courseId);
+//            //return;
+//            //courseId = isEmpty(courseId) || courseId == undefined || courseId == 'undefined' ? '课程id' : courseId;
+//            //chapterId = isEmpty(chapterId) || chapterId == undefined || chapterId == 'undefined' ? '章节Id' : chapterId;
+//            //courseName = isEmpty(courseName) || courseName == undefined || courseName == 'undefined' ? '课程Id' : courseName;
+//            //chapterName = isEmpty(chapterName) || chapterName == undefined || chapterName == 'undefined' ? '章节名称' : chapterName;
+//            var typ = 'self';
+//            api.openWin({
+//                name: 'chapter-notes',
+//                url: 'chapter-notes.html',
+//               // pageParam: {courseId: courseId,id:id,chapterId:chapterId,courseName:courseName,chapterName:chapterName,typ:typ,title:title}
+//                pageParam : {chapterId:id,courseId:courseId,title:title,typ:typ}
+//            });
+//        }
+                                                                                                                                                                                                             

@@ -1,0 +1,1887 @@
+html
+    background transparent
+    &.transparent
+        body
+            background transparent
+    &.bg-white
+        body
+            background-color #fff
+body
+    background #f3f3f3 no-repeat center
+    overflow-x hidden
+    overflow-y auto
+    //font-size .24rem
+    &.null
+        background-image url("../image/404.png")
+        background-size 1.6rem
+//.android4 body.null
+//        background-image url("../image/404.png")
+
+li:active
+    background rgba(0,0,0,.1)
+.backdrop
+    position fixed
+    top 0
+    left 0
+    right 0
+    bottom 0
+    background rgba(0,0,0,.6)
+    &.opacity
+        background rgba(0,0,0,0)
+.dropdown-menu
+    background rgba(0,0,0,.8)
+    font-size .3rem
+    display table
+    color #fff
+    position relative
+    z-index 9
+    margin 2.1rem .4rem
+    border-radius .2rem
+    padding .2rem 0
+    &:before
+        content ''
+        position absolute
+        border .2rem solid transparent
+        border-bottom-color rgba(0,0,0,.8)
+        top -.395rem
+        left 50%
+        margin-left -.15rem
+
+
+    li
+        padding .2rem .6rem
+        &:not(:last-child)
+            border-bottom 1px solid #fff
+
+
+*
+    box-sizing border-box
+.input-txt
+    width 100%
+    height .85rem
+    padding .3rem
+    background: transparent !important;
+    box-shadow inset 0 0 0 400px #fff
+    border 1px solid #eee
+    display block
+    margin .2rem 0
+    font-size .28rem
+    border-radius 9px
+    color #00ce93
+input,textarea
+    outline none
+    -webkit-appearance none !important //-去掉ios内阴影
+
+//打恶心的补丁-改用户名页面提示及消息大傻钟图片
+.form-tips
+    color #999
+    font-size .28rem
+    position absolute
+    right .3rem
+    top .25rem
+.msg-list.note-content-Img .section-note-top .note-img
+    text-align center
+    line-height 1.15rem
+    img
+        width auto
+        height auto
+        max-width 98%
+        max-height 1rem
+        vertical-align middle
+
+
+.editor-tit
+    margin -.1rem .3rem .2rem .3rem
+    padding .1rem .2rem
+    font-size .24rem
+    color #666
+    border 1px solid #eee
+    height .5rem
+    input
+        width 100%
+
+.editor-title
+    color #999
+    font-size .24rem
+    padding .3rem
+    height .8rem
+    .left
+        float left
+    .right
+        float right
+.editor-cont
+    margin 0 .3rem
+    padding .2rem
+    font-size .24rem
+    color #666
+    border 1px solid #eee
+    height 3.5rem
+    overflow auto
+.editor-warp
+    font-size .24rem
+    > *
+        position fixed
+        top .1rem
+        bottom 65%
+    textarea
+        width 88%
+        left .2rem
+        border 1px solid #eee
+        padding .1rem
+    .btn
+        top .3rem
+        right .2rem
+        border-radius .06rem
+        background #eee
+        color #444
+        box-shadow .03rem .03rem 0 #ddd
+
+
+
+@font-face {
+    font-family: 'icomoon';
+    src: url("../fonts/icomoon.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+[class^="icon-"],
+[class*=" icon-"] {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+$color_green = #00a085;
+$color_gray = #585858;
+$color_gray2 = #9b9b9b;
+
+.hide,.none
+  display none
+
+.cl
+    clear both
+input,textarea
+    outline none
+.list-border
+    font-size .4rem
+
+    li
+        padding .4rem .5rem
+        border-top 1px solid #ccc
+.list-group
+    font-size .3rem
+    border-bottom 1px solid #ddd
+    background #fff
+    margin .2rem 0
+    li
+        line-height 1rem
+        border-top 1px solid #ddd
+        position relative
+        .right
+            position absolute
+            right 0
+            top 0
+            opacity .6
+        > *
+            padding 0 .3rem
+//公共头
+
+.header
+    line-height .96rem
+    color #fff
+    font-size .36rem
+    position relative
+    background rgba(33,41,43,1)
+    overflow hidden
+    height 0.96rem
+    box-sizing content-box
+    .left,.right
+        position absolute
+        bottom  0
+        padding 0 .3rem
+    .left
+        left 0
+        &:after
+            content ''
+            position absolute
+            bottom .2rem
+            left .8rem
+            width 1px
+            height .6rem
+            border-right 1px solid rgba(0,0,0,.2)
+            box-shadow 1px 0 0 rgba(255,255,255,.08)
+    .delete
+        color #22a891
+
+    .left-next
+        font-size .36rem
+        padding-left 1.2rem
+        max-width: 90%;
+        overflow: hidden;
+        word-wrap: normal;
+        text-overflow: ellipsis;
+        float: left;
+        white-space: pre;
+        &.no-arow
+            padding-left .2rem
+    .right
+        right 0
+        .keep
+          text-align right
+          line-height 0.9rem
+          color #00a185
+        .btn
+            background none
+            border 1px solid $color_green
+            color $color_green
+            margin-right .4rem
+        li
+            float right
+            margin-right 0.2rem
+            color #15a88f
+        li:last-child
+            color #7d7d7d
+    .center
+        text-align center
+    .msg-mark
+        background #fff
+        color #f74c30 !important
+        left .3rem
+        top .14rem
+
+    .icon-settings-size
+        font-size 0.4rem
+
+    .icon-search,.icon-check,.icon-file-plus,.icon-trash
+        color $color_green
+        margin-left .3rem
+        outline .1rem solid rgba(0,0,0,.001)
+
+.header.homeheader
+    height .96rem
+    box-sizing content-box
+    > *
+        position absolute
+        width 100%
+        bottom 0
+
+    > *:not(.active)
+        display none
+
+    .header-home
+        background $color_green
+        .center
+            i
+                vertical-align middle
+                font-size .6rem
+                margin 0 .02rem
+                display inline-block
+
+
+
+
+
+//头部tabs
+.header-nav
+    height .8rem
+    line-height .8rem
+    width 100%
+    display table
+    overflow hidden
+    font-size .3rem
+    background #fff
+    -webkit-box-shadow inset 0 -1px 0 lighten($color_gray,80%)
+    &.col-3
+        li
+            width 33.33%
+    li
+        position relative
+        top 1px
+        display table-cell
+        text-align center
+        color $color_gray
+        width 50%
+        white-space nowrap
+        &.active
+            color $color_green
+            border-bottom .07rem solid $color_green
+
+
+.top-nav
+    height .8rem
+    font-size .3rem
+    line-height .8rem
+    border-bottom 1px solid #eee
+    background #fff
+    padding 0 .4rem
+    .left
+        float left
+    .right
+        float right
+        color $color_green
+    i
+        margin-right .1rem
+
+
+
+//公共底
+.footer-black
+    color #fff
+    position fixed
+    z-index 3
+    left 0
+    right 0
+    bottom 0
+    height .8rem
+    line-height .8rem
+    font-size .24rem
+    background rgba(33,41,43,1)
+    padding 0 .3rem
+    *
+        vertical-align middle
+    .left
+        float left
+        max-width 60%
+        overflow hidden
+        .swiper-pagination
+            span
+                display inline-block
+                border 1px solid $color_gray
+                margin 0 .05rem
+                width .36rem
+                height .36rem
+                line-height .34rem
+                font-size .18rem
+                text-align center
+                border-radius .05rem
+                background none
+                &.swiper-pagination-bullet-active
+                    border-color #fff
+                &.warning
+                    border-color #fff
+                    background #fff
+                    color #000
+                &.success
+                    border-color $color_green
+                    background $color_green
+                &.danger
+                    border-color #f30
+                    background #f30
+    .right
+        float right
+        a
+            margin-left .4rem
+        i
+            font-size .3rem
+            margin 0 .05rem
+            vertical-align middle
+
+
+ul.footer-tab
+    position fixed
+    left 0
+    right 0
+    bottom 0
+    height 1.1rem
+    border-top 1px solid #ddd
+    background #fff
+    list-style none
+    color $color_green
+    li
+        float left
+        width 50%
+        text-align center
+        line-height 1.1rem
+        font-size 0.32rem
+        &:nth-child(2n)
+            border-left 1px solid #ddd
+
+
+ul.footer-nav
+    color $color_gray
+    position fixed
+    left 0
+    right 0
+    bottom 0
+    height 1.1rem
+    border-top 1px solid #ddd
+    background #fff
+    list-style none
+    li
+        float left
+        text-align center
+        width 33.33%
+        height 1.1rem
+        position relative
+        i
+            font-size 0.56rem
+            margin .15rem auto 0
+            display block
+        p
+            font-size 0.22rem
+
+        &.active
+            color $color_green
+
+    .msg-mark
+        width .15rem
+        height .15rem
+        margin .1rem .16rem 0 0
+        overflow hidden
+        font-size .001rem
+        text-indent 1rem
+        right 29%
+
+
+//消息角标
+.msg-mark
+    background #f74c30
+    color #fff
+    border-radius 50%
+    position absolute
+    font-size .22rem
+    top .1rem
+    right: .25rem
+    margin-left 0.2rem
+    width .35rem
+    height .35rem
+    text-align center
+    line-height 0.35rem
+    display inline-block
+    &:empty
+        display none
+.msg-new
+    background #f74c31
+    color #fff
+    border-radius 50%
+    position absolute
+    top 0.4rem
+    right 0.4rem
+    font-size 0.18rem
+    margin -0.2rem 0 0 0.2rem
+    height 0.1rem
+    text-align center
+    line-height 0.28rem
+    width 0.1rem  
+
+.ri_h  
+    right 0rem
+
+
+//404 not found
+.not-found
+    font-size 0.2rem
+    text-align center
+    position absolute
+    top 50%
+    left 50%
+    -webkit-transform translate(-50%,-50%)
+    .icon-404
+        font-size 2rem
+    p
+        color #666666
+        text-align center
+        font-size 0.3rem
+        margin-top 0.1rem
+
+.course_tab
+     color rgb(0, 161, 133)
+.btn
+    display inline-block
+    font-size .24rem
+    background #22a891
+    color #fff
+    height .6rem
+    line-height .6rem
+    padding 0 .2rem
+    border-radius .1rem
+    &.btn-block
+        display block
+        width 90%
+        margin .5rem 5%
+        height .8rem
+        line-height .8rem
+        font-size .3rem
+    &.none
+        display none
+.btn-play-time
+    display inline-block
+    font-size .22rem
+    border 1px solid #8cc152
+    color #8cc152 !important
+    border-radius .2rem
+    line-height .3rem
+    padding 0 .1rem
+    vertical-align middle
+    i
+        font-size .2rem
+        margin-right .04rem
+
+.about-caicui
+    text-align center
+    img
+        width 2.5rem
+        margin .5rem auto
+
+    h4
+        font-size .32rem
+        color $color_green
+        margin .1rem
+    p
+        font-size .24rem
+        color #999
+        margin .1rem
+
+// 登录页
+body.homepage
+    overflow hidden
+    .islogin,.nologin
+        transition all .5s
+
+    .nologin
+        background #f3f3f3
+        overflow hidden
+        height 100%
+        .logo
+            text-align center
+            padding 15% 1.32rem 8% 1.32rem
+            img
+                max-height 2rem
+        .form
+            margin 0 .3rem
+            position relative
+            .forget
+                position absolute
+                color #22a891
+                right 0
+                top 1rem
+                font-size .24rem
+                padding .3rem
+
+            .btn
+                display block
+                text-align center
+                height .8rem
+                line-height .8rem
+                font-size .36rem
+                padding 0
+                margin .4rem 0 .5rem 0
+                letter-spacing .3rem
+                text-indent .3rem
+
+        .phone
+            margin .5rem
+            font-size .3rem
+            color #22a891
+            text-align center
+
+        .lands
+            text-align center
+            font-size .28rem
+            color #454545
+            margin-top 11%
+            background #f3f3f3
+            box-shadow 0rem 1.5rem 1rem #f3f3f3
+            height 1.5rem
+            overflow hidden
+            > div
+                display inline-block
+                text-transform uppercase
+                width 1rem
+                margin 0 .4rem
+                &:first-child
+                    margin-left 0
+                &:last-child
+                    margin-right 0
+            i
+                color #fff
+                display block
+                line-height 1rem
+                font-size .8rem
+                width 1rem
+                height 1rem
+                border-radius 50%
+                overflow hidden
+                text-align center
+                margin-bottom .14rem
+                &.icon-qq
+                    background #00abe0
+                &.icon-weixin
+                    background #00ce93
+                &.icon-weibo
+                    background #ff6a35
+
+
+.win_bg_warp
+    position fixed
+    width 100%
+    height 100%
+    background rgba(255,255,255,.8)
+    left 0
+    top 0
+    z-index 2
+
+
+/**圆环进度条**/
+circle
+    -webkit-transition: stroke-dasharray .5s .8s
+    transition: stroke-dasharray .5s .8s
+
+cir_w = 2rem
+.circle-progress,.down-progress,.audio-progress
+    width cir_w
+    height cir_w
+    position relative
+    display inline-block
+    vertical-align middle
+    text-align center
+
+    .text,.val,i
+        position absolute
+        left 0
+        width 100%
+    .text
+        top 30%
+    .val
+        bottom 30%
+        font-size .4rem
+        &:after
+            content '%'
+    svg
+        margin auto
+        circle
+            stroke-width 6
+            fill none
+            stroke rgba(255,255,255,.3)
+            &:last-child
+                stroke rgba(255,255,255,1)
+                stroke-dasharray 1 1000
+    i
+        top 50%
+        left 50%
+        -webkit-transform translate(-50%,-50%)
+
+.ios9,.android5
+    .circle-progress,.down-progress,.audio-progress
+        svg
+            position absolute
+            top 50%
+            left 50%
+            -webkit-transform translate(-50%,-50%) rotate(-90deg)
+.down_speed
+    position absolute
+    color #999
+    top .4rem
+    right .9rem
+    &:after
+        content "kb/s"
+#chaList
+  .down_speed
+    position absolute
+    color #999
+    top .4rem
+    right 1.0rem
+    &:after
+      content "kb/s"
+ul.download
+    li
+        padding-right 1.3rem
+    .down-progress
+        position absolute
+        top .17rem
+        right .3rem
+.down-progress
+    width .6rem
+    height .6rem
+    color #999
+    &:before
+        content ''
+        position absolute
+        z-index 3
+        width 100%
+        height 100%
+        top 0
+        left 0
+        /*background rgba(200,30,0,.3)*/
+    &[status='ing'],.ing,&[type='1']
+        i:before
+            content '\e95f'
+    &[status='end'],&.end,&[type='4']
+
+        svg
+            circle
+              stroke $color_green
+        i
+            color $color_green
+            font-size .4rem !important
+            &:before
+                content '\e913'
+
+    &[status='wait'],&.wait,&[type='2']
+        i:before
+            content '\e909'
+    i
+        top 50%
+        left 50%
+        transform translate(-50%,-50%)
+        -webkit-transform translate(-50%,-50%)
+        line-height .5rem
+        font-size .5rem !important
+
+.down-progress,.audio-progress
+    .val
+        display none
+    svg
+        circle
+            -webkit-transition: stroke-dasharray .3s
+            transition: stroke-dasharray .3s
+            stroke #ccc
+            &:last-child
+                stroke $color_green
+
+.down-progress svg circle
+    stroke-width 1
+
+.audio-progress svg circle
+    stroke-width 2
+
+/*个人中心*/
+.user-center-content
+    > div, > ul
+        margin-top .3rem
+        background #fff
+        border-top 1px solid #e6e6e6
+        border-bottom 1px solid #e6e6e6
+    .user-info
+        position relative
+        padding .2rem .3rem
+        height 1.68rem
+        img
+            height 1.28rem
+            width 1.28rem
+        .user-name
+            position absolute
+            left 2rem
+            top .38rem
+            h5
+                font-size 0.32rem
+                font-weight normal
+                line-height 1
+                color #5a5a5a
+            p
+                color #000
+                font-size 0.26rem
+                margin-top .2rem
+                white-space nowrap
+                span
+                    color #00a185
+                    padding 0 5%
+                    font-size 0.3rem
+        .message-bells
+            position absolute
+            top .2rem
+            right .3rem
+            height 1.2rem
+            width 1rem
+            line-height 1
+            i
+                font-size .36rem
+                color #666
+                position absolute
+                right .22rem
+                top .16rem
+
+
+    li
+        position relative
+        line-height .9rem
+        &:not(:last-child)
+            border-bottom 1px solid #e6e6e6
+        [class*="icon-"]
+            position absolute
+            top 50%
+            -webkit-transform translate(0,-50%)
+            left .3rem
+            font-size .5rem
+            color #22a891
+            &.icon-arrow-right
+                left auto
+                right .2rem
+                font-size .28rem
+                color #999
+    .user-center-font
+        font-size 0.32rem
+        color #5a5a5a
+        padding-left 1.2rem
+
+    .user-center-account
+        font-size 0.26rem
+        color #969696
+        position absolute
+        right 8.2%
+        top 0rem
+
+    .checkbox
+        height .5rem
+        width .9rem
+        top .2rem
+        right .3rem
+        position absolute
+        input
+            background transparent !important
+            box-shadow inset 0 0 3rem 0 #fff
+
+    .about-course
+        height 40%
+        & > div
+            height 25.1%
+    .message-feedback
+        height 10%
+        & > div
+            height 100%
+
+/**个人中心-我的start**/
+.set-time
+    input
+        opacity .0001
+        width 100%
+        height 100%
+        position absolute
+        z-index 3
+        font-size .26rem
+        text-align right
+        color #999999
+/**个人中心-我的end**/
+
+/******************* New notes*/
+.new
+    width 100%
+    height 100%
+    position relative
+    background #f1f1f1
+    box-sizing border-box
+    .editbt
+        bottom 0rem
+        left 0rem
+.newtit
+    position relative
+    height 1.15rem
+    line-height 1.15rem
+    margin-top 0.2rem
+    background #fff
+    padding-left 0.3rem
+    box-sizing border-box
+    border-bottom 1px solid #e6e6e6
+    p
+        font-size 0.28rem
+        color #868686
+        width 6.2rem
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    span
+        position absolute
+        top 0
+        right 0.3rem
+        width 0.18rem
+        height 100%
+        background url(../image/center-arrow.png) center no-repeat
+        background-size 100% auto
+.newentry
+    font-size 0.3rem
+    height 100%
+    border-top .2rem solid #f3f3f3
+    background #fff
+    input
+        height 0.85rem
+    input,textarea
+        width 100%
+        outline none
+        padding .2rem .3rem
+        box-sizing border-box
+        border 0
+        border-top 1px solid #e3e3e3
+        border-radius 0
+        margin 0
+        color #5a5a5a
+    textarea
+        height 90%
+.editor
+    background #ffffff
+    height 100%
+    overflow hidden
+    .editit
+        background: #fff;
+        margin: 0.2rem 0;
+        box-shadow 0 0 0 .2rem #f3f3f3
+        box-sizing: border-box;
+        padding: 0.2rem 0.3rem 0.2rem .5rem
+        border-top: 1px solid #E6E6E6;
+        border-bottom: 1px solid #E6E6E6;
+        color: #787878;
+        font-size: 0.24rem;
+        line-height: 0.3rem;
+        overflow: hidden;
+        .play-time
+            position absolute
+            left .2rem
+            color #999
+        p
+            max-height .6rem
+            overflow hidden
+            font-size: 0.24rem;
+            line-height: 0.3rem;
+    textarea
+        border-top: 1px solid #E6E6E6;
+        background #fff
+        color: #787878;
+        width 100%
+        padding .2rem
+        height 80%
+        font-size: 0.24rem;
+        box-sizing border-box
+
+
+/*课程测试*/
+.condition-navigator
+    display flex
+    align-items center
+    width 100%
+    height 0.9rem
+    line-height 0.9rem
+    background-color #21292b
+    position relative
+    & > span
+        display inline-block
+        color #fff
+        font-size 0.3rem
+    .arrow-v
+        height 0.35rem
+        width 0.4rem
+        position relative
+        background url("../image/nav-arrow.png") no-repeat
+        background-size 100% 100%
+        margin-left 0.3rem
+    .line-v
+        display inline-block
+        position relative
+        background url("../image/line-v.png") no-repeat
+        margin-left 0.2rem
+    .font-v
+        margin-left 0.3rem
+    .btn-v
+        height 0.4rem
+        width 0.95rem
+        border 2px solid #393939
+        border-radius 0.1rem
+        background url("../image/nav-btn-v.png") no-repeat
+        background-position center center
+        background-size 40% 50%
+        position absolute
+        right 0.3rem
+        top 50%
+.course-content
+    overflow-y auto
+    background-color #f0f0f0
+.course-test-title
+    width 90%
+    margin 0.3rem auto 0 auto
+.course-content.swiper-slide
+    p
+        font-size 0.3rem
+        color #1f1f1f
+        line-height 1.2
+
+.course-test-selector
+    width 88%
+    margin 0.45rem auto 0 auto
+.selector-detail
+    position relative
+    width 100%
+    background-color #fff
+    padding 0.3rem
+    border-radius 0.2rem
+    border 1px solid #d4d4d4
+    box-sizing border-box
+    margin-top 0.1rem
+    &:nth-child(1)
+        margin-top 0
+    span
+        font-size 0.3rem
+        font-weight bold
+        color #767676
+        display inline-block
+        height 0.25rem
+        width 0.25rem
+        float left
+    p
+        font-size 0.28rem
+        color #767676
+        width 95%
+        float left
+        margin-left 0.2rem
+.test-bottom
+    height 0.75rem
+    width 100%
+    position fixed
+    bottom 0
+    background-color #1f1f1f
+    display flex
+    align-items center
+    .swiper-pagination
+        position relative
+        height 0.75rem
+        display flex
+        align-items center
+        & > span
+            color #eee
+            border-radius 0.1rem
+            display inline-block
+            height 0.4rem
+            width 0.4rem
+            line-height 0.4rem
+            text-align center
+            font-size 0.25rem
+            border 2px solid #eee
+            margin-left 0.1rem
+        .swiper-pagination-bullet
+            flex-shrink 0
+    .pagination-wrap
+        width 6.6rem
+        overflow hidden
+        height 0.75rem
+        line-height 0.75rem
+        position absolute
+    & > b
+        font-size 0.3rem
+        color #fff
+    .swiper-pagination-bullet-active
+        border 1px solid #fff !important
+        color #fff !important
+        background-color transparent
+    i
+        font-size 0.5rem
+        color #fff
+        font-style normal
+        margin-bottom 0.1rem
+    .btn-right
+        margin-left 6.7rem
+.select-tag
+    visibility hidden
+    display block
+    height 0
+    width 0
+.question-selected
+    background-color #8cc152
+.question-selected span,
+.question-selected p
+    color #fff
+.answer-analysis
+    width 88%
+    margin 0 auto
+
+.answer-text
+    position relative
+    margin-top 0.2rem
+    img
+        height 0.35rem
+        width 0.35rem
+        float left
+    p
+        float left
+        margin-left 0.2rem
+        font-size 0.24rem
+        line-height 1.4
+        color #767676
+.answer-analysis-btn
+    height 0.58rem
+    width 2rem
+    border-radius 0.12rem
+    background-color #00a085
+    font-size 0.26rem
+    color #fff
+    margin 0.15rem auto 0.1rem 0
+    text-align center
+    line-height 0.58rem
+    &.open
+        i:before
+            content "\e907"
+    i
+        margin-left .2rem
+.user-data
+    line-height 1
+    margin-top 0.2rem
+    span
+        font-size 0.2rem
+        color #767676
+        position relative
+        img
+            margin-right 0.15rem
+    a
+        font-size 0.24rem
+        color #00a085
+        text-decoration underline
+        float right  
+.swiper-container
+    .swiper-button-prev, .swiper-container-rtl .swiper-button-next
+        //background-image url("../image/test-arrow-left.png")
+        background-image none
+
+    .swiper-button-next, .swiper-container-rtl .swiper-button-prev
+        //background-image url("../image/test-arrow-right.png")
+        background-image none
+
+/*选中状态色*/
+.video-selected
+    background-color #22a891
+.swiper-container
+    padding-bottom 1rem
+.swiper-button-next, .swiper-button-prev
+    position fixed !important
+    bottom 0 !important
+    top 10% !important
+    background-position-y 10% !important
+.tapcolor
+    background #f7f7f7 !important
+.answer-analysis-cont
+    display none
+    background #fff
+    border 1px solid #ddd
+    border-radius .2rem
+    padding .3rem
+    font-size .24rem
+    color #777
+    height auto
+    h3
+        color $color_green
+        font-size .28rem
+    i
+        margin-right .1rem
+        font-size .4rem
+        position absolute
+        left 0
+    > div
+        padding-left .6rem
+        position relative
+    .user-data
+        margin-top .3rem
+        *
+            vertical-align bottom
+.cont
+    height auto
+
+.remberpass
+    position relative
+    height 0.5rem
+    line-height 0.58rem
+    margin-top -0.1rem
+    padding-left 0.75rem
+    color #767676
+    font-size 0.28rem
+    margin 0.25rem 0
+    div
+        width 0.32rem
+        height 0.32rem
+        position absolute
+        left 0.2rem
+        top 0.12rem
+        border-radius 0.05rem
+        margin 0
+        border 1px solid #9b9b9b
+        p
+            display none
+            width 65%
+            height 45%
+            border 1px solid #fff
+            position absolute
+            left 0.045rem
+            top 0.03rem
+            margin 0
+            transform rotate(-45deg)
+            -webkit-transform rotate(-45deg)
+            border-top 0
+            border-right 0
+    .bgcl
+        background #22a891
+        p
+            display block
+/*测试页面*/
+.course_selector1
+    color #767676
+    .answer_tit
+        font-size 0.19rem
+        line-height 0.29rem
+    textarea.answer_box
+        width 100%
+        font-size 0.16rem
+        line-height 0.19rem
+        height 3.2rem
+        background #fff
+        border 1px solid #d8d8d8
+        padding 0.28rem 0 0 0.16rem
+.course_selector2
+    color #767676
+    font-size 0.19rem
+    height 0.7rem
+    line-height 0.7rem
+    border 1px solid #d8d8d8
+    background #fff
+    display:flex;
+    display:-webkit-box;
+    display:-webkit-flex;
+    .answer_left
+        width 0.87rem
+        text-align center
+        border-right 1px solid #d8d8d8
+    .answer_right
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+        padding-left 0.24rem
+        input
+            width 100%
+.course_selector3
+    .table_box
+        width 100%
+        color #767676
+        background #fff
+        tr
+            td
+                font-size 0.19rem
+                line-height 0.29rem
+                height 0.7rem
+                border 1px solid #d8d8d8
+                text-align center
+                padding 0 0.1rem
+                input.fill_blank
+                    width 100%
+                    height 100%
+                    border none
+                input::-webkit-input-placeholder
+                    text-align center
+                    color #767676
+            .first_td
+                width 31.5%
+                font-size 0.16rem
+                line-height 0.19rem
+        .first_tr
+            td
+                height 0.38rem
+                line-height 0.38rem
+                font-size 0.19rem
+.course_selector4
+    .question_box
+        position relative
+        img
+            width 4.99rem
+            position relative
+            top 0
+            left 50%
+            -webkit-transform translateX(-50%)
+    .table_box2
+        tr
+            td
+                width 17.4%
+            .first_td
+                width 13%
+                font-size 0.21rem
+            .w_tit
+                font-size 0.16rem
+                text-align left
+.course_selector5
+    .table_box3
+        tr
+            td
+                position relative
+                .circle_box
+                    width 0.36rem
+                    height 0.36rem
+                    border-radius 50%
+                    border 1px solid #b8b7b7
+                    position absolute
+                    top 0.16rem
+                    left 40%
+                    -webkit-transform translateX(-50%)
+                    .circle_green
+                        width 0.26rem
+                        height 0.26rem
+                        border-radius 50%
+                        background  #8cc152
+                        position absolute
+                        top 0.03rem
+                        left 50%
+                        -webkit-transform translateX(-50%)
+                        z-index 100
+                .itrem_con
+                    position absolute
+                    top 0.2rem
+                    left 60%
+                    -webkit-transform translateX(-50%)
+.course_selector6
+    .table_box6
+        tr
+            td
+                height 1.73rem
+                width 13.8%
+                .circle_box
+                    top 0.7rem
+                    left 30%
+                .itrem_con
+                    position absolute
+                    top 0.75rem
+                    left 60%
+                    -webkit-transform translateX(-50%)
+            .first_td
+                font-size 0.19rem
+                width 25%
+.course_selector7
+    .question-tit
+        font-size 0.19rem
+        line-height 0.38rem
+        color #767676
+
+.qesition_complete
+    width 100%
+    background #fff
+    border none
+    position fixed
+    top 0
+    z-index 200
+    .ce_box
+        font-size 0.3rem
+        color #1f1f1f
+        text-align center
+        margin-top 0.38rem
+    .ce_box2
+        font-size 0.36rem
+        color #1f1f1f
+        text-align center
+        span
+            color #eb6100
+            margin-top 0.56rem
+    .ce_box3
+        font-size 0.24rem
+        color #a2a2a2
+        text-align center
+        margin-top 0.44rem
+    .ce_btn
+        padding 1.08rem 0 0 0
+        .com_btn
+            width 20%
+            height 0.68rem
+            line-height 0.68rem
+            border-radius 5px
+            text-align center
+            font-size 0.24rem
+            float left
+            margin-bottom 0.61rem
+        .again_btn
+            border 1px solid #8cc152
+            color #8cc152
+            margin-right 6%
+            margin-left 24%
+        .next_btn
+            background #8cc152
+            color #fff
+            margin-left 6%
+            margin-right 24%
+
+
+@-webkit-keyframes bf3 {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes zhuan {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }  
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+.quartercircle
+    width: 200px;
+    height: 200px;
+    background-color: #a72525;
+    -webkit-border-radius: 200px 0 0 0;
+
+.avatar
+    border-radius 50%
+    line-height 1rem
+
+////视频下载列表小圆点样式
+//.con_b
+//    li
+//        .li-left
+//            .dot-status
+//                font-size 0.3rem
+//                vertical-align middle
+//                margin-right 0.1rem
+//                background #fff
+//                float left
+//                margin-top 0.45rem
+
+//圆心状态
+.dot-status
+    position absolute
+    top 50%
+    width .3rem
+    height .3rem
+    margin-top -.15rem
+    background url("../image/dot-status1.svg") no-repeat center
+    background-size contain
+    &[type="2"]
+        background-image url("../image/dot-status2.svg")
+    &[type="3"]
+        background-image url("../image/dot-status3.svg")
+    & ~ p
+        padding-left .2rem
+
+.bar4 .switch
+    display: none;
+/*横向进度条*/
+.progress-box2
+    white-space nowrap
+    width 100%
+    height 0.23rem
+    > *
+        display inline-block
+        vertical-align middle
+        line-height .3rem
+    .progress2
+        width 72%
+        height .06rem
+        //margin-bottom .1rem
+        background #ccc
+        border-radius .1rem
+        overflow hidden
+        .progress-bar2
+            width 0
+            height .06rem
+            background $color_green
+            border-radius .1rem
+            transition all .5s
+    .progress-val2
+        font-size 0.24rem
+        color #009574
+        margin-left 0.2rem
+
+//缓存列表
+.checking
+    .cache-list
+        .icon-check
+            display inline-block
+        .down-progress
+            display none
+
+.cache-course
+    margin .2rem 0
+    &.note-chapter
+        .cache-list
+            > dl
+                p
+                    top .4rem
+                .msg-mark
+                    background #fff
+                    color #f60
+                dd
+                    color #fff
+            dd
+                color $color_green
+                font-size .24rem
+                padding-right .6rem
+.cache-list
+    //margin .2rem 0
+    font-size .32rem
+    .list
+        font-size .28rem
+        color #787878
+        .list
+            font-size .24rem
+            .list
+                font-size .22rem
+        dl dt p
+            padding-left .4rem
+    li:active
+        background none
+
+    .hide-child
+        .icon-arrow-down
+            -webkit-transform: rotate(-90deg)
+        ul,li
+            display none
+    .icon-arrow-down
+        position absolute
+        margin-top -.14rem
+        transition all .3s
+
+    .icon-check
+        display none
+        position absolute
+        top .3rem
+        right .3rem
+        font-size .2rem
+        background #fff
+        padding-top .05rem
+        border-radius .08rem
+        width .4rem
+        height .4rem
+        border 1px solid rgba(0,0,0,.2)
+        color #fff
+        &.active
+            text-shadow 0 1px 0 $color_green
+            color $color_green
+            border-color $color_green
+
+
+    .progress-box2
+        width 4.3rem
+        margin-top -.1rem
+        .progress2
+            width 3.5rem
+            height .1rem
+            background rgba(255,255,255,.3)
+            .progress-bar2
+                height .1rem
+                background #fff
+                //width 56%
+        .progress-val2
+            color #fff
+
+
+    dl
+        display table
+        background #fff
+        width 100%
+        position relative
+        border-bottom 1px solid rgba(160,160,160,.2)
+        dt,dd
+            display table-cell
+            height 1rem
+            vertical-align middle
+            padding 0 0 0 .2rem
+            &:active
+                background rgba(0,0,0,.03)
+        dt
+            width 80%
+            position relative
+            p
+                font-size inherit
+                position absolute
+                top .3rem
+                left .3rem
+                right .3rem
+                white-space nowrap
+                overflow hidden
+                text-overflow ellipsis
+        dd
+            width 20%
+            text-align center
+            white-space nowrap
+
+        &.haschild
+            padding-left .4rem
+    > dl
+        background $color_green
+        color #fff
+        dt
+            padding-top .5rem
+            p
+                font-size .3rem
+                top .2rem
+
+    ul.count
+        li
+            display inline-block
+            font-size .2rem
+            padding-left .2rem
+
+.video-menu
+    ul.cache-list
+        .list.active
+            > dl
+                background rgba(10,70,40,.3)
+        dl
+            color #ccc
+            background none
+
+            dt,dd
+                &:active
+                    background rgba(0,0,0,.1)
+            dt
+                width 80%
+            dd
+                width 20%
+                padding-right .4rem
+                text-align right
+                *
+                    text-align center
+
+.about-video
+    position absolute
+    right 0
+    height 100%
+    width 75%
+    background-color rgba(0,0,0,0.85)
+    overflow-y hidden
+.video-body
+    overflow-x hidden
+    overflow-y auto
+    position absolute
+    z-index 1
+    top 1.3rem
+    right 0
+    bottom 0
+    left 0
+.video-title
+    padding 0.2rem 0
+    position relative
+    z-index 10
+    ul
+        width 78%
+        height 0.56rem
+        border-radius 0.13rem
+        border 1px solid #999
+        line-height 0.56rem
+        position relative
+        margin 0.2rem auto
+        display table
+        li
+            list-style none
+            font-size 0.26rem
+            color #999999
+            display table-cell
+            width 25%
+            text-align center
+            height 0.56rem
+            border-right 1px solid #999
+            &:nth-child(1)
+                border-radius .1rem 0 0 .1rem
+            &:nth-child(4)
+                border-radius 0 .1rem .1rem 0
+                border-right none
+        .vList-selected
+            background-color #999
+            color #fff
+
+
+/*问题详情*/
+.question-cot
+    font-size .24rem
+    margin-bottom 1rem
+    .q-box,.a-box
+        background #fff
+        margin-top .2rem
+        border-top 1px solid #e6e6e6
+        border-bottom 1px solid #e6e6e6
+
+
+.qsctit
+    position relative
+    width 100%
+    height 1.15rem
+    line-height 1.15rem
+    border-bottom 1px solid #e6e6e6
+    p
+        padding-left .33rem
+        font-size 0.28rem
+        color #353535
+        width 90%
+        overflow hidden
+        white-space nowrap
+        text-overflow ellipsis
+    img
+        position absolute
+        right 0.28rem
+        top 0.43rem
+        width 0.19rem
+        height 0.32rem
+.qscwodpic
+    padding 0.2rem 0.3rem
+    position relative
+    .titp
+        font-size 0.28rem
+        color #353535
+    .vo_box
+        height 1rem
+    .wodP
+        padding-top 0.12rem
+        font-size 0.24rem
+        line-height 0.42rem
+        color #353535
+        word-wrap break-word
+        position relative
+        span
+            &:nth-child(1)
+                color #00a085
+                position absolute
+                top .1rem
+                left 0
+            &:nth-child(2)
+                color #919191
+                padding-left 1.2rem
+                width 100%
+                word-wrap break-word
+    img
+        &.detail-img
+            width 100%
+.piclong
+    margin-top 0.12rem
+    height 1.4rem
+    width 100%
+    background url(../image/z_tc18.png) center no-repeat
+    background-size 100% 100%
+.picshort
+    margin-top 0.12rem
+    width 57%
+    height 1.4rem
+    background url(../image/z_tc18.png) center no-repeat
+    background-size 100% 100%
+.qscmsg
+    position relative
+    margin-top 0.12rem
+    height .4rem
+    span
+        vertical-align middle
+        margin-right 0.2rem
+        font-size 0.22rem
+        color #9f9f9f
+
+.qscbtn
+    position absolute
+    bottom 0.3rem
+    right .2rem
+    padding 0.04rem 0.2rem
+    font-size 0.18rem
+    color #00a185
+    border 1px solid #00a185
+    text-align center
+    border-radius 0.1rem
+.qscbtnsel,.qscbtn.active
+    color #fff
+    background #00a185
+
+.qsclist
+    padding 0.2rem 0.3rem
+    position relative
+    width 100%
+    border-bottom 1px solid #e6e6e6
+    background #fff
+    .personmsg
+        margin-bottom .2rem
+        img
+            width 0.5rem
+            height 0.5rem
+            float left
+            border-radius 0.1rem
+        .name
+            float left
+            margin-left 0.2rem
+            font-size 0.24rem
+            color #494949
+        .time
+            float right
+            font-size 0.22rem
+            color #919191
+            span
+                margin-left 0.26rem
+
+.course-buy
+    .header
+        position fixed
+        padding-top .2rem
+        z-index 3
+        top 0
+        width 100%
+    .courseStudyMore
+        opacity 1
+
+    .main
+        width 100%
+        padding 1.3rem 0 1rem 0
+        p
+            font-size .4rem
+
+    .course-list
+        margin .15rem .2rem
+        background #fff
+        border 1px solid #ddd
+        border-radius .1rem
+        padding 0 .15rem
+        color #777
+        h2
+            font-size .3rem
+            line-height .4rem
+            height .76rem
+            overflow hidden
+            font-weight normal
+        p
+            font-size .28rem
+            height .3rem
+            margin-bottom .04rem
+        .btn
+            position absolute
+            height .45rem
+            line-height .45rem
+            padding 0 .5rem
+            border-radius .3rem
+            bottom .2rem
+        dl
+            padding .2rem 0
+            display table
+            width 100%
+            font-size 0
+            > *
+                display table-cell
+                margin 0
+                vertical-align top
+            dd
+                width 90%
+                padding 0 .1rem 0 .2rem
+                overflow hidden
+        .course
+            position relative
+            dt
+                h4
+                    position absolute
+                    z-index 2
+                    top 1.4rem
+                    left .2rem
+                    color #fff
+                    font-size .26rem
+                    text-shadow 0 0 1px rgba(0,0,0,.5)
+                img
+                    width 2.4rem
+                    height 1.8rem
+            b
+                font-size .4rem
+                color #f50
+            span
+                margin-top .1rem
+                font-size .24rem
+                float right
+        .user
+            border-top 1px solid #ddd
+            padding-bottom .1rem
+            dt img
+                width .8rem
+                height .8rem
+            p:first-child
+                color #009574
+
+
+@import "footer-editor"

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+    <link rel="stylesheet" type="text/css" href="../css/Sstyle.css">
+    <style>
+      html, body {
+          height: auto;
+      }
+      
+      html {
+          padding-bottom: 3rem;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="catalog">
+      <div class="avaiace"><span class="manage">课程缓存管理</span>
+        <p class="space">可用空间39.48MB</p><span></span>
+      </div>
+      <div id="content" class="content"></div>
+    </div>
+    <div id="arcProgress"></div>
+    <script id="tpl" type="text/x-dot-template">{{~it:val}}
+          <div class="bewrite">
+            <div class="bewtitl"><span></span>
+              <p>{{=val.chapterTitle}}</p>
+            </div>
+          </div>
+          <ul class="download">{{~val.children:value}}
+            <li tapmode onclick="next('{{=val.chapterId}}','{{=value.chapterId}}')">
+              <p>{{=value.chapterTitle}}</p><span class="dosp1"></span>
+            </li>{{~}}
+          </ul>{{~}}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../script/pagejs/atydying-datile-f.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>

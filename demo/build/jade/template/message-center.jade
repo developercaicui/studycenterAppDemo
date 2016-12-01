@@ -1,0 +1,58 @@
+extends ../layout/layout
+block body
+    -var cont ='消息中心'
+    include ../modules/header
+
+    ul.header-nav
+        li.active(tapmode,onclick="set_tab(0)") 公告
+        li(tapmode,onclick="set_tab(1)") 消息
+block scripts
+    script.
+        function set_tab(i) {
+            api.setFrameGroupIndex({
+                name: 'msg_tab',
+                index: i
+            });
+        }
+        apiready = function () {
+            api.setStatusBarStyle({
+                style: 'light'
+            });
+            var header = $api.dom('#header');
+            var topnav = $api.dom('.header-nav');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var topnavPos = $api.offset(topnav);
+            y = headerPos.h + topnavPos.h;
+            h = api.winHeight - headerPos.h;
+            api.openFrameGroup({
+                name: 'msg_tab',
+                background: '#fff',
+                rect: {
+                    x: 0,             //左上角x坐标
+                    y: y,             //左上角y坐标
+                    w: api.winWidth,           //宽度，若传'auto'，页面从x位置开始自动充满父页面宽度
+                    h: h          //高度，若传'auto'，页面从y位置开始自动充满父页面高度
+                },
+                scrollEnabled: true,
+                index: 0,
+                preload: 1,
+                frames: [{//消息
+                    name: 'message-tips-f',
+                    url: 'message-tips-f.html',
+                    bounces: true,
+                    bgColor: '#fff',
+                    vScrollBarEnabled: true,
+                    hScrollBarEnabled: false
+                }, {//公告
+                    name: 'message-announce-f',
+                    url: 'message-announce-f.html',
+                    bounces: true,
+                    bgColor: '#fff',
+                    vScrollBarEnabled: true,
+                    hScrollBarEnabled: false
+                }]
+            }, function (ret, err) {
+                $(".header-nav li").removeClass('active').eq(ret.index).addClass('active');
+            });
+        }

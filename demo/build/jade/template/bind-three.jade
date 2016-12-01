@@ -1,0 +1,31 @@
+extends ../layout/layout
+block body
+    -var cont = '基本资料'
+    include ../modules/header
+        .right 3/3
+
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'sign-edit-f',
+                url: 'sign-edit-f.html',
+                bounces: false,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                }
+            });
+        }
+
+

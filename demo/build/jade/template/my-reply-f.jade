@@ -1,0 +1,185 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/common-component.css')
+    link(rel='stylesheet', href='../css/about-note.css')
+block body
+    .talk-content.my-talk-content#content
+        mixin lst
+            | {{ for(var p in it.data) { }}
+            .my-talk-list
+                // 用户信息
+                .my-talk-wrap
+                    .talk-user.clear-fix
+                        .takl-user-photo
+                            img(src='{{=static_url+it.data[p].replys[0].headImg}}', alt='')
+                        .talk-user-message.clear-fix
+                            p.line-1
+                                span {{=it.data[p].replys[0].nikeName}}
+                                img(src="{{=static_url+it.data[p].replys[0].levelimg}}", alt='')
+                            | {{ if(!isEmpty(it.data[p].updateTime)) { }}
+                            p.line-22
+                                span {{=formatDate(it.data[p].updateTime,'Y')+'-'+formatDate(it.data[p].updateTime,'M')+'-'+formatDate(it.data[p].updateTime,'D')}}
+                                span {{=formatDate(it.data[p].updateTime,'h')+':'+formatDate(it.data[p].updateTime,'m')}}
+                            | {{ } }}
+                    // 回复内容
+                    .talk-content-describe(tapmode,onclick="next('talk-detail','{{=it.data[p].categoryId}}','{{=it.data[p].subjectId}}','{{=it.data[p].id}}','{{=it.data[p].chapterId}}','{{=it.data[p].memberId}}','{{=it.data[p].taskId}}','{{=it.data[p].taskprogress}}','{{=it.data[p].taskType}}','{{=it.data[p].courseId}}','{{=it.data[p].isdelete}}')")
+                        .current-talk
+                            p {{=!isEmpty(it.data[p].replys[0].content)?it.data[p].replys[0].content:''}}
+                        .pre-post
+                            p
+                                | {{ if(!isEmpty(it.data[p].isdelete) && it.data[p].isdelete==1) { }}
+                                | 原帖：楼主已删除
+                                | {{ }else { }}
+                                | 原帖：{{=!isEmpty(it.data[p].contentSummary)?it.data[p].contentSummary:''}}
+                                | {{ } }}
+                            span
+                                img(src='../image/note-message-o.png', alt='')
+                                b {{=(isEmpty(it.data[p].replyCount)? 0 :it.data[p].replyCount)}}
+                | {{if(!isEmpty(it.data[p].coursename) && it.data[p].isdelete==0) { }}
+                .my-talk-bottm
+                    span {{=it.data[p].coursename}}
+                | {{ } }}
+            | {{ } }}
+    script(id='tpl',type='text/x-dot-template')
+        +lst
+block scripts
+    script(type="text/javascript").
+        /*
+         function next(name,categoryId,subjectId,id,chapterId,memberId,isdelete) {
+         if(!isEmpty(isdelete) && isdelete==1){
+         api.toast({
+         msg:'原帖：楼主已删除',
+         location:'middle'
+         });
+         return false;
+         }
+         categoryId = isEmpty(categoryId) || categoryId == undefined ||categoryId=='undefined'  ? '证书Id' : categoryId;
+         subjectId = isEmpty(subjectId) || subjectId == undefined || subjectId =='undefined'? '科目id' : subjectId;
+         chapterId = isEmpty(chapterId) || chapterId == undefined  || chapterId=='undefined'? '章节Id' : chapterId;
+         api.openWin({
+         name: name,
+         url: name + ".html",
+         delay: 200,
+         pageParam:{categoryId:categoryId,subjectId:subjectId,id:id,chapterId:chapterId,memberId:memberId,qf:'talk-detail',yj:'yj'}
+         });
+         }
+         */
+
+        function next(name, categoryId, subjectId, id, chapterId, memberId, taskId, taskProgress, taskType, courseId, isdelete) {
+            if (!isEmpty(isdelete) && isdelete == 1) {
+                api.toast({
+                    msg: '原帖：楼主已删除',
+                    location: 'middle'
+                });
+                return false;
+            }
+            categoryId = isEmpty(categoryId) || categoryId == undefined || categoryId == 'undefined' ? '证书Id' : categoryId;
+            subjectId = isEmpty(subjectId) || subjectId == undefined || subjectId == 'undefined' ? '科目id' : subjectId;
+            chapterId = isEmpty(chapterId) || chapterId == undefined || chapterId == 'undefined' ? '章节Id' : chapterId;
+            taskId = isEmpty(taskId) || taskId == undefined || taskId == 'undefined' ? '' : taskId;
+            taskProgress = isEmpty(taskProgress) || taskProgress == undefined || taskProgress == 'undefined' ? 0 : taskProgress;
+            taskType = isEmpty(taskType) || taskType == undefined || taskType == 'undefined' ? '' : taskType;
+            courseId = isEmpty(courseId) || courseId == undefined || courseId == 'undefined' ? '课程id' : courseId;
+            api.openWin({
+                name: name,
+                url: name + ".html",
+                delay: 200,
+                pageParam: {
+                    categoryId: categoryId,
+                    subjectId: subjectId,
+                    id: id,
+                    chapterId: chapterId,
+                    memberId: memberId,
+                    qf: 'talk-detail',
+                    taskId: taskId,
+                    taskProgress: taskProgress,
+                    taskType: taskType,
+                    courseId: courseId,
+                    yj: 'yj'
+                }
+            });
+        }
+        var pageSize = 10;
+        var totalCount;
+        var is_loding = false;
+        function getData(page) {
+            /*var tpl = $('#tpl').html();
+             var content = doT.template(tpl);
+             var html = content(ret);
+             if (page == 1) {
+             $('#content').html(html);
+             } else {
+             $('#content').append(html);
+             }
+             return;*/
+            var param = {};
+            param.pageNo = page;
+            param.pageSize = pageSize;
+            param.ordertype = 1;
+            param.token = $api.getStorage('token');
+            if (page == 1 && show_pro && !is_loding) {
+                api.showProgress({
+                    title: '加载中',
+                    modal: false
+                });
+            }
+            ajaxRequest('api/studytools/myreplydiscusslist/v2.1', 'get', param, function (ret, err) {//003.302.2  讨论列表（new）
+                api.refreshHeaderLoadDone();
+                is_loding = true;
+                if (show_pro) {
+                    api.hideProgress();
+                }
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                var tpl = $('#tpl').html();
+                var content = doT.template(tpl);
+                if (ret && ret.state == 'success') {
+                    totalCount = ret.totalCount;
+                    if (page == 1) {
+                        if (isEmpty(ret.data) || totalCount == 0) {
+                            $('#content').html('');
+                            $('body').addClass('null');
+                            return false;
+                        }
+                        $('body').removeClass('null');
+                        $('#content').html(content(ret));
+                    } else {
+                        if (isEmpty(ret.data)) {
+                            return false;
+                        }
+                        $('#content').append(content(ret));
+                    }
+                    api.parseTapmode();
+                }
+            });
+        }
+        apiready = function () {
+            getData(1);
+            var currentPage = 1;
+            api.setRefreshHeaderInfo({
+                visible: true,
+                loadingImg: 'widget://image/arrow-down-o.png',
+                bgColor: '#f3f3f3',
+                textColor: '#787b7c',
+                textDown: '下拉更多',
+                textUp: '松开刷新',
+                showTime: false
+            }, function (ret, err) {
+                getData(1);
+                currentPage = 1;
+            });
+            //滚动到底部
+            api.addEventListener({
+                name: 'scrolltobottom'
+            }, function (ret, err) {
+                if (currentPage < Math.ceil(totalCount / pageSize)) {
+                    currentPage++;
+                    getData(currentPage);
+                }
+            });
+        };

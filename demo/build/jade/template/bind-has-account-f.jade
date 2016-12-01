@@ -1,0 +1,107 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    .ndy
+        .indexFom.margin-5
+            input.input-txt(type='text', placeholder='手机号／用户名', name='username')
+            .hasright
+                input.input-txt(type='password', placeholder='请输入密码', name='password')
+                span.forget.inputbug(tapmode, onclick='forget()') 忘记密码?
+            .adjust-height.clear-fix
+                input.txt-validate(type='text', placeholder='验证码',name='code')
+                img.validate-img(src='', alt='验证码',tapmode,onclick="get_img()")
+            input.land(onclick='bind()', tapmode='', type='button', value='绑定')
+block scripts
+    script(type='text/javascript').
+        //表单问题bug
+        $('.inputbug').click(function () {
+            $(".input-txt").unbind();
+        });
+        function get_img() {
+            var now = Date.now();
+            var img = common_url + '/api/v2.1/captcha?timestamp=' + now / 1000;
+            $('.validate-img').attr('src', img);
+        }
+        function forget() {
+            $('input[name=password]').unbind();
+            api.openWin({
+                name: 'findPswOne',
+                url: 'findPswOne.html',
+                delay: 200,
+                pageParam: {'is_not': '1'}
+            });
+        }
+        function bind() {
+            var username = $.trim($('input[name=username]').val());
+            var password = $.trim($('input[name=password]').val());
+            var code = $.trim($('input[name=code]').val());
+            if (username == '') {
+                api.toast({
+                    msg: '手机号／用户名不能为空',
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (password == '') {
+                api.toast({
+                    msg: '请输入密码',
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (code == '') {
+                api.toast({
+                    msg: '请输入验证码',
+                    location: 'middle'
+                });
+                return false;
+            }
+            var outh = $api.getStorage('outh');
+            var param = {
+                account: username,
+                token: $api.getStorage('token'),
+                j_captcha: code,
+                password: password,
+                societyType: outh.societyType,
+                societyId: outh.societyId
+            };
+            api.showProgress({
+                title: '处理中',
+                modal: true
+            });
+            ajaxRequest('api/v2.1/oauthBinding', 'post', param, function (ret, err) {//007.004 outh帐号绑定
+                api.hideProgress();
+                if (err) {
+                    get_img();
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (ret && ret.state == 'success') {
+                    $api.setStorage('token', ret.data.token);
+                    $api.setStorage('mine', ret.data);
+                    api.openWin({
+                        name: 'root',
+                        url: '../index.html',
+                        delay: 200,
+                        slidBackEnabled: false,
+                        pageParam: {to_ucenter: 1}
+                    });
+                } else {
+                    get_img();
+                    var msg = isEmpty(err_conf_007[ret.msg]) ? '' : err_conf_007[ret.msg];
+                    api.toast({
+                        msg: msg,
+                        location: 'middle'
+                    });
+                }
+            });
+        }
+        apiready = function () {
+            get_img();
+        };
+
+

@@ -1,0 +1,33 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    div#content
+    mixin lst
+        | {{for(var p in it.data){ }}
+        .course-stydy
+            .courseStyTp.clearfix
+                img.pic(src='{{=static_url+it.data[p].courseBkImage}}')
+                ul.wod
+                    li.wodTit {{=it.data[p].courseName}}
+                    //li.hasTime 有效期：{{=formatDate(it.data[p].expirationTime,'Y')+'-'+formatDate(it.data[p].expirationTime,'M')+'-'+formatDate(it.data[p].expirationTime,'D')}}  {{=formatDate(it.data[p].expirationTime,'h')+':'+formatDate(it.data[p].expirationTime,'m')}}
+                    li.hasTime 有效期：{{=formatDate(it.data[p].expirationTime,'Y')+'-'+formatDate(it.data[p].expirationTime,'M')+'-'+formatDate(it.data[p].expirationTime,'D')}}
+                    | {{ if(!isEmpty(it.data[p].chapterName)){ }}
+                    li.wodCot 上次学到：{{=it.data[p].chapterName}}
+                    | {{ } }}
+            | {{ if(it.is_show==true) { }}
+            | {{if(it.data[p].isU==true){ }}
+            .courseStyBm.clearfix
+                .againBt(tapmode,onclick="renew()") 申请重听
+            | {{ }else { }}
+            .courseStyBm.clearfix
+                .againBt(tapmode,onclick="api.toast({msg:'只有U+课程可以免费申请重听！',location:'middle'})") 申请重听
+            | {{ } }}
+            | {{ } }}
+        | {{ } }}
+    script(id='tpl',type='text/x-dot-template')
+        +lst
+block scripts
+    script(src='../script/sn_font640.js', type='text/javascript', charset='utf-8')
+    script(src='../script/pagejs/course-overdue-f.js', type='text/javascript', charset='utf-8')
+

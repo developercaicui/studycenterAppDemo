@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>个人中心头2</title>
+    <link rel="stylesheet" href="../css/Sstyle.css">
+  </head>
+  <body>
+    <!-- 在学-->
+    <div id="course_content" class="mycourse"></div>
+    <!-- 学习用时占比-->
+    <div class="user-index-tit userIndexOnline">
+      <div class="userIndex-titLef">学习用时占比</div>
+    </div>
+    <div class="user-index-time clearfix">
+      <div id="graph" class="Chart left"></div>
+      <ul id="content-used" class="ChartMag clearfix"></ul>
+    </div>
+    <!-- 学习概况-->
+    <div class="user-index-tit userIndexOnline">
+      <div class="userIndex-titLef">学习概况</div>
+      <ul class="userIndex-rigTab right clearfix">
+        <li><b></b>平均时长</li>
+        <li><b></b>我的学习时长</li>
+      </ul>
+    </div>
+    <div id="container" style="min-width:310px; height: 180px; margin: 0 auto;" class="user-index-survey"></div>
+    <!-- 能力评估-->
+    <div class="user-index-tit none">
+      <div class="userIndex-titLef">能力评估</div><span class="userIndex-titRig pover-tit-rig">财迷中排名第<b class="ranking">93</b>位</span>
+    </div>
+    <div style="position:relative;" class="user-index-pover clearfix none">
+      <div style=" position: absolute; left: 0; top: 50%;" class="user-index-pover-lef">
+        <div class="povBcount"><span class="ringBcount"></span>%</div>
+      </div>
+      <div id="content_able" class="user-index-pover-rig"></div>
+    </div>
+    <div style="visibility:hidden;" class="bottom-navigator">
+      <script id="tpl_able" type="text/x-dot-template">
+              <!-- 能力评估各种颜色进度-->{{ if(it.chapter!=undefined && it.chapter!=null && it.chapter!='undefined' && it.chapter!='null') { }}
+              <ul tapmode onclick="change_able('{{=it.chapter}}',this)" class="porB progress">
+                <li class="clearfixear tag clearfix">
+                  <p>章节定向</p><span class="progressBcount">{{=it.chapter}}</span>
+                </li>
+                <li class="povPgmBg"><span class="povPgm progressPro"></span></li>
+              </ul>{{ } }}
+              {{ if(it.knowledgePoint!=undefined  && it.knowledgePoint!=null && it.knowledgePoint!='undefined'  && it.knowledgePoint!='null') { }}
+              <ul tapmode onclick="change_able('{{=it.knowledgePoint}}',this)" class="porB progress">
+                <li class="clearfixear tag clearfix">
+                  <p>考试特训</p><span class="progressBcount">{{=it.knowledgePoint}}</span>
+                </li>
+                <li class="povPgmBg"><span class="povPgm progressPro"></span></li>
+              </ul>{{ } }}
+              {{ if(it.intelligent!=undefined && it.intelligent!=null && it.intelligent!='undefined' && it.intelligent!='null') { }}
+              <ul tapmode onclick="change_able('{{=it.intelligent}}',this)" class="porB progress">
+                <li class="clearfixear tag clearfix">
+                  <p>职能组卷</p><span class="progressBcount">{{=it.intelligent}}</span>
+                </li>
+                <li class="povPgmBg"><span class="povPgm progressPro"></span></li>
+              </ul>{{ }}}
+              {{ if(it.simulated!=undefined && it.simulated!=null && it.simulated!='undefined' && it.simulated!='null') { }}
+              <ul tapmode onclick="change_able('{{=it.simulated}}',this)" class="porB progress">
+                <li class="clearfixear tag clearfix">
+                  <p>模拟考试</p><span class="progressBcount">{{=it.simulated}}</span>
+                </li>
+                <li class="povPgmBg"><span class="povPgm progressPro"></span></li>
+              </ul>{{ }}}
+              {{ if(it.real!=undefined && it.real!=null && it.real!='undefined' && it.real!='null') { }}
+              <ul tapmode onclick="change_able('{{=it.real}}',this)" class="porB progress">
+                <li class="clearfixear tag clearfix">
+                  <p>真题重现</p><span class="progressBcount">{{=it.real}}</span>
+                </li>
+                <li class="povPgmBg"><span class="povPgm progressPro"></span></li>
+              </ul>{{ } }}
+      </script>
+      <script id="tpl_used" type="text/x-dot-template">{{for(var p in it.data) { }}
+              <li><span></span>{{=it.data[p].label}}  <b class="question">{{=((it.data[p].value/it.n).toFixed(2))*100}}</b>%</li>{{ } }}
+      </script>
+      <script id="tpl_course" type="text/x-dot-template">
+            {{var total=it.total;}}
+            {{var data=it.courselist[0];}}
+            <div onclick="openCourse()" tapmode class="user-index-tit">
+              <div class="userIndex-titLef">在学课程</div><img src="../image/center-arrow.png" class="oli-rigIcon"><span class="userIndex-titRig">{{=total}}</span>
+            </div>
+            <div tapmode data-chaptername="{{=data.chapterName}}" data-coursename="{{=data.courseName}}" onclick="course_det(this,'course-studying-top','{{=data.courseId}}','{{=data.chapterId}}','{{=data.categoryId}}','{{=data.subjectID}}','{{=data.subjectName}}','{{=data.categoryName}}')" class="user-index-class clearfix"><img src="{{=static_url+data.courseBkImage}}" class="userClass-pic">
+              <ul class="userClass-wod">
+                <li data-id="{{=data.courseId}}" class="userClass-wodTit">{{=data.courseName}}</li>{{ if(!isEmpty(data.expirationTime)){ }}
+                <!--li.hasTime 有效期至:{{=formatDate(data.expirationTime,'Y')+'-'+formatDate(data.expirationTime,'M')+'-'+formatDate(data.expirationTime,'D')}} {{=formatDate(data.expirationTime,'h')+':'+formatDate(data.expirationTime,'m')}}-->
+                <li style="margin-top: 0.4rem;" class="hasTime">有效期至:{{=formatDate(data.expirationTime,'Y')+'-'+formatDate(data.expirationTime,'M')+'-'+formatDate(data.expirationTime,'D')}}</li>{{ } }}
+                <!--| {{ if(!isEmpty(data.chapterName)){ }}-->
+                <!--li.userClass-wodtag 上次学到：{{=data.chapterName}}-->
+                <!--| {{ }else{ }}-->
+                <!--li.userClass-wodtag 开始学习此课程-->
+                <!--| {{ } }}-->{{ if(!isEmpty(data.taskprogress) && !isEmpty(data.taskTotal)) { }}
+                <li class="userClass-wodprogress progress">
+                  <div class="progress-box2">
+                    <div class="progress2">
+                      <div role="progressbar" min="{{=data.taskprogress}}" max="{{=data.taskTotal}}" data class="progress-bar2"></div>
+                    </div>
+                    <div class="progress-val2"></div>
+                  </div>
+                </li>{{ }else { }}
+                <li class="userClass-wodprogress progress">
+                  <div class="progress-box2">
+                    <div class="progress2">
+                      <div role="progressbar" min="0" max="100" data class="progress-bar2"></div>
+                    </div>
+                    <div class="progress-val2"></div>
+                  </div>
+                </li>{{ } }}
+              </ul>
+            </div>
+      </script>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/Chart.js"></script>
+    <script src="../script/jquery.min.js"></script>
+    <script src="../script/morris.js"></script>
+    <script src="../script/raphael-min.js"></script>
+    <script src="../script/highcharts.js"></script>
+    <script src="../script/pagejs/user-index.js"></script>
+  </body>
+</html>

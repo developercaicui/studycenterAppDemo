@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="my_close()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">视频缓存</div>
+      <ul class="right">
+        <li tapmode onclick="showSet()"><i class="icon-trash"></i></li>
+        <li tapmode onclick="setAll2()" class="hide">全选</li>
+        <li tapmode onclick="setAll1()" class="hide">取消</li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      function my_close() {
+          api.sendEvent({
+              name: 'flush_catalog'
+          });
+          api.closeWin();
+      }
+      apiready = function () {
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          var headerPos = $api.offset(header);
+          var width = api.winWidth;
+          var height = api.winHeight - headerPos.h;
+          api.openFrame({
+              name: 'video-cache-f',
+              url: 'video-cache-f.html',
+              reload: true,
+              bounces: true,
+              opaque: true,
+              vScrollBarEnabled: false,
+              bgColor: '#fff',
+              rect: {
+                  x: 0,
+                  y: headerPos.h,
+                  w: width,
+                  h: height
+              },
+              pageParam: {courseId: api.pageParam.course_id}
+          });
+          api.addEventListener({
+              name: 'keyback'
+          }, function () {
+              my_close();
+          });
+          api.addEventListener({
+              name: 'cancle_del'
+          }, function () {
+              $('.right li').addClass('hide');
+              $('.right li').eq(0).removeClass('hide');
+          });
+      };
+      function checkDownlond(e) {
+          api.sendEvent({
+              name: 'opena',
+              extra: {sethomepage: e}
+          });
+      }
+      function showSet() {
+          checkDownlond(1);
+          $('.right li').removeClass('hide');
+          $(this).addClass('hide');
+      }
+      //取消
+      function setAll1() {
+          checkDownlond(2);
+          $('.right li').addClass('hide');
+          $('.right li').eq(0).removeClass('hide');
+      }
+      //全选
+      function setAll2() {
+          checkDownlond(3);
+      }
+    </script>
+  </body>
+</html>

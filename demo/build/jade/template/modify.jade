@@ -1,0 +1,44 @@
+extends ../layout/layout
+block body
+    -var closeTo = 1
+    -var cont = '基本资料'
+    include ../modules/header
+block scripts
+    script(type='text/javascript').
+        function my_close() {
+            api.closeWin();
+        }
+        apiready = function () {
+            api.addEventListener({
+                name: 'keyback'
+            }, function (ret, err) {
+                if ($api.getStorage('sign-photo') == 1) {
+                    api.closeWin();
+                } else {
+                    $api.setStorage('sign-photo', 1);
+                    api.closeFrame({
+                        name: 'sign-photo-f'
+                    });
+                }
+            });
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'modify-f',
+                url: 'modify-f.html',
+                bounces: true,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                },
+                delay: 200
+            });
+        };

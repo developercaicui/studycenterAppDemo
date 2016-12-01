@@ -1,0 +1,528 @@
+
+/*
+###########头部导航栏组件
+*/
+.top-navigator{
+    position:relative;
+    background-color: #21292b;
+}
+.notes-detial-fotter {
+    width: 100%;
+    height: 0.97rem;
+    line-height: 0.97rem;
+    background: #fff;
+    border-top: 1px solid #d5d5d5;
+    position: fixed;
+    bottom: 0;
+}
+
+.top-navigator-content{
+    height: 0.9rem;
+    width:100%;
+}
+.top-navigator-arrow{
+    position:absolute;
+    bottom:0.2rem;
+    height:0.5rem;
+    width:12%;
+    text-align: center;
+    border-right:1px solid #000;
+    box-shadow: 0 0px 0px 0px #fff, /*左边阴影*/
+    0 0px 0px 0px #fff, /*顶部阴影*/
+    0 0px 0px 0px #fff, /*底部阴影*/
+    5px 0 4px -4px #fff; /*右边阴影*/
+}
+.top-navigator-arrow img{
+    display: block;
+    height:0.38rem;
+    width:42%;
+    position:absolute;
+    top: 10%;
+    left:29%;
+}
+.top-navigator-text{
+    position:absolute;
+    bottom:0;
+    left:15%;
+    width:50%;
+    height:0.9rem;
+    line-height:0.9rem;
+    font-size: 0.36rem;
+    color:#fff;
+}
+.top-navigator-right{
+    height:100%;
+    width:20%;
+    position:absolute;
+    right:0;
+    top:0;
+    color:#fff;
+    text-align: center;
+    font-size: 0.36rem;
+    line-height:100%;
+}
+
+.top-navigator-font{
+    position:absolute;
+    top:0;
+    left:25%;
+    width:50%;
+    height:100%;
+    line-height:100%;
+    font-size: 0.36rem;
+    color:#fff;
+    text-align: center;
+}
+.top-navigator-setting{
+    position:absolute;
+    height:0.9rem;
+    width:10%;
+    right:0;
+    text-align: center;
+}
+.top-navigator-right2{
+    position:absolute;
+    height:0.9rem;
+    width:10%;
+    right:10%;
+    text-align: center;
+}
+.top-navigator-right2 img{
+    display: block;
+    height: 0.5rem;
+    width: 57%;
+    position: absolute;
+    bottom: 0.16rem;
+    left: 0;
+}
+.top-navigator-setting img{
+    display: block;
+    height: 0.4rem;
+    width: 57%;
+    position: absolute;
+    bottom: 0.22rem;
+    left: 0;
+}
+
+
+/*
+#########底部导航栏组件
+*/
+.bottom-navigator{
+    display: flex;
+    display: -webkit-flex;
+    /*伸缩项目在伸缩容器中按水平方式显示*/
+    flex-direction:row;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    /*伸缩容器是单行还是多行显示*/
+    flex-wrap:wrap;
+    -webkit-flex-wrap:wrap;
+    -ms-flex-wrap:wrap;
+    /*//多块状元素水平居中*/
+    /*flex-flow 是flex-flow和flex-wrap的缩写版本*/
+    -webkit-justify-content: center;
+    /*伸缩项目在伸缩容器中的垂直显示方式*/
+    align-items: center;
+    -webkit-align-items: center;
+    -ms-align-items:center;
+
+    background-color: #fff;
+    position:fixed;
+    bottom:0;
+    height:9%;
+    width:100%;
+    text-align: center;
+    z-index: 9999;
+}
+.bottom-navigator>div{
+    font-size: 1px;
+    flex:1;
+    /*兼容iOS*/
+    -webkit-flex:1;
+    height:77%;
+    text-align: center;
+}
+.bottom-navigator>div img{
+    display: inline-block;
+    height:62%;
+}
+.bottom-navigator p{
+    font-size: 0.22rem;
+    color:#646464;
+}
+.new-messages{
+    position: absolute;
+    top: 0.5%;
+    left: 54.5%;
+    height: 32%;
+    width: 5%;
+    border-radius: 100%;
+    line-height: 100%;
+    text-align: center;
+    font-size: 0.22rem;
+    color: #fff;
+    background-color: #f74c30;
+}
+.new-messages span{
+    display: block;
+    width:100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position:absolute;
+    top:50%;
+    -webkit-transform: translateY(-50%);
+}
+.new-messages-mine{
+    position: absolute;
+    top: 6%;
+    right: 12%;
+    height: 14%;
+    width: 2.1%;
+    border-radius: 100%;
+    line-height: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: #f74c30;
+}
+.color-00a185{
+    color:#00a185 !important;
+}
+
+/*
+###################开关组件
+*/
+.checkbox {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    height:54%;
+    width:12.8%;
+    outline:none;
+    border: none;
+    -webkit-border-radius: 50px;
+    overflow: hidden;
+}
+.checkbox:after, .checkbox:before {
+    box-sizing: border-box;
+    -webkit-font-feature-settings: normal;
+    -moz-font-feature-settings: normal;
+    font-feature-settings: normal;
+    -webkit-font-kerning: auto;
+    -moz-font-kerning: auto;
+    font-kerning: auto;
+    -webkit-font-language-override: normal;
+    -moz-font-language-override: normal;
+    font-language-override: normal;
+    font-stretch: normal;
+    font-style: normal;
+    font-synthesis: weight style;
+    font-variant: normal;
+    font-weight: normal;
+    text-rendering: auto;
+    outline:none;
+}
+.checkbox label {
+    position: absolute;
+    left: 0;
+    display: block;
+    -webkit-border-radius: 50px;
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    background: #dcdcdc;
+    overflow: hidden;
+
+}
+.checkbox label:after {
+    box-sizing: border-box;
+    content: '';
+    position: absolute;
+    border-radius: 100%;
+    z-index: 2;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    background: #fff;
+    top: 6%;
+    left: 5%;
+    width: 45%;
+    height:84%;
+    outline: none;
+}
+.checkbox input {
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    background-color: #00a185;
+    outline: none;
+    display: block;
+    /*checkbox点击会有阴影*/
+    -webkit-tap-highlight-color: transparent;
+}
+.checkbox input:focus{
+    outline:none;
+    background-color: transparent;
+}
+.checkbox input:checked + label {
+    outline: none;
+    background: #00a185;
+}
+.checkbox input:checked + label:after {
+    outline: none;
+    box-sizing: border-box;
+    background: #fff;
+    left: 50%;
+}
+.checkbox input:checked{
+    outline:none;
+    background-color: transparent;
+}
+.checkbox input::-webkit-keygen-select{
+    outline: none;
+    background: transparent;
+}
+/*语音组件*/
+.voice-player-inner,
+.voice-player{
+    display: block;
+    height:.5rem;
+    width:2.4rem;
+    border-radius: 5px;
+    margin-top:0.2rem;
+    background-color:#00a185;
+    text-decoration: none;
+    line-height:0.5rem;
+    padding-left:0.05rem;
+    position: relative;
+}
+
+.icon_box{
+    position: absolute;
+    top: 13%;
+    left: 80%;
+}
+.icon_box div{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    color: #fff;
+    font-size: 0.35rem;
+    z-index: 999;
+    /*-webkit-animation:bf1 1.5s infinite;*/
+}
+
+.icon_box .icon-spinner{
+    font-size: 0.3rem;
+    opacity: 1;
+    -webkit-animation:zhuan 1s linear infinite;
+}
+
+
+/*.ani:before{*/
+    /*-webkit-animation:bf 1.5s infinite;*/
+/*}*/
+
+.voice-player-inner:active {
+    background-color:rgba(0,161,133,0.5);
+    transition:all 1s;
+    text-decoration: none;
+}
+.second{
+    color:#fff;
+    font-size: 0.24rem;
+    line-height: 0.5rem;
+    display: block;
+}
+.voice-player-inner{
+    line-height: 0;
+}
+
+/*绘画板*/
+.draw{
+    overflow: hidden;
+    height:100%;
+    width:100%;
+}
+.fa{
+    height:100%;
+    width:100%;
+    margin:0 auto;
+}
+.fa input{
+    border:none;
+}
+.control-btn{
+    height:0.7rem;
+    width:92%;
+    position:absolute;
+    top:0.45rem;
+    left:4%;
+    z-index: 2;
+}
+.control-btn input{
+    display: inline-block;
+    height:0.7rem;
+    width:0.7rem;
+    background-color: rgba(00,00,00,0.6);
+    border-radius: 0.7rem;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    position:absolute;
+}
+.control-btn input:nth-child(1){
+    left:0;
+    background-image: url("../image/draw-close.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 50%;
+
+}
+.control-btn input:nth-child(2){
+    right:1rem;
+    background-image: url("../image/draw-back.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 70%;
+}
+.control-btn input:nth-child(3){
+    right:0;
+    background-image: url("../image/draw-keep.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 70%;
+
+}
+.clear-btn{
+    width:0.6rem;
+    position:absolute;
+    left:0.3rem;
+    bottom:0.1rem;
+    z-index: 2;
+}
+.clear-btn input{
+    height:0.6rem;
+    width:0.6rem;
+    border-radius: 0.6rem;
+    background-color: #fff;
+    position:relative;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+.clear-btn>div input{
+    display: block;
+    margin-top:0.4rem;
+}
+.clear-btn #circle{
+    background-image: url("../image/draw-circle.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 80%;
+}
+.clear-btn #rectangle{
+    background-image: url("../image/draw-rectangle.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 60%;
+}
+.clear-btn #eraser{
+    background-image: url("../image/draw-eraser.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 80%;
+}
+.clear-btn #pen{
+    background-image: url("../image/draw-pen.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 60%;
+}
+.clear-btn>div{
+    position:fixed;
+    bottom:-1.9rem;
+}
+.clear-btn .clear-slide{
+    position:absolute !important;
+    bottom:0 !important;
+}
+.font{
+    width:0.6rem;
+    position:absolute;
+    right:0.3rem;
+    bottom:1rem;
+    z-index: 2;
+}
+.font input{
+    box-sizing:border-box;
+    height:0.6rem;
+    width:0.6rem;
+    border-radius: 0.6rem;
+    background-color: #747579;
+    position:absolute;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+.font input:nth-child(1){
+    border:0.2rem solid #fff;
+    bottom:2rem;
+}
+.font input:nth-child(2){
+    border:0.1rem solid #fff;
+    bottom:1rem;
+}
+.font input:nth-child(3){
+    border:0.02rem solid #fff;
+    bottom:0rem;
+}
+#color{
+    height: 0.6rem;
+    position: absolute;
+    right: 1.2rem;
+    bottom: 0.1rem;
+    z-index: 2;
+    overflow: hidden;
+    line-height: 0;
+}
+#color input{
+    box-sizing:border-box;
+    height:0.6rem;
+    width:0.6rem;
+    border-radius: 0.6rem;
+    background-color: #747579;
+    position:relative;
+    margin-left:0.35rem;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+#color .i1{background:#2a2a2a;}
+#color .i2{background:#e60012;}
+#color .i3{background:#00ade6;}
+#color .i4{background:#00e6de;}
+#color .i5{background:#00e697;}
+#color .i6{background:#e6cd00;}
+#canvas{background:#eee;cursor:default;position:absolute;top:0;}
+.pen-style{
+    box-sizing:border-box;
+    height:0.6rem;
+    width:0.6rem;
+    border-radius: 0.6rem;
+    background-color: #747579;
+    border:0.1rem solid #fff;
+    position:absolute;
+    right:0.3rem;
+    bottom:0.1rem;
+    z-index: 2;
+}
+

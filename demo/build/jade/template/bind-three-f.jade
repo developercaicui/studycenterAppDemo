@@ -1,0 +1,97 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    .grayHastop.pot
+        .headPic.js-WEqualH(onclick='open_img()', tapmode='')
+            .head
+        input.input-txt.input-haspic(name='nickname' type='text', placeholder='用户名')
+        input.input-txt.input-haspic(name='imgPath' type='hidden' value="http://pic25.nipic.com/20121209/9252150_194258033000_2.jpg")
+        input.greenBtm.start.adjust-height(type='button', value='开始', onclick='next()', tapmode='')
+block scripts
+    script(type='text/javascript').
+        var imgPath, height, width;
+        function open_img() {
+            var $body = $api.dom('body');
+            var width = $api.offset($body).w;
+            var bodyH = api.pageParam.bodyH;
+            api.openFrame({
+                name: 'sign-photo-f',
+                url: 'sign-photo-f.html',
+                opaque: false,
+                reload: true,
+                bgColor: "rgba(0,0,0,0.05)",
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: width,
+                    h: bodyH
+                }
+            });
+        }
+        function next() {
+            var nickname = $.trim($('input[name=nickname]').val());
+            if (nickname == '') {
+                api.toast({
+                    msg: '用户名不能为空',
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (imgPath == '') {
+                api.toast({
+                    msg: '请上传头像',
+                    location: 'middle'
+                });
+                return false;
+            }
+            var obj = {};
+            obj.nickname = nickname;
+            obj.imgPath = imgPath;
+            obj.height = height;
+            obj.width = width;
+            obj.token = $api.getStorage('token');
+            api.showProgress({
+                title: '处理中',
+                modal: true
+            });
+            ajaxRequest('api/v2.1/cutAndSaveAvatar', 'post', obj, function (ret, err) {//007.012 完善用户信息
+                api.hideProgress();
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (ret && ret.state == 'success') {
+                    api.openWin({
+                        name: 'index',
+                        url: '../index.html',
+                        delay: 200,
+                        slidBackEnabled: false,
+                        pageParam: {to_ucenter: 1}
+                    });
+                } else {
+                    api.toast({
+                        msg: err_conf_007[ret.msg],
+                        location: 'middle'
+                    });
+                }
+            });
+        }
+        apiready = function () {
+            commonFun.adjustHeight(0.077);
+            api.addEventListener({
+                name: 'photo_change'
+            }, function (ret, err) {
+                var value = ret.value;
+                imgPath = value.path;
+                $('.head').attr('src', static_url + value.path);
+                width = value.width;
+                height = value.height;
+                api.sendEvent({
+                    name: 'modify'
+                });
+            });
+        };

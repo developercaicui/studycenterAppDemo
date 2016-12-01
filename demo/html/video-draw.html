@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>涂鸦</title>
+    <link href="../css/literally.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fs-container">
+      <div class="literally">
+        <div class="control-btn">
+          <input id="clear" type="button" tapmode="" onclick="closePage()">
+          <input id="revocation" type="button">
+          <input id="keep" type="button">
+        </div>
+        <!-- 橡皮擦,选区域-->
+        <div class="clear-btn">
+          <div>
+            <input id="circle" type="button" data-index="1">
+            <input id="rectangle" type="button" data-index="2">
+            <input id="eraser" type="button" data-index="3">
+          </div>
+          <input id="pen" type="button" data-index="4" class="clear-slide btn-4">
+        </div>
+        <!-- 画笔粗细-->
+        <div id="font" class="font">
+          <input type="button" class="grea1">
+          <input type="button" class="grea2">
+          <input type="button" class="grea3">
+        </div>
+        <!-- 颜色值-->
+        <div id="color">
+          <input type="button" value="" class="i1">
+          <input type="button" value="" class="i2">
+          <input type="button" value="" class="i3">
+          <input type="button" value="" class="i4">
+          <input type="button" value="" class="i5">
+          <input type="button" value="" class="i6">
+        </div>
+        <div data-linewidth="5" data-color="#2a2a2a" class="pen-style">
+          <!-- 画笔风格-->
+        </div>
+        <canvas id="first-canvas"></canvas>
+        <canvas style="display: none;"></canvas>
+      </div>
+    </div>
+    <script src="../script/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../script/video-draw.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      var canvas1 = document.getElementsByTagName('canvas')[0];
+      var width = document.body.clientWidth;
+      var height = document.body.clientHeight;
+      canvas1.width = width;
+      canvas1.height = height;
+      $(document).ready(function () {
+          document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 1280) + 'px';
+          // disable scrolling on touch devices so we can actually draw
+          $(document).bind('touchmove', function (e) {
+              if (e.target === document.documentElement) {
+                  return e.preventDefault();
+              }
+          });
+          // the only LC-specific thing we have to do
+          $('.literally').literallycanvas();
+      });
+      var $inpbtn = $('.clear-btn div').siblings('input');
+      $inpbtn.on('touchend', function () {
+          $('.clear-btn div').removeClass('clear-btn-inp');
+          $('.clear-btn div').addClass('clear-btn-div');
+      });
+      $('.clear-btn div input').on('touchend', function () {
+          $('.clear-btn div').removeClass('clear-btn-div');
+          $('.clear-btn div').addClass('clear-btn-inp');
+          var $thisId = $inpbtn.attr('id');
+          $inpbtn.attr('id', $(this).attr('id'));
+          $(this).attr('id', $thisId);
+      });
+      
+      apiready = function () {
+          //获取参数
+          var img_path = api.pageParam.img_path;//截屏图片路径
+          //alert(img_path);
+          //var img_path = 'http://www.baidu.com/img/bd_logo1.png';
+          $('#first-canvas').css({'background-image': 'url(' + img_path + ')'});
+      };
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+  </body>
+</html>

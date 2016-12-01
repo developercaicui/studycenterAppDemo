@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+  </head>
+  <body>
+    <div class="Lssue">
+      <div class="header">
+        <p class="left"><span><img src="../image/nav-arrow.png"></span><span>笔记</span></p>
+        <p class="lsslr">他人笔记</p><span class="delete">发布</span>
+      </div>
+      <div style="background: #fff;" class="lsscen">
+        <p class="lssinfor"><span class="detti">12:38</span><span>最多输入150字</span></p>
+        <input type="text" placeholder="输入标题" class="lesstit">
+        <textarea rows="" cols="" placeholder="输入正文" class="lesscon"></textarea>
+      </div>
+      <div class="editbt">
+        <input type="text" readonly="" unselectable="on" class="needaideo">
+        <input type="text" readonly="" unselectable="on">
+        <input type="text" readonly="" unselectable="on">
+        <div class="switch">
+          <p></p><span>私人</span>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      window.onresize = function () {
+          document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 1280) + 'px';
+          if (100 * (document.documentElement.clientWidth / 1280) >= 100) {
+              document.documentElement.style.fontSize = '100px';
+          }
+      };
+      document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 1280) + 'px';
+      if (100 * (document.documentElement.clientWidth / 1280) >= 100) {
+          document.documentElement.style.fontSize = '100px';
+      }
+      $('.switch').on('tap', function () {
+          if ($('.switch').attr('class') == 'switch switch2') {
+              $('.switch').removeClass('switch2');
+              $('.switch p').removeClass('switchp1');
+              $('.switch span').removeClass('switchpsp');
+              $('.switch span').html('私人');
+          } else {
+              $('.switch').addClass('switch2');
+              $('.switch p').addClass('switchp1');
+              $('.switch span').addClass('switchpsp');
+              $('.switch span').html('公开');
+          }
+      });
+    </script>
+  </body>
+</html>

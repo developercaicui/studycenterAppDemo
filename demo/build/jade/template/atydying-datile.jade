@@ -1,0 +1,33 @@
+extends ../layout/layout
+block body
+    -var cont = '视频缓存'
+    include ../modules/header
+        .right
+            i.icon-trash
+            span.msg-mark 1
+block scripts
+    script.
+        apiready = function () {
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            //var height = api.winHeight - headerPos.h;
+            var height = api.winHeight;
+            api.openFrame({
+                name: 'atydying-datile-f',
+                url: 'atydying-datile-f.html',
+                bounces: true,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                bgColor: '#fff',
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                },
+                pageParam: api.pageParam
+            });
+        };

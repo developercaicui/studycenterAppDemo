@@ -1,0 +1,224 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/reset.css')
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+    link(rel='stylesheet', type='text/css', href='../css/api.css')
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    .warp2
+        .notes
+            .classnotes#content
+                //- +lst
+            mixin lst
+                .toptit
+                    h4 {{=it.res1[p].title}}
+                    span {{=it.res1[p].nodeNum}}
+                    p 5
+                .content
+                    | {{var obj=it.res1[p].childs;}}
+                    | {{for(var pp in obj) { }}
+                    .bewrite
+                        .bewtitl.bewtitl2
+                            span
+                            p {{=obj[pp].title}}
+                    ul.download
+                        | {{var oob=obj[pp].childs;}}
+                        | {{for(var ppp in oob) { }}
+                        li
+                            p {{=oob[ppp].title}}
+                            span.notesp(id='{{=oob[ppp].id}}',key='{{=it.res1[p].id}}') {{=oob[ppp].nodeNum}}
+                            span.prorn {{=it.res2[id]}}
+                        | {{ } }}
+                    | {{ } }}
+            script(id='tpl',type='text/x-dot-template')
+                | {{for(var p in it.res1) { }}
+                +lst
+                | {{ } }}
+block scripts
+    script(src='../script/fx.js', type='text/javascript', charset='utf-8')
+    script(type='text/javascript').
+        var data1 = {
+            "data": [{
+                "id": "ff8080814dc1dc4e014dff86819c28fe",     //课程id
+                "title": "ACCA P1 Governance Risk, and Ethic",   //课程名称
+                "isTaskMode": true, //是否任务制课程
+                "nodeNum": 123,//课程的笔记总数
+                "childs": [{
+                    "id": "ff8080814dc1dc4e014dff8682562931",    //一级章节id
+                    "title": "INTRODUCATION",  //章节名称
+                    "isleaf": false,  //是否叶子节点
+                    "childs": [{
+                        "id": "ff8080814dc1dc4e014dff8682562931",  //二级章节id
+                        "title": "P1 课程介绍",  //章节名称
+                        "isleaf": true, //是否叶子节点
+                        "nodeNum": 123//章节包含的笔记总数
+                    }]     //二级章节集合结束
+                }], //一级章节集合结束
+                "published": true   //课程是否处于发布状态，true为已发布
+            }, {
+                "id": "ff8080814dc1dc4e014dff86819c28fe",     //课程id
+                "title": "ACCA P1 Governance Risk, and Ethic",   //课程名称
+                "isTaskMode": true, //是否任务制课程
+                "nodeNum": 12,//课程的笔记总数
+                "childs": [{
+                    "id": "ff8080814dc1dc4e014dff8682562931",    //一级章节id
+                    "title": "INTRODUCATION",  //章节名称
+                    "isleaf": false,  //是否叶子节点
+                    "childs": [{
+                        "id": "ff8080814dc1dc4e014dff8682562931",  //二级章节id
+                        "title": "P1 课程介绍",  //章节名称
+                        "isleaf": true, //是否叶子节点
+                        "nodeNum": 123//章节包含的笔记总数
+                    }, {
+                        "id": "ff8080814dc1dc4e014dff8682562931",  //二级章节id
+                        "title": "P1 课程介绍",  //章节名称
+                        "isleaf": true, //是否叶子节点
+                        "nodeNum": 12//章节包含的笔记总数
+                    }, {
+                        "id": "ff8080814dc1dc4e014dff8682562931",  //二级章节id
+                        "title": "P1 课程介绍",  //章节名称
+                        "isleaf": true, //是否叶子节点
+                        "nodeNum": 12//章节包含的笔记总数
+                    }]     //二级章节集合结束
+                }], //一级章节集合结束
+                "published": true   //课程是否处于发布状态，true为已发布
+            }, {
+                "id": "ff8080814dc1dc4e014dff86819c28fe",     //课程id
+                "title": "ACCA P1 Governance Risk, and Ethic",   //课程名称
+                "isTaskMode": true, //是否任务制课程
+                "nodeNum": 12,//课程的笔记总数
+                "childs": [{
+                    "id": "ff8080814dc1dc4e014dff8682562931",    //一级章节id
+                    "title": "INTRODUCATION",  //章节名称
+                    "isleaf": false,  //是否叶子节点
+                    "childs": [{
+                        "id": "ff8080814dc1dc4e014dff8682562931",  //二级章节id
+                        "title": "P1 课程介绍",  //章节名称
+                        "isleaf": true, //是否叶子节点
+                        "nodeNum": 12//章节包含的笔记总数
+                    }]     //二级章节集合结束
+                }], //一级章节集合结束
+                "published": true   //课程是否处于发布状态，true为已发布
+            }],
+            "state": "success",
+            "msg": ""
+        };
+        var data2 = {
+            "data": [{
+                "id": "ff8080814dc1dc4e014dff8682562931", //需要查询统计的id
+                "count": 2 //未阅读数量
+            }],
+            "state": "success",
+            "msg": ""
+        };
+        var pageSize = 5;
+        function getData(page) {
+            //            var param = {};
+            //            param.pageSize =pageSize;
+            //            param.pageNo = page;
+            //            param.token = $api.getStorage('token');
+            //            param.self =0;
+            //            api.showProgress({
+            //                title: '加载中',
+            //                modal: false
+            //            });
+            //                        ajaxRequest('api/studytools/coursechapternodecount/v2.1', 'get', param, function (ret, err) {
+            //                            api.hideProgress();
+            //                            api.parseTapmode();
+            //                            if (err) {
+            //                                api.toast({
+            //                                    msg: err.msg,
+            //                                    location: 'middle'
+            //                                });
+            //                                return false;
+            //                            }
+            //                            var tpl = $('#tpl').html();
+            //                            var content = doT.template(tpl);
+            //                            if (ret && ret.state == 'success') {
+            //                                total=ret.totalCount;
+            //                                if (page == 1) {
+            //                                    $('#content').html(content(ret.data));
+            //                                } else {
+            //                                    $('#content').append(content(ret.data));
+            //                                }
+            //                            } else {
+            //                                api.toast({
+            //                                    msg: ret.msg,
+            //                                    location: 'middle'
+            //                                });
+            //                            }
+            //                        });
+            var tpl = $('#tpl').html();
+            var content = doT.template(tpl);
+            var data3 = data2.data;
+            var data4 = {};
+            for (var p in data3) {
+                var t = data3[p].id;
+                data4[t] = data3[p].count;
+            }
+            $('#content').html(content({'res1': data1.data, 'res2': data4}));
+        }
+        apiready = function () {
+            getData(1);
+            //            var currentPage = 1;
+            //            api.setRefreshHeaderInfo({
+            //                visible: true,
+            //                bgColor: '#2e364a',
+            //                textColor: '#fff',
+            //                textDown: '下拉刷新...',
+            //                textUp: '松开刷新...',
+            //                showTime: true
+            //            }, function (ret, err) {
+            //                getData(1);
+            //                currentPage = 1;
+            //                api.refreshHeaderLoadDone();
+            //            });
+            //                  //滚动到底部
+            //            api.addEventListener({
+            //                name: 'scrolltobottom'
+            //            }, function (ret, err) {
+            //                if (total == 0 || currentPage < Math.ceil(total / pageSize)) {
+            //                    currentPage++;
+            //                    getData(currentPage);
+            //                }
+            //            });
+            //显示隐藏动画
+            $('.bewrite .bewtitl').parent().siblings().css({height: '0px'});
+            $('.bewrite .bewtitl').click(function () {
+                if ($(this).children('span').attr("class") == 'bewritesp1') {
+                    $(this).children('span').addClass('bewritesp2');
+                    $(this).children('span').removeClass('bewritesp1');
+                    $(this).parent().siblings().hide();
+                } else {
+                    $(this).children('span').addClass('bewritesp1');
+                    $(this).children('span').removeClass('bewritesp2');
+                    $(this).parent().siblings().show();
+                }
+            });
+            $('.notesp').on('click', function (e) {
+                var id = $(this).attr('id');
+                var courseId = $(this).attr('key');
+                e.preventDefault();
+                api.openWin({
+                    name: 'chapter-notes',
+                    url: 'chapter-notes.html'
+                    //    pageParam: {id:id,courseId:courseId}
+                });
+            }, false);
+            Noti('.classnotes .prorn', '.toptit p');
+        };
+
+        function Noti(prorn, toptit) {
+            var arry = [];
+            var y;
+            var x = 0;
+            var b = 0;
+            $(prorn).each(function (i) {
+                y = parseInt($(prorn).eq(i).html());
+                arry.push(y);
+                x = arry[i];
+                b += x;
+                //		console.log(b);
+            });
+            $(toptit).html(b);
+        }

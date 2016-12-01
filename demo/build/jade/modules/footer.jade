@@ -1,0 +1,14 @@
+// 底部导航栏
+ul.footer-nav
+    - var vH = ['中心','课程','我的'];
+    - var vG = ['dashboard','course','user'];
+    each aH , index in vH
+        li(tapmode='', onclick="openTabMe(" + index + ")" , class= index == 2 ? 'active' : '')
+            i(class='icon-#{vG[index]}')
+            p=aH
+            if index == 0
+                span.msg-mark
+            if index == 1
+                span.msg-mark
+            if index == 2
+                span.msg-mark

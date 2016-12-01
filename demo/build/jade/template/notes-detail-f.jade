@@ -1,0 +1,69 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+    -var bodyClass='height96'
+block body
+    .details#content
+    mixin lst
+        .detti.clearfix {{=!isEmpty(it.taskprogress)&&!isEmpty(it.taskType)?((!isEmpty(it.chaptername)?it.chaptername:'')):(!isEmpty(it.chaptername)?it.chaptername:'')}}
+        //.detti.clearfix {{=!isEmpty(it.taskprogress)&&!isEmpty(it.taskType)?(formatType(it.taskType,it.taskprogress)+' '+(!isEmpty(it.chaptername)?it.chaptername:'')):(!isEmpty(it.chaptername)?it.chaptername:'')}}
+        p.paragraph {{=!isEmpty(it.content)?it.content:''}}
+        | {{if(!isEmpty(it.soundPath) && it.soundlen>0) { }}
+        .voice-player(tapmode,url="{{=static_url+it.soundPath}}",onclick="playAudio(this)",bg,time="{{=it.soundlen}}",style="top:0;")
+        | {{ } }}
+        | {{if(it.imgPath) { }}
+        | {{ var imgPath=it.imgPath.split(','); }}
+        | {{ for(var i in imgPath) { }}
+        img(src="{{=static_url+imgPath[i]}}", alt='',tapmode,onclick="openImageBrower('{{=it.imgPath}}','{{=i}}')")
+        | {{ } }}
+        | {{ } }}
+        .releinti
+            | {{if(it.taskprogress && parseInt(it.taskprogress) && !isEmpty(it.taskType)){ }}
+            .btn-play-time(tapmode,onclick="jump_task('{{=it.taskprogress}}','{{=it.courseId}}','{{=it.taskId}}')")
+                i.icon-play-o
+                | {{=formatType(it.taskType,it.taskprogress)}}
+            | {{ } }}
+            span {{ if(!isEmpty(it.updateTime)) { }}{{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}} {{ } }}
+            span {{ if(!isEmpty(it.updateTime)) { }}{{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}} {{ } }}
+            span {{=it.nikeName}}
+    script(id='tpl',type='text/x-dot-template')
+        +lst
+block scripts
+    script(type='text/javascript').
+        function getData(id) {
+            var param = {};
+            param.id = id;
+            param.token = $api.getStorage('token');
+            api.showProgress({
+                title: '加载中',
+                modal: false
+            });
+            ajaxRequest('api/studytools/nodedetail/v2.1', 'get', param, function (ret, err) {//003.114
+                api.hideProgress();
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                var tpl = $('#tpl').html();
+                var content = doT.template(tpl);
+                if (ret && ret.state == 'success') {
+                    $('#content').html(content(ret.data));
+                    audioDom();
+                    api.parseTapmode();
+                }
+            });
+        }
+        apiready = function () {
+            var id = api.pageParam.bj_id;
+            getData(id);
+            api.addEventListener({
+                name: 'bjxq'
+            }, function (ret) {
+                getData(ret.value.id);
+            });
+        };
+
+

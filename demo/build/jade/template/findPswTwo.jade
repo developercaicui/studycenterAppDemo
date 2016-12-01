@@ -1,0 +1,32 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    -var cont = '找回密码'
+    include ../modules/header
+        .right 2/2
+
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'findPswTwo_f',
+                url: 'findPswTwo_f.html',
+                bounces: true,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                },
+                pageParam: api.pageParam
+            });
+        };

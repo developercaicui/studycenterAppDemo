@@ -1,0 +1,193 @@
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0')
+        meta(name='format-detection', content='telephone=no,email=no,date=no,address=no')
+        meta(name='viewport', content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no')
+        title Catalog
+        link(rel='stylesheet', type='text/css', href='../css/reset.css')
+        link(rel='stylesheet', type='text/css', href='../css/Sstyle.css')
+block body(style='height: auto;')
+    .styHeight
+        .studying-top.clearfix
+            img.styTopArw(src='../image/nav-arrow.png')
+            b.styTopLine
+            p.styTopP ACCA F1 Accountant in Business
+            img.styTopLing(src='../image/s11.png')
+            span.styTopLingBcont 1
+        // 进度
+        .styPro.clearfix
+            ul.styProsection.left
+                li.styProTit 章节
+                li.styProBot(sytle='width:;') 18/54
+            .styPriMid
+                canvas.mycanvas(width='', height='')
+                span.styPriMidWod 我的进度
+                span.styPriMidBcot
+            ul.styProsection.right
+                li.styProTit 任务
+                li.styProBot(sytle='width:;') 18/54
+        p.styContinue
+            | 继续学习
+            span chapter 1 Organisation  Nisation …
+        ul.catanav
+            li(onclick="study(1,'course-')")
+                img(src='../image/z_icon1.png')
+                | 目录
+            li(onclick="study(2,'course-question-content')")
+                img(src='../image/c_icon2.png')
+                | 问答
+            li(onclick="study(3,'course-note-content')")
+                img(src='../image/c_icon3.png')
+                | 笔记
+            li(onclick="study(4,'course-talk-f')")
+                img(src='../image/c_icon4.png')
+                | 讨论
+    .courseStudyMore 更多问答（23）
+block script
+    script(type='text/javascript').
+        //默认的时候更多隐藏
+        $('.courseStudyMore').hide();
+        //默认打开目录页面
+        apiready = function () {
+            var top = $api.dom('.styHeight');
+            var topH = $api.offset(top).h;
+            api.openFrame({
+                name: 'Catalog1',
+                url: 'Catalog.html',
+                rect: {
+                    x: 0,
+                    y: topH,
+                    w: 'auto',
+                    h: api.winHeight - topH
+                }
+            });
+        };
+        //tab点击事件
+        function study(bcount, url) {
+            //点击目录的时候更多隐藏
+            $('.courseStudyMore').hide();
+            api.closeFrame({
+                name: 'Catalog1'
+            });
+            var top = $api.dom('.styHeight');
+            var topH = $api.offset(top).h;
+            //获取更多的高度
+            //点击除了目录以外的tab时更多显示
+            if (bcount !== 1) {
+                api.closeFrame({
+                    name: 'Catalog'
+                });
+                $('.courseStudyMore').show();
+                var botH = $api.offset($api.dom('.courseStudyMore')).h;
+                api.openFrame({
+                    name: url,
+                    url: url + '.html',
+                    rect: {
+                        x: 0,
+                        y: topH,
+                        w: 'auto',
+                        h: api.winHeight - topH - botH
+                    }
+                });
+            }
+            //点击目录的时候更多的高度等于0
+            if (bcount == 1) {
+                api.openFrame({
+                    name: url,
+                    url: url + '.html',
+                    rect: {
+                        x: 0,
+                        y: topH,
+                        w: 'auto',
+                        h: api.winHeight - topH
+                    }
+                });
+            }
+            var moreC = $('.courseStudyMore');
+            if (bcount == 3) {
+                moreC.html('更多笔记（15）');
+            }
+            if (bcount == 4) {
+                moreC.html('更多讨论（48）');
+            }
+        }
+        //获取屏幕的宽度
+        var clientWidth = document.documentElement.clientWidth;
+        //根据设计图中的canvas画布的占比进行设置
+        var canvas = document.querySelector('.mycanvas');
+        var canvasWidth = Math.floor(clientWidth * 198 / 720);
+        canvas.width = canvasWidth;
+        canvas.height = canvasWidth;
+        //画有透明度的圆环
+        function drawTou() {
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                ctx.beginPath();
+                ctx.arc(canvasWidth / 2, canvasWidth / 2, canvasWidth / 2.1, 0, Math.PI * 2, false);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.stroke();//画空心圆
+                ctx.closePath();
+            }
+        }
+        //画实心圆环
+        function draw(x, y, radius, process, backColor, proColor, fontColor) {
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                ctx.beginPath();
+                ctx.arc(canvasWidth / 2, canvasWidth / 2, canvasWidth / 2.1, Math.PI * 2 * ((bfb - 1) / 100), Math.PI * 2 * (bfb / 100), false);
+                ctx.lineWidth = 5;
+                //	    ctx.lineCap="round";
+                ctx.strokeStyle = "#fff";
+                ctx.stroke();//画空心圆
+                ctx.closePath();
+            }
+        }
+        //变动的数字
+        bfb = 0;
+        function start() {
+            draw();
+            t = setTimeout(start, 20);
+            if (bfb >= 60) {
+                clearTimeout(t);
+                bfb = 0;
+                return;
+            }
+            bfb += 1;
+            var proCont = document.querySelector('.styPriMidBcot');
+            proCont.innerHTML = bfb + "%";
+        }
+        drawTou();
+        start();
+        draw();
+        //tab样式
+        $('.bewrite .bewtitl').parent().siblings().css({height: '0px'});
+        $('.bewrite .bewtitl').click(function () {
+            if ($(this).children('span').attr("class") == 'bewritesp1') {
+                $(this).children('span').addClass('bewritesp2');
+                $(this).children('span').removeClass('bewritesp1');
+                $(this).parent().siblings().animate({height: '0px'}, 500);
+            } else {
+                $(this).children('span').addClass('bewritesp1');
+                $(this).children('span').removeClass('bewritesp2');
+                $(this).parent().siblings().animate({height: 1 * 4 + 'rem'}, 500);
+            }
+        });
+        $('.catanav li').first().css({color: '#00a185'});
+        $('.catanav li').on('tap', function () {
+            var i = $(this).index();
+            $(this).css({color: '#00a185'}).siblings().css({color: "#535353"});
+            $('.catanav li img').each(function (j) {
+                $('.catanav li img')[j].src = '../image/c_icon' + (j + 1) + '.png';
+            });
+            $(this).children('img')[0].src = '../image/z_icon' + (i + 1) + '.png';
+        });
+        $('.studying-top').on('tap', function (e) {
+            e.preventDefault();
+            api.closeWin({
+                name: 'Catalog',
+                url: 'Catalog.html'
+            });
+        }, false);

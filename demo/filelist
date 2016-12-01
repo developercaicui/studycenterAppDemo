@@ -1,0 +1,96 @@
+about-caicui			关于财萃头部win
+about-caicui-f          关于财萃frame
+
+atydying-detail			课程缓存管理头部win
+atydying-detail-f		课程缓存管理frame
+
+bind-one			账号绑定(1)头部win
+bind-one-f		账号绑定(1)frame
+bind-two			账号绑定(2)头部win
+bind-two-f		账号绑定(2)frame
+bind-three		账号绑定(3)头部win
+bind-three-f		账号绑定(3)frame
+
+chapter-notes 			章节笔记头部win
+chapter-notes-f			章节笔记frame
+
+class-notes				课堂笔记头部win
+class-notes-f  			课堂笔记frame
+
+course-tab				课程头部win
+course-active			激活课程头部win
+course-studying-f		课程在学frame
+course-Noactive			课程未激活frame
+course-overdue-f        课程过期frame
+
+course-question			课程问答头部win
+course-question-f		课程问答frame
+
+course-talk-f  			课程讨论frame
+
+course-test				课程考试win头部
+course-test-f			课程考试frame
+
+course-exam				预约考试弹窗
+
+create-notes			创建笔记头部win
+create-notes-f			创建笔记frame-  
+edit-notes				编辑笔记头部window
+edit-notes-f			编辑笔记frame
+
+findPsw					找回密码
+
+footer					底部tab按钮
+
+course-aq				课程问答头部win
+course-aq-f				课程问答frame
+
+message-center			消息中心头部win
+message-announce-f		消息frame
+message-tips-f			公告frame
+announce-detail         消息详情头部
+announce-detail-f       消息详情frame
+tips-detail             公告详情头部
+tips-detail-f           公告详情frame
+
+new-notes				发起问题头部win
+new-notes-f				发起问题frame
+
+
+
+user-center             个人中心头部win
+user-mine-f             我的frame
+user-index              中心frame
+course-tab-f            课程frame
+
+question-detail-f		问答详情
+
+search                 	搜索头部win
+search-notes-f          搜索我的笔记frame
+search-question-f       搜索我的问题frame
+search-talk-f           搜索我的讨论frame
+
+
+<--课程部分
+course-stying-top       课程进度头部
+catalog                 目录
+course-question-f       问答
+course-notes-f          笔记
+course-talk-f           讨论
+course-question-head    更多问答头部
+course-question-content 更多问答frame
+class-notes             更多笔记头部
+class-notes-f           课程笔记
+mine-notes-f            我的笔记
+chapter-notes           章节笔记头部
+chapter-notes-f         章节笔记列表
+course-talk-top         更多讨论头部
+course-talk-moref        更多讨论frame
+course-talk-lst         更多讨论排序弹框frame
+talk-detail             讨论详情
+notes-detail-top        笔记详情头部
+notes-detail-f          笔记详情
+question-detail-head    问答详情头部
+question-detail-f       问答详情页
+editor-notes            笔记编辑头部
+editor-notes-f          笔记编辑

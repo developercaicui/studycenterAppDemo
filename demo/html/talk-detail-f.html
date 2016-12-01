@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html class="detail">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/about-note.css">
+  </head>
+  <body>
+    <div class="my-talk my-talk-detail">
+      <div id="main1" class="talk-content my-talk-content"></div>
+      <div id="content" class="my-talk-list talk-detail-reply"></div>
+    </div>
+    <script id="tpl_main" type="text/x-dot-template">
+          <div class="my-talk-list">
+            <div class="my-talk-wrap">
+              <div class="talk-user clear-fix">{{if(!isEmpty(it.headImg)) { }}
+                <div class="takl-user-photo"><img src="{{=static_url+it.headImg}}" alt=""></div>{{ } }}
+                <div class="talk-user-message clear-fix">
+                  <p class="line-1"><span>{{=it.nikeName}}</span>{{if(!isEmpty(it.levelimg)) { }}<img src="{{=static_url+it.levelimg}}" alt="">{{ } }}<span class="talk-right"><img src="../image/note-message-o.png" alt="" class="t-img-message"><b class="font-20">{{=!isEmpty(it.replyCount)? it.replyCount :0}}</b></span></p>
+                  <p class="line-22"><span>{{ if(!isEmpty(it.updateTime)) { }}{{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it.updateTime)) { }} {{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}}{{ } }}</span></p>
+                </div>
+              </div>
+              <div class="talk-content-describe">
+                <div class="current-talk">
+                  <h5>{{=!isEmpty(it.title)?it.title:''}}</h5>
+                  <p>  {{=!isEmpty(it.content)?it.content:''}}</p>
+                </div>{{if(!isEmpty(it.soundPath) && it.soundlen>0) { }}
+                <div tapmode url="{{=static_url+it.soundPath}}" onclick="playAudio(this)" bg time="{{=it.soundlen}}" class="voice-player"></div>{{ } }}
+                {{if(!isEmpty(it.imgPath)) { }}
+                <ul class="pic-group">
+                  {{ var imgPath=it.imgPath.split(','); }}
+                  {{ for(var i in imgPath) { }}
+                  {{if(i<=2){ }}
+                  <li style="background-image:url({{=static_url+imgPath[i]}})" tapmode onclick="openImageBrower('{{=it.imgPath}}','{{=i}}')"></li>{{ } }}
+                  {{ } }}
+                  {{ if(imgPath.length>=3) { }}<b>共{{=it.imgPath.split(',').length}}张</b>{{ } }}
+                </ul>{{ } }}
+              </div>
+            </div>
+          </div>
+    </script>
+    <script id="tpl_content" type="text/x-dot-template">
+      {{for(var p in it.res1){ }}
+      {{if(it.res1[p].isdisplay!=false) { }}
+          <div class="my-talk-out">
+            <div class="my-talk-wrap">
+              <div class="talk-user clear-fix">{{if(!isEmpty(it.res1[p].headImg)) { }}
+                <div class="takl-user-photo"><img src="{{=static_url+it.res1[p].headImg}}" alt=""></div>{{ } }}
+                <div class="talk-user-message clear-fix">
+                  <p class="line-1">{{if(!isEmpty(it.res1[p].nikeName)) { }}<span>{{=it.res1[p].nikeName}}</span>{{ } }}
+                    {{if(!isEmpty(it.res1[p].levelimg)) { }}<img src="{{=static_url+it.res1[p].levelimg}}" alt="">{{ } }}<span class="talk-right"><b class="font-20">{{=it.res2++}}楼</b></span>
+                  </p>
+                  <p><span>{{ if(!isEmpty(it.res1[p].updateTime)) { }} {{=formatDate(it.res1[p].updateTime,'Y')+'-'+formatDate(it.res1[p].updateTime,'M')+'-'+formatDate(it.res1[p].updateTime,'D')}} {{ } }}</span><span> {{ if(!isEmpty(it.res1[p].updateTime)) { }}{{=formatDate(it.res1[p].updateTime,'h')+':'+formatDate(it.res1[p].updateTime,'m')}} {{ } }}</span></p>
+                </div>
+              </div>
+              <div class="talk-reply-content">
+                <p>  {{=!isEmpty(it.res1[p].content)?it.res1[p].content:''}}</p>{{ if(!isEmpty(it.res1[p].soundPath) &&  it.res1[p].soundlen>0) { }}
+                <div tapmode url="{{=static_url+it.res1[p].soundPath}}" onclick="playAudio(this)" bg time="{{=it.res1[p].soundlen}}" class="voice-player"></div>{{ } }}
+                {{if(!isEmpty(it.res1[p].imgPath)) { }}
+                <ul class="pic-group">
+                  {{ var imgPath=it.res1[p].imgPath.split(','); }}
+                  {{ for(var i in imgPath) { }}
+                  {{if(i<=2){ }}
+                  <li style="background-image:url({{=static_url+imgPath[i]}})" tapmode onclick="openImageBrower('{{=it.res1[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                  {{ } }}
+                  {{ if(imgPath.length>=3) { }}<b>共{{=it.res1[p].imgPath.split(',').length}}张</b>{{ } }}
+                </ul>{{ } }}
+              </div>
+            </div>
+          </div>{{ } }}
+      {{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/pagejs/talk-detail-f.js"></script>
+  </body>
+</html>

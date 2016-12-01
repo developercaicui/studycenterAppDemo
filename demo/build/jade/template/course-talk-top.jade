@@ -1,0 +1,125 @@
+extends ../layout/layout
+block body
+    -var cont = '课程讨论'
+    include ../modules/header
+        ul.right
+            li(onclick="open_search('search')",tapmode)
+                i.icon-search
+            li(onclick="newTalk()",tapmode)
+                i.icon-file-plus
+    nav.top-nav
+        .left(onclick="courseMenu()",tapmode)
+            i.icon-arrow-down
+            span.new_back 最新回复
+        .right.my_talk(onclick="go_to('my-talk');",tapmode)
+            i.icon-comments
+            | 我的讨论
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            var sort = '';
+            api.addEventListener({
+                name: 'sort'
+            }, function (ret) {
+                if (ret && ret.value) {
+                    var value = ret.value;
+                    $('.new_back').text(value.key);
+                    sort = $('.new_back').text();
+                    api.closeFrame({
+                        name: 'course-talk-moref'
+                    });
+                    api.openFrame({
+                        name: 'course-talk-moref',
+                        url: 'course-talk-moref.html',
+                        rect: {
+                            x: 0,
+                            y: y,
+                            w: 'auto',
+                            h: h
+                        },
+                        reload: true,
+                        pageParam: {order_by: sort},
+                        bounces: true,
+                        bgColor: '#fff',
+                        vScrollBarEnabled: true,
+                        hScrollBarEnabled: true
+                    });
+                }
+            });
+            var header = $api.dom('#header');
+            var nav = $api.dom('nav');
+            $api.fixIos7Bar(header);
+            var navrPos = $api.offset(nav);
+            var headerPos = $api.offset(header);
+            y = headerPos.h + navrPos.h;
+            h = api.winHeight - headerPos.h - navrPos.h;
+            api.pageParam.order_by = sort;
+            api.openFrame({
+                name: 'course-talk-moref',
+                url: 'course-talk-moref.html',
+                rect: {
+                    x: 0,
+                    y: y,
+                    w: 'auto',
+                    h: h
+                },
+                reload: true,
+                pageParam: api.pageParam,
+                bounces: true,
+                bgColor: '#fff',
+                vScrollBarEnabled: true,
+                hScrollBarEnabled: true
+            });
+        };
+        function courseMenu() {
+            api.openFrame({
+                name: 'course-talk-list',
+                url: 'course-talk-list.html',
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: api.winWidth,
+                    h: api.winHeight
+                },
+                bounces: false,
+                bgColor: 'rgba(0,0,0,0)',
+                vScrollBarEnabled: true,
+                hScrollBarEnabled: true
+            });
+        }
+        function open_search(link) {
+            api.openWin({
+                name: link,
+                url: link + '.html',
+                bgColor: '#000',
+                opaque: true,
+                reload: true,
+                softInputMode: 'resize',
+                pageParam: {name: 'talk'},
+                vScrollBarEnabled: false
+            });
+        }
+        function go_to(name) {
+            api.openWin({
+                name: name,
+                url: name + '.html',
+                delay: 200,
+                reload: true
+            });
+        }
+        function newTalk() {
+            var par = api.pageParam;
+            par.name = 'pageparamname';
+            if (!isEmpty(api.pageParam)) {
+                for (var p in api.pageParam) {
+                    par[p] = api.pageParam[p];
+                }
+            }
+            api.openWin({
+                name: 'new-talk',
+                url: 'new-talk.html',
+                pageParam: par,
+                delay: 200
+            });
+
+        }

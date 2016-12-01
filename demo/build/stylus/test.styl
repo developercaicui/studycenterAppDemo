@@ -1,0 +1,48 @@
+body
+    font 14px/1.8 'microsoft yahei'
+    background url("../image/body_bg.png")
+*
+    box-sizing border-box
+
+$nav_color = #2071ae;
+$icon_w = 100px;
+.big_nav
+    list-style none
+    padding 0
+    margin 1rem
+    li
+        margin 20px 0
+        background $nav_color
+        border 1px solid darken($nav_color, 10%)
+        box-shadow 2px 2px 7px darken($nav_color, 40%)
+        border-radius 5px
+        height $icon_w
+        font 1.2rem/$icon_w '黑体'
+        position relative
+        &:after,&:before
+            content ""
+            position absolute
+            left 30px
+            top 8px
+        &:before
+            background-position center
+            background-repeat no-repeat
+            background-size 100% auto
+            z-index 2
+        &:after
+            width $icon_w - 20
+            height $icon_w - 20
+            background lighten($nav_color, 10%)
+            border 2px solid darken($nav_color, 5%)
+            border-radius 50%
+            box-shadow 0 0 10px lighten($nav_color, 50%)
+        &.home:before
+            background-image url("../image/icon-01.png")
+            width $icon_w
+            height $icon_w
+        a
+            color #fff
+            text-decoration none
+            padding-left 50px
+            display block
+            text-align center

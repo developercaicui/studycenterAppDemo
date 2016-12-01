@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="my_close()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">问答详情</div>
+      <div id="del" tapmode onclick="del()" class="right"><i class="icon-trash"></i></div>
+    </div>
+    <div id="editor" style="opacity:.001" class="editor-bar">
+      <div class="editor-tool"><i class="icon-recording-o needaideo"></i><i class="icon-picture needimg"></i>
+        <div class="textarea"></div>
+        <div class="btn btn-success">发布</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      function my_close() {
+          var jsfun = 'getData(1);';
+          api.execScript({
+              name: 'course-studying-top',
+              frameName: 'course-question-f',
+              script: jsfun
+          });
+          api.execScript({
+              name: 'course-question-head',
+              frameName: 'course-question-content',
+              script: jsfun
+          });
+          api.closeWin();
+      }
+      function del() {
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token: $api.getStorage('token'),
+                      id: id,
+                      type: 'question'
+                  };
+                  api.showProgress({
+                      title: '删除中',
+                      modal: true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          var jsfun = 'getData(1);';
+                          api.execScript({
+                              name: 'my-question',
+                              frameName: 'my-question-f',
+                              script: jsfun
+                          });
+                          api.execScript({
+                              name: 'course-studying-top',
+                              frameName: 'course-question-f',
+                              script: jsfun
+                          });
+                          api.execScript({
+                              name: 'course-question-head',
+                              frameName: 'course-question-content',
+                              script: jsfun
+                          });
+                          api.closeWin('question-detail-head');
+                      } else {
+                          api.toast({
+                              msg: '删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      
+      }
+      function open() {
+          var header = $api.byId('header');
+          var footer = $api.byId('editbt');
+          $api.fixIos7Bar(header);
+          var width = api.winWidth;
+          var height = api.winHeight - $api.offset(header).h - $api.offset(footer).h;
+          api.openFrame({
+              name: 'question-detail-f',
+              url: 'question-detail-f.html',
+              bgColor: '#fff',
+              bounces: true,
+              opaque: true,
+              reload: true,
+              vScrollBarEnabled: false,
+              rect: {
+                  x: 0,
+                  y: $api.offset(header).h,
+                  w: width,
+                  h: height
+              },
+              //pageParam:{id:api.pageParam.id,taskId:api.pageParam.taskId,courseId:api.pageParam.courseId,qf:api.pageParam.qf}
+              pageParam: api.pageParam
+          });
+      }
+      var id = '';
+      apiready = function () {
+          api.addEventListener({
+              name: 'keyback'
+          }, function (ret) {
+              my_close();
+          });
+          id = api.pageParam.id;
+          var memberId = get_loc_val('mine', 'memberId');
+          if (api.pageParam.memberId != memberId) {
+              $('#del').addClass('none');
+          }
+          editorFrame('question-detail-f', '');
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+.editor-bar#editbt
+    .editor-tool
+        i.icon-recording-o.needaideo(tapmode,onclick="openEditor('audio')")
+        i.icon-picture.needimg(tapmode,onclick="openEditor('img')")
+        .textarea(tapmode,onclick="openEditor('text')")
+        .btn.btn-success(tapmode,onclick="editSubmit('#{submitTo}')") 发布
+

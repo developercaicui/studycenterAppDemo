@@ -1,0 +1,63 @@
+script(id='tpl',type='text/x-dot-template')
+    | {{~it.res1:value:k }}
+    .cache-course.note-chapter
+        .cache-list
+            dl.cache-list-title
+                dt
+                    p {{=it.res1[k].title}}
+                dd
+                    i.icon-edit
+                    span {{=it.res1[k].nodeNum}}
+                    .msg-mark
+        | {{~it.res1[k].children:val:key}}
+        | {{var c_id=val.id;}}
+        | {{ if(val.isLeaf=='false'){ }}
+        ul.cache-list.one_chapter(one_id="{{=it.res2[c_id]}}")
+            li.list
+                dl
+                    dt(onclick="toggleChild(this)")
+                        i.icon-arrow-down
+                        p {{=val.title}}
+                | {{~val.children:val2:key2}}
+                | {{ if(val2.isLeaf=='false'){ }}
+                ul.list
+                    dl.haschild
+                        dt(onclick="toggleChild(this)")
+                            i.icon-arrow-down
+                            p {{=val2.title}}
+                    | {{~val2.children:val3:key3}}
+                    li.list
+                        dl.haschild
+                            dt(onclick="to_list(this)",id='{{=val3.id}}',key='{{=it.res1[k].id}}',title='{{=val3.title}}')
+                                p {{=val3.title}}
+                            dd
+                                i.icon-edit
+                                span {{=val3.nodeNum}}
+                                | {{var id3=val3.id;}}
+                                | {{if(!isEmpty(it.res2[id3])&&it.res2[id3]!=0){ }}
+                                .msg-mark {{=it.res2[id3]<100?it.res2[id3]:'99+'}}
+                                | {{ } }}
+                    | {{~}}
+                | {{ }else{ }}
+                ul.list
+                    dl
+                        dt(onclick="to_list(this)",id='{{=val2.id}}',key='{{=it.res1[k].id}}',title='{{=val2.title}}')
+                            p {{=val2.title}}
+                        dd
+                            i.icon-edit
+                            span {{=val2.nodeNum}}
+                            | {{var id2=val2.id;}}
+                            | {{if(!isEmpty(it.res2[id2])&&it.res2[id2]!=0){ }}
+                            .msg-mark {{=it.res2[id2]<100?it.res2[id2]:'99+'}}
+                            | {{ } }}
+                | {{ } }}
+                | {{~}}
+        | {{ }else{ }}
+        ul.cache-list.one_chapter(one_id="{{=it.res2[c_id]}}")
+            li.list
+                dl
+                    dt(onclick="to_list(this)",id='{{=val.id}}',key='{{=it.res1[k].id}}',title='{{=val.title}}')
+                        p  {{=val.title}}
+        | {{ } }}
+        | {{~}}
+    | {{~}}
