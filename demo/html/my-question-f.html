@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="bg-white">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/about-note.css">
+    <link rel="stylesheet" href="../css/z_style.css">
+  </head>
+  <body>
+    <div id="content" class="chapter"></div>
+    <script id="tpl" type="text/x-dot-template">{{ for(var p in it){  }}
+          <div tapmode onclick="detail('{{=it[p].id}}','{{=it[p].taskId}}','{{=it[p].courseId}}','{{=it[p].memberId}}','{{=it[p].taskType}}','{{=it[p].taskprogress}}')" class="chapnote1">
+            <div class="title">{{=it[p].title}}</div>
+            <div class="chapnote-img clearfix">
+              {{ if(!isEmpty(it[p].imgPath)){  }}
+              {{ var imgPath=it[p].imgPath.split(','); }}
+              {{ for(var i in imgPath) { }}
+              {{if(i==0){ }}<img src="{{=static_url+imgPath[i]}}" class="detail-img">{{ } }}
+              {{ } }}
+              {{ }  }}
+              <p class="chaptext">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</p>
+            </div>
+            <div class="chapti clearfix">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) && !isEmpty(it[p].taskType)){ }}
+              <p class="chapdetti"><span class="icon-play-o icon-style"></span><span class="timer"> {{=formatType(it[p].taskType,it[p].taskprogress)}}</span></p>{{ } }}
+              <p class="chapinti"><span>{{ if(!isEmpty(it[p].updateTime)){ }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)){ }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span><span>{{=it[p].nikeName}}</span></p>
+              <p class="chapicon"><i class="icon-replys"></i><i>{{=isEmpty(it[p].replyCount) ? 0 : it[p].replyCount}}</i></p>
+            </div>
+          </div>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/pagejs/my-question-f.js"></script>
+  </body>
+</html>

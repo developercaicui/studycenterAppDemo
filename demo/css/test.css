@@ -1,0 +1,55 @@
+body {
+  font: 14px/1.8 'microsoft yahei';
+  background: url("../image/body_bg.png");
+}
+* {
+  box-sizing: border-box;
+}
+.big_nav {
+  list-style: none;
+  padding: 0;
+  margin: 1rem;
+}
+.big_nav li {
+  margin: 20px 0;
+  background: #2071ae;
+  border: 1px solid #1d669d;
+  box-shadow: 2px 2px 7px #134468;
+  border-radius: 5px;
+  height: 100px;
+  font: 1.2rem/100px '黑体';
+  position: relative;
+}
+.big_nav li:after,
+.big_nav li:before {
+  content: "";
+  position: absolute;
+  left: 30px;
+  top: 8px;
+}
+.big_nav li:before {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  z-index: 2;
+}
+.big_nav li:after {
+  width: 80px;
+  height: 80px;
+  background: #2582c8;
+  border: 2px solid #1e6ba5;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #7fbae7;
+}
+.big_nav li.home:before {
+  background-image: url("../image/icon-01.png");
+  width: 100px;
+  height: 100px;
+}
+.big_nav li a {
+  color: #fff;
+  text-decoration: none;
+  padding-left: 50px;
+  display: block;
+  text-align: center;
+}

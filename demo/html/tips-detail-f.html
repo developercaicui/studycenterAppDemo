@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html class="detail">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/common-component.css">
+    <link rel="stylesheet" href="../css/about-note.css">
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+  </head>
+  <body>
+    <div class="my-talk my-talk-detail">
+      <div id="main1" class="talk-content my-talk-content"></div>
+      <div id="content" class="my-talk-list talk-detail-reply"></div>
+      <div class="my-talk-list">
+        <div class="my-talk-wrap">
+          <div class="talk-user clear-fix">
+            <div class="takl-user-photo"><img class="lx_img">
+              <!--img(src='../image/test-talk-photo.png',alt='')-->
+            </div>
+            <div class="talk-user-message clear-fix">
+              <p class="line-1"><span class="lx_name"></span><img src="" alt=""><span class="talk-right">
+                  <!--img.t-img-message(src='../image/note-message-o.png', alt='')-->
+                  <!--b.font-20 2--></span></p>
+              <p class="line-22">
+                <!--span {{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}}-->
+                <!--span {{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}}-->
+              </p>
+            </div>
+          </div>
+          <div class="talk-content-describe">
+            <div class="current-talk">
+              <h5 class="lx_title"></h5>
+              <p class="lx_content"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      apiready = function () {
+          $('.lx_name').html(api.pageParam.sender);
+          $('.lx_img').attr('src', !isEmpty(api.pageParam.headImg) ? static_url + api.pageParam.headImg : default_img);
+          $('.lx_title').html(api.pageParam.title);
+          $('.lx_content').html(api.pageParam.content);
+      };
+    </script>
+  </body>
+</html>

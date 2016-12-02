@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="my_close()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">课程笔记</div>
+      <div onclick="open_search('search')" tapmode class="right"><i class="icon-search"></i></div>
+    </div>
+    <ul id="nav" class="header-nav">
+      <li tapmode class="active">课程笔记</li>
+      <li tapmode>我的笔记</li>
+    </ul>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script>
+      var i = 0;
+      $('#nav li').click(function () {
+          i = $(this).index();
+          //$(this).addClass('active').siblings().removeClass('active');
+          api.setFrameGroupIndex({
+              name: 'notes_tab',
+              index: i
+          });
+      });
+      apiready = function () {
+          var header_fix = $api.dom('.header');
+          var tab = $api.dom('#nav');
+          $api.fixIos7Bar(header_fix);
+          var tabPos = $api.offset(tab);
+          var headerPos = $api.offset(header_fix);
+          y = headerPos.h + tabPos.h;
+          h = api.winHeight - headerPos.h - tabPos.h;
+          api.openFrameGroup({
+              name: 'notes_tab',
+              background: '#fff',
+              rect: {
+                  x: 0, //左上角x坐标
+                  y: y, //左上角y坐标
+                  w: api.winWidth, //宽度，若传'auto'，页面从x位置开始自动充满父页面宽度
+                  h: h
+              },
+              scrollEnabled: true,
+              index: 0,
+              preload: 1,
+              frames: [{//课程笔记
+                  name: 'class-notes-f',
+                  url: 'class-notes-f.html',
+                  bounces: true,
+                  reload: true,
+                  bgColor: '#fff',
+                  vScrollBarEnabled: true,
+                  hScrollBarEnabled: false,
+                  pageParam: api.pageParam
+              }, {//我的笔记
+                  name: 'mine-notes-f',
+                  url: 'mine-notes-f.html',
+                  bounces: true,
+                  reload: true,
+                  bgColor: '#fff',
+                  vScrollBarEnabled: true,
+                  hScrollBarEnabled: false,
+                  pageParam: api.pageParam
+              }]
+          }, function (ret, err) {
+              $("#nav li").removeClass('active').eq(ret.index).addClass('active');
+          });
+          api.addEventListener({
+              name: 'keyback'
+          }, function (ret, err) {
+              my_close();
+          });
+      
+      };
+      
+      function open_search(link) {
+          api.openWin({
+              name: link,
+              url: link + '.html',
+              bgColor: '#000',
+              opaque: true,
+              reload: true,
+              softInputMode: 'resize',
+              pageParam: {name: 'notes'},
+              vScrollBarEnabled: false
+          });
+      }
+      function my_close() {
+          api.sendEvent({
+              name: 'get_notes'
+          });
+          api.closeWin();
+      }
+    </script>
+  </body>
+</html>

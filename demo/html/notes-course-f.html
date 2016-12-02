@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+  </head>
+  <body>
+    <div id="wrap" class="warp2">
+      <div class="notes">
+        <div class="mynotes">
+          <div class="toptit">
+            <h4>ACCA F1  Accountant in Business</h4><span>23</span>
+            <p>5</p>
+          </div>
+          <div class="content">
+            <div class="bewrite">
+              <div class="bewtitl bewtitl2"><span></span>
+                <p>PART A Business organisa tor</p>
+              </div>
+            </div>
+            <ul class="download">
+              <li>
+                <p>Chapter 1 - Organisation and Types</p><span class="notesp">6</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 2 - Organisation as of Organisation</p><span class="notesp">3</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 3 - Organisation and Types</p><span class="notesp">5</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 4 - Organisation and Types of</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+            </ul>
+          </div>
+          <div class="content">
+            <div class="bewrite">
+              <div class="bewtitl bewtitl2"><span></span>
+                <p>PART A Business organisa torgan</p>
+              </div>
+            </div>
+            <ul class="download">
+              <li>
+                <p>Chapter 1 - Organisation and Types</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 2 - Organisation as of Organisation</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 3 - Organisation and Types</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 4 - Organisation and Types of</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+            </ul>
+          </div>
+          <div class="content">
+            <div class="bewrite">
+              <div class="bewtitl bewtitl2"><span></span>
+                <p>PART A Business AAAA bbb CCC organisa tor</p>
+              </div>
+            </div>
+            <ul class="download">
+              <li>
+                <p>Chapter 1 - Organisation and Types</p><span class="notesp">6</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 2 - Organisation as of Organisation</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 3 - Organisation and Types</p><span class="notesp">8</span>
+                <p class="prorn">1</p>
+              </li>
+              <li>
+                <p>Chapter 4 - Organisation and Types of</p><span class="notesp">8</span>
+                <p class="prorn">2</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      //显示隐藏动画
+      $('.bewrite .bewtitl').parent().siblings().hide();
+      $('.bewrite .bewtitl').click(function () {
+          if ($(this).children('span').attr("class") == 'bewritesp1') {
+              $(this).children('span').addClass('bewritesp2');
+              $(this).children('span').removeClass('bewritesp1');
+              $(this).parent().siblings().hide();
+          } else {
+              $(this).children('span').addClass('bewritesp1');
+              $(this).children('span').removeClass('bewritesp2');
+              $(this).parent().siblings().show();
+          }
+      });
+      //$('nav div').on('tap',function () {
+      //	var i = $(this).index();
+      //	$(this).css({color:'#22a891'});
+      //	$(this).siblings('div').animate({color:'#878787'},800);
+      //	$(this).siblings('p').animate({left:i*50+'%'},800);
+      //	if($(this).attr('class')=='nav_left'){
+      //		$('.classnotes').css({zIndex:800});
+      //		$('.classnotes').animate({left:'0%'},800)
+      //		$('.mynotes').animate({left:'100%'},800);
+      //	}else{
+      //		$('.classnotes').css({zIndex:0});
+      //		$('.mynotes').animate({left:'0%'},800)
+      //		$('.classnotes').animate({left:'-100%'},800);
+      //	}
+      //})
+      $('nav p').css({left: 1 * 50 + '%'});
+      $('.nav_right').css({color: '#22a891'}).siblings().css({color: '#878787'});
+      $('.left span').on('click', function (e) {
+          e.preventDefault();
+          api.closeWin({
+              name: 'My-notes',
+              url: 'My-notes.html'
+          });
+      }, false);
+      $('.nav_left').on('click', function (e) {
+          e.preventDefault();
+          api.closeWin({
+              name: 'My-notes',
+              url: 'My notes.html'
+          });
+      }, false);
+      $('.notesp').on('click', function (e) {
+          e.preventDefault();
+          api.openWin({
+              name: 'Chapter-notes',
+              url: 'Chapter-notes.html'
+          });
+      }, false);
+      function Noti(prorn, toptit) {
+          var arry = [];
+          var y;
+          var x = 0;
+          var b = 0;
+          $(prorn).each(function (i) {
+              y = parseInt($(prorn).eq(i).html());
+              arry = arry;
+              arry.push(y);
+              x = arry[i];
+              b += x;
+              //		console.log(b);
+          });
+          $(toptit).html(b);
+      }
+      var noti1 = new Noti('.classnotes .prorn', '.classnotes .toptit p');
+      var noti2 = new Noti('.mynotes .prorn', '.mynotes .toptit p');
+    </script>
+  </body>
+</html>
