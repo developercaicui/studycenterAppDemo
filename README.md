@@ -23,8 +23,11 @@
 
 ## 二，目录结构&提交代码
 > studycenterAppDemo：根目录
+
 	>> build：jade(html)模版&stylus(css)模版
+
 	>> demo：apicloud 的测试代码
+	
 	>> node_modules：npm库文件
 
 获取远程dev分支
