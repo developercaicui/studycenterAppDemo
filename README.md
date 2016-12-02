@@ -1,6 +1,6 @@
 # studycenterAppDemo
 ## 一，搭建测试环境
-工具：APICloud Studio, 系统：windows
+工具：Sublime3, 系统：windows
 ######  step 1:
 
 创建项目测试目录
