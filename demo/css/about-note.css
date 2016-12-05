@@ -134,7 +134,14 @@
   color: #666;
   font-size: 0.24rem;
   padding-top: 0.1rem;
-  line-height: 0.37rem;
+  line-height: 0.4rem;
+  height: 0.4rem;
+}
+.note-content-Img .note-font p :nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 200px;
 }
 .note-content-Img .section-note-top {
   position: relative;
