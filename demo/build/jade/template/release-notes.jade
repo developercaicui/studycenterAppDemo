@@ -1,0 +1,52 @@
+﻿extends ../layout/layout
+
+block head
+    link(rel='stylesheet', type='text/css', href='../css/reset.css')
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+block body
+    .Lssue
+        .header
+            p.left
+                span
+                    img(src='../image/nav-arrow.png')
+                span 笔记
+            p.lsslr 他人笔记
+            span.delete 发布
+        .lsscen(style='background: #fff;')
+            p.lssinfor
+                span.detti 12:38
+                span 最多输入150字
+            input.lesstit(type='text', placeholder='输入标题')
+            textarea.lesscon(rows='', cols='', placeholder='输入正文')
+        .editbt
+            input.needaideo(type='text', readonly='', unselectable='on')
+            input(type='text', readonly='', unselectable='on')
+            input(type='text', readonly='', unselectable='on')
+            .switch
+                p
+                span 私人
+block scripts
+    script(type='text/javascript').
+        window.onresize = function () {
+            document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 1280) + 'px';
+            if (100 * (document.documentElement.clientWidth / 1280) >= 100) {
+                document.documentElement.style.fontSize = '100px';
+            }
+        };
+        document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 1280) + 'px';
+        if (100 * (document.documentElement.clientWidth / 1280) >= 100) {
+            document.documentElement.style.fontSize = '100px';
+        }
+        $('.switch').on('tap', function () {
+            if ($('.switch').attr('class') == 'switch switch2') {
+                $('.switch').removeClass('switch2');
+                $('.switch p').removeClass('switchp1');
+                $('.switch span').removeClass('switchpsp');
+                $('.switch span').html('私人');
+            } else {
+                $('.switch').addClass('switch2');
+                $('.switch p').addClass('switchp1');
+                $('.switch span').addClass('switchpsp');
+                $('.switch span').html('公开');
+            }
+        });

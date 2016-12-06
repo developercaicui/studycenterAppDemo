@@ -7,10 +7,10 @@ gulp.task('server', function() {
     browserSync.init({
         server: "./"
     });
-    gulp.watch("build/jade/**/*.jade", ['jade']);
+    gulp.watch("demo/build/jade/**/*.jade", ['jade']);
     // gulp.watch("html/**").on('change', browserSync.reload);
 
-    gulp.watch("build/stylus/*.styl", ['stylus']);
+    gulp.watch("demo/build/stylus/*.styl", ['stylus']);
     // gulp.watch("css/**").on('change', browserSync.reload);
 
     // gulp.watch("script/**").on('change', browserSync.reload);
@@ -19,7 +19,7 @@ gulp.task('server', function() {
 gulp.task('default', ['server']);
 
 gulp.task('jade', function() {
-  return gulp.src('build/jade/template/*.jade')
+  return gulp.src('demo/build/jade/template/*.jade')
     .pipe(jade({
       pretty: true
     }))
@@ -27,7 +27,7 @@ gulp.task('jade', function() {
 });
 
 gulp.task('stylus', function() {
-  return gulp.src('build/stylus/*.styl')
+  return gulp.src('demo/build/stylus/*.styl')
     .pipe(stylus())
     .pipe(gulp.dest('demo/css'));
 });

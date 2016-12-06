@@ -1,0 +1,759 @@
+/*消息中心*/
+@media screen and (max-width: 321px) and (min-width: 320px) {
+    .note-font{
+        line-height:1.26;
+    }
+}
+@-webkit-keyframes move{
+    0%{width: 0.1rem;}
+    25%{width: 0.12rem;}
+    50%{width: 0.25rem;}
+}
+.section-note
+    position relative
+.section-note-content
+    position relative
+    width 100%
+    background-color #fff
+    border-bottom 1px solid #f1f1f1
+    padding-bottom 0.3rem
+    overflow hidden
+    font-size 0.24rem
+    .section-note-top
+        span
+            max-height 1.2rem
+            overflow hidden
+        .note-font
+            p
+                overflow hidden
+                text-overflow ellipsis
+    .section-note-top2
+        .note-font
+            p
+                overflow hidden
+                text-overflow clip
+                word-break break-all
+/*章节可重用样式*/
+.section-note-top
+    width 91.6%
+    display table
+    font-size 0.24rem
+    margin 0 auto
+.section-note-message
+    width 91.6%
+    span
+        display inline
+        vertical-align middle
+        &:nth-child(2)
+            position absolute
+            display block
+            top 0
+            right 0
+            text-align right
+            b
+                margin-left 0.1rem
+            i
+                margin-right 0.06rem
+            img
+                width 20%
+    .video-link-img
+        height 0.28rem
+        width 0.28rem
+    img
+        vertical-align middle
+    b
+        vertical-align middle
+        font-style normal
+        font-weight normal
+        color #9f9f9f
+        font-size 0.22rem
+        &:nth-child(2)
+            margin-left 1.5%
+        &:nth-child(3)
+            margin-left 2%
+        &:nth-child(4)
+            margin-left 3%
+        &:nth-child(5)
+            margin-left 3%
+    .icon-replys
+        color #999
+        font-size 0.35rem
+        vertical-align middle
+    .icon-play-o
+        color #999
+        font-size 0.3rem
+        vertical-align sub
+.note-content-Img
+    clear both
+    .note-img
+        width 25.7%
+        height 1.2rem
+        overflow hidden
+        float left
+        margin-right 2%
+        img
+            max-width 100%
+
+    .note-img ~ .note-font
+        width 70.8%
+        float left
+    .note-font
+        max-height 1.2rem
+        line-height .4rem
+        overflow : hidden;
+        text-overflow: clip;
+        word-break:break-all;
+        p
+            color #666
+            font-size 0.24rem
+            padding-top 0.1rem
+            line-height 0.37rem
+    .section-note-top
+        position relative
+        margin-top 0.3rem
+        img
+            margin-top 0.1rem
+            height 1.15rem
+            width 100%
+    .section-note-message
+        position relative
+        margin-top 0.3rem
+        height 0.3rem
+        left 4.2%
+        font-size 0.22rem
+.note-content-noneImg
+    .section-note-message
+        position relative
+        margin-top 0.3rem
+        left 4.2%
+        b
+            &:nth-child(3)
+                margin-left 4%
+    .section-note-top
+        position relative
+        font-size 0.24rem
+        margin-top 0.3rem
+        p
+            font-size 0.24rem
+.star,.good
+    height 0.25rem
+    width 0.3rem !important
+    margin-left 0.3rem
+.course-question
+
+    .section-note-message
+        img
+            height 0.28rem
+            width 0.28rem
+        span
+            &:nth-child(2)
+                img
+                    width 0.4rem
+                    height 0.2rem
+    .note-content-Img
+        .course-question-title
+            margin-top 0.2rem
+            p
+                font-size 0.28rem
+                color #333
+        .section-note-top
+            margin-top 0.25rem
+        .section-note-message
+            margin-top 0.2rem
+            position relative
+            b
+                font-size 0.24rem
+                color #9f9f9f
+    .video-link-img
+        height 0.28rem
+        width 0.28rem
+    .note-content-noneImg
+        .section-note-top
+            margin-top 0.2rem
+            p
+                color #666
+        .course-question-title
+            margin-top 0.2rem
+            p
+                font-size 0.28rem
+                color #333
+/*课程问答*/
+.course-question-title
+    position relative
+    width 91.6%
+    left 4.2%
+    font-size 0.28rem
+    margin-top 0.3rem
+    p
+        color #353535
+        word-break break-all
+        font-size .28rem
+        line-height .4rem
+        max-height .8rem
+        overflow hidden
+/*我的问题*/
+.mine-question
+    .note-content-Img
+        .mine-question-title
+            position relative
+            margin-top 0.35rem
+            p
+                font-size 0.28rem
+                color #353535
+        .section-note-top
+            .note-img
+                height 100%
+                img
+                    margin-top 0.1rem
+                    height 1.15rem
+        .section-note-message
+            font-size 0.24rem
+            height 8.125%
+            top 84%
+    .section-note-top
+        .note-font
+            p
+                color #949494
+                font-size 0.26rem
+                word-break break-all
+    b
+        font-size 0.24rem
+    .section-note-message
+        span
+            &:nth-child(2)
+                img
+                    width 36%
+    .note-content-noneImg
+        position relative
+        .mine-question-title
+            p
+                font-size 0.28rem
+                color #353535
+        .section-note-message
+            height 10.125%
+    .mine-q-1
+        height 0.3rem !important
+        width 0.3rem !important
+    .mine-q-2
+        height 0.2rem !important
+        width 0.4rem !important
+/*课程-学习进度-更多*/
+.courseStudyMore
+    width 100%
+    height 0.88rem
+    text-align center
+    line-height 0.88rem
+    font-size 0.32rem
+    color #fff
+    border-top 1px solid #e4e4e4
+    background #00a185
+    opacity .001
+    transition opacity .2s
+    &.show
+        opacity 1
+
+.fix-btn
+    padding-bottom 1rem
+    .courseStudyMore
+        position fixed
+        left 0
+        bottom 0
+/*
+#############我的讨论
+*/
+/*课程-讨论*/
+.Advertisement
+    position relative
+    width 100%
+    height 1.6rem
+    border-bottom 1px solid #e6e6e6
+.closeAdvertisement
+    position absolute
+    width 0.47rem
+    top 0.16rem
+    right 0.16rem
+.AdvertisementPic
+    width 100%
+    height 1.6rem
+.toTopList
+    background #fff
+    li
+        height 0.9rem
+        border-bottom 1px solid #e6e6e6
+        position relative
+        padding 0 .2rem 0 1rem
+        white-space nowrap
+        overflow hidden
+        text-overflow ellipsis
+        font-size 0.28rem
+        color #636363
+        line-height 0.9rem
+        .toTop
+            font-size 0.22rem
+            color #00a185
+            border 1px solid #00a185
+            border-radius 2px
+            padding 0 0.04rem
+            position absolute
+            top .25rem
+            left .3rem
+            height .36rem
+            line-height .34rem
+.my-talk
+    width 100%
+    background-color #f1f1f1
+    margin-bottom 0.88rem
+.talk-content
+    font-size inherit
+.my-talk-tab
+    height 0.86rem
+    display flex
+    width 100%
+    flex-direction row
+    flex-wrap nowrap
+    justify-content space-between
+    align-items flex-start
+    font-size 0.3rem
+    border 1px solid #d5d5d5
+    & > div
+        flex 1
+        width 50%
+        height 100%
+        line-height 100%
+        position relative
+        box-sizing border-box
+        span
+            width 100%
+            height 100%
+            line-height 250%
+            text-align center
+.talk-tab-selected
+    border-bottom 3px solid #00a185
+    span
+        color #22a891
+/*讨论内容*/
+.talk-user
+    width 100%
+    .takl-user-photo
+        img
+            float left
+            width .7rem
+            height 0.7rem
+            border-radius 50%
+.takl-user-photo
+    height 0.7rem
+    width 0.7rem
+    position relative
+    float left
+.talk-user-message
+    position relative
+    float left
+    margin-left 0.14rem
+    height 0.7rem
+    width 86%
+    .line-22
+        span
+            margin-right 0.1rem
+    p
+        &:nth-child(1)
+            position absolute
+            top 0
+            width 100%
+            line-height 1
+            span
+                font-size 0.28rem
+                color #646869
+                vertical-align middle
+        &:nth-child(2)
+            position absolute
+            bottom 0
+            width 100%
+            line-height 1
+            span
+                font-size 0.22rem
+                color #666
+                vertical-align middle
+                margin-right 0.12rem
+    .line-1
+        & > img
+            max-height 0.33rem
+            vertical-align middle
+            margin-left 0.14rem
+.talk-right
+    position absolute
+    right 0
+    .t-img-message
+        height 0.2rem
+        width 0.4rem
+        vertical-align middle
+        margin-right 0.06rem
+.my-talk-list
+    width 100%
+    margin-bottom 0.2rem
+    overflow hidden
+    background-color #fff
+.my-talk-wrap
+    width 91.6%
+    position relative
+    margin 0 auto
+    padding 0.2rem 0;
+.current-talk
+    h5
+        color #333
+        font-size 0.26rem
+        max-height .8rem
+    p
+        color #7c7c7c
+        font-size 0.24rem
+        max-height 1.2rem
+    h5,p
+        margin-top 0.2rem
+        word-wrap break-word
+        width 100%
+        line-height .4rem
+        overflow hidden
+
+.detail .current-talk
+    h5,p
+        max-height 12rem
+        overflow visible
+
+//让整行可以点入详情又不干扰图片和声音的处理--杨澍
+.my-talk-wrap
+    .current-talk
+        position relative
+        &:before
+            content ''
+            position absolute
+            z-index 1
+            left -.3rem
+            right -.3rem
+            top -1.1rem
+            bottom -3.5rem
+            background rgba(0,0,0,0)
+    .voice-player,ul.pic-group li
+        position relative
+        z-index 3
+
+
+.my-talk-bottm
+    width 100%  
+    line-height 0.6rem
+    border-top 1px solid #e6e6e6
+    position relative
+    margin-top 0.16rem
+    span
+        color #666
+        font-size 0.24rem
+        display block
+        width 91.6%
+        margin 0 auto
+.pre-post
+    height 1.4rem
+    padding 0.16rem 0.16rem
+    background-color #f1f1f1
+    position relative
+    margin-top 0.18rem
+    p
+        font-size 0.24rem
+        line-height .4rem
+        color #7c7c7c
+        height .75rem
+        overflow hidden
+    span
+        position absolute
+        font-size 0.2rem
+        right 0.18rem
+        bottom 0.18rem
+        img
+            height 0.2rem
+        b
+            color #919191
+.music
+    visibility hidden
+/*讨论详情*/
+.my-talk-detail
+    .my-talk-list
+        margin-bottom 0
+.talk-detail-reply
+    background-color #f8f8f8
+    .talk-user
+        .takl-user-photo
+            img
+                height 0.6rem
+                width 0.6rem
+    .talk-user-message
+        height 0.6rem
+        margin-left 0.12rem
+        p
+            &:nth-child(1)
+                span
+                    font-size 0.23rem
+                    color #646869
+            &:nth-child(2)
+                span
+                    font-size 0.18rem
+                    color #666
+        .line-1
+            & > img
+                max-height 0.3rem
+    .takl-user-photo
+        height 0.6rem
+        width 0.6rem
+.talk-reply-content
+    margin-top 0.2rem
+    p
+        font-size 0.24rem
+        color #7c7c7c
+.detail
+    background #fff
+    body
+        background #fff
+.my-talk-out
+    padding-bottom 0.25rem
+    border-top 1px solid #e6e6e6
+#messageTips
+    .message-center
+        height 100%
+    .note-content-Img
+        .note-img
+            height 100%
+#messageAnnounce
+    .mine-question
+        height 100%
+    .section-note-message
+        span
+            &:nth-child(2)
+                img
+                    width 0.4rem
+                    height 0.2rem
+.middle
+    float left
+.audioicon
+    float left
+    width 0.25rem
+    height 0.32rem
+    margin-top 0.08rem
+    margin-left 1.3rem
+    background url("../image/c_icon6.png") 0 0 no-repeat
+    background-size auto 100%
+.audioiconanimation .editbt,
+.detail .editbt
+    background #fff
+    border-top 1px solid #adadad
+.audioiconanimation .editbt .needimg,
+.detail .editbt .needimg
+    background #fff url("../image/icon8.png") 0 0 no-repeat
+    background-size auto 100%
+.audioiconanimation .editbt .needaideo,
+.detail .editbt .needaideo
+    background #fff url("../image/d_icon3.png") 0 0 no-repeat
+    background-size auto 100%
+    margin-right 0.25rem
+.audioiconanimation .reply,
+.detail .reply
+    outline none
+    width 4.4rem
+    height 0.55rem
+    margin-top -0.05rem
+    margin-left 0.25rem
+    border 1px solid #c8c9cd
+    border-radius 0.1rem
+    background #f8f8f8
+    color #666
+    padding 0 0.2rem
+    float left
+.replybtn
+    float right
+    width 0.7rem
+    height 0.55rem
+    margin-top -0.04rem
+    border-radius 0.1rem
+    background #00a085
+    color #fff
+    line-height 0.55rem
+    text-align center
+    font-size 0.25rem
+.header
+    .Searchbox
+        box-sizing border-box
+        position absolute
+        left 14%
+        bottom 0.18rem
+        height 0.6rem
+        width 5.2rem
+        outline none
+        border 0
+        border-radius 0.3rem
+        padding 0 0.8rem 0 0.4rem
+        background url("../image/seach.png") 95% center no-repeat
+        background-color #383f41
+        background-size 8%
+        color #a3a3a3
+        text-align left
+.Search
+    width 1rem
+    float right
+    height 100%
+    text-align center
+    font-size 0.3rem
+    color #a3a3a3
+    line-height 0.9rem
+/*苏男男添加笔记详情底部*/
+.fotter
+    position fixed
+    bottom 0
+    height 0.95rem
+    width 100%
+    border-top 1px solid #d5d5d5
+    background #fff
+    overflow hidden
+    div
+        width 50%
+        height 100%
+        padding-top 0.25rem
+        border-right 1px solid #d5d5d5
+        &:first-child
+            position absolute
+            left 0
+        &:last-child
+            position absolute
+            right 0
+        .icon
+            float left
+            margin-left 1rem
+            font-size 0.4rem
+            color #00a185
+        span
+            display block
+            height 0.4rem
+            padding-left 0.5rem
+            font-size 0.32rem
+            color #00a185
+            margin-left 1rem
+
+/**通用图片组**/
+.pic-group
+    margin .3rem 0
+    font-size 0
+    white-space nowrap
+    position relative
+    overflow hidden
+    width 100%
+    li
+        display inline-block
+        width 32%
+        margin 0 1%
+        height 2rem
+        line-height 2rem
+        text-align center
+        background #eee no-repeat center
+        background-size cover
+
+    b
+        position absolute
+        z-index 5
+        top 1.6rem
+        background-color rgba(0,0,0,0.5)
+        color #fff
+        height 0.4rem
+        width 1rem
+        text-align center
+        line-height 0.4rem
+        font-size 0.22rem
+        margin-left -1%
+        transform translate(-100%, 0)
+        -webkit-transform translate(-100%, 0)
+
+/*********************** Chpter notes*/
+.chapter
+    position relative
+.chapnote1
+    font-size .24rem
+    width 100%
+    box-sizing border-box
+    padding 0.33rem 0.22rem 0.32rem 0.22rem
+    border-bottom 1px solid #e6e6e6
+    .title
+        font-size .24rem
+        line-height .4rem
+        max-height .8rem
+        overflow hidden
+        color #666
+        margin-bottom .25rem
+        width 100%
+        word-wrap break-word
+    img
+        width 1.7rem
+        height 1.25rem
+        float left
+        margin-left 0.02rem
+        margin-right 0.25rem
+        & ~ .chaptext
+            width 68%
+    .icon-style
+        font-size 0.3rem
+        vertical-align text-bottom
+        margin-right 0.1rem
+    .icon-select
+        color #e6cd00
+.chaptext
+    width 100%
+    float left
+    color #919191
+    font-size 0.24rem
+    line-height 0.4rem
+    max-height 1.2rem
+    overflow hidden
+    text-overflow clip
+    word-break break-all
+.chapti
+    margin-top 0.25rem
+    color #9f9f9f
+    width 100%
+    font-size 0.22rem
+    box-sizing border-box
+    line-height 0.4rem
+.chapdetti
+    float left
+    width 1.3rem
+    height 0.4rem
+    box-sizing border-box
+    font-size 0.22rem
+    span
+        &.timer
+            font-size 0.22rem
+.chapinti
+    height 0.4rem
+    font-size 0.22rem
+    color #9f9f9f
+    span
+        float left
+        margin-right 0.2rem
+    .right
+        float right
+        i
+            margin 0 .05rem 0 .2rem
+
+.chapicon
+    font-size .2rem
+    float right
+    i
+        font-style normal
+        line-height .4rem
+        vertical-align middle
+        &:nth-child(1)
+            padding-right .1rem
+
+    span
+        height 0.4rem
+        text-align right
+        padding-left 0.4rem
+        margin-right 0.2rem
+        color #919191
+html.search-bar body
+    overflow hidden
+    background rgba(33,41,43,1)
+    .header
+        position fixed
+        top 0

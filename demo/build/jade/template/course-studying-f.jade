@@ -1,0 +1,44 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    div#content
+    mixin lst
+        | {{for(var p in it){ }}
+        .course-stydy
+            .courseStyTp.clearfix(tapmode,data-chaptername="{{=it[p].chapterName}}",data-coursename="{{=it[p].courseName}}",onclick="course_det(this,'course-studying-top','{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].categoryId}}','{{=it[p].subjectID}}')")
+                img.pic(src='{{=static_url+it[p].courseBkImage}}')
+                ul.wod
+                    li.wodTit {{=it[p].courseName}}
+                    | {{ if(!isEmpty(it[p].expirationTime)){ }}
+                    //li.hasTime 有效期至:{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}} {{=formatDate(it[p].expirationTime,'h')+':'+formatDate(it[p].expirationTime,'m')}}
+                    li.hasTime 有效期至:{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}}
+                    | {{ } }}
+                    //|{{ if(!isEmpty(it[p].chapterName)){ }}
+                    //li.wodCot 上次学到:{{=it[p].chapterName}}
+                    //|{{ }else { }}
+                    //li.wodCot 开始学习此课程
+                    //| {{ } }}
+                    | {{ if(!isEmpty(it[p].taskprogress) && !isEmpty(it[p].taskTotal)) { }}
+                    li.wodPro
+                        .progress-box2
+                            .progress2
+                                .progress-bar2(role="progressbar",min="{{=it[p].taskprogress}}",max="{{=it[p].taskTotal}}",data)
+                            .progress-val2
+                    | {{ }else{ }}
+                    li.wodPro
+                        .progress-box2
+                            .progress2
+                                .progress-bar2(role="progressbar",min="0",max="100",data)
+                            .progress-val2
+                    | {{ } }}
+            .courseStyBm.clearfix
+                .user-center
+                    img.toux.avatar(src='{{=static_url+it[p].teacherImage}}')
+                    p.pname {{=it[p].teacherName}}
+                    p.phoner {{=it[p].teacherHonor}}
+        | {{ } }}
+    script(id='tpl',type='text/x-dot-template')
+        +lst
+block scripts
+    script(type='text/javascript', src='../script/pagejs/course-studying-f.js')

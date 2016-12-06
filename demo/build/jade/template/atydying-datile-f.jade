@@ -1,0 +1,42 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+    link(rel='stylesheet', type='text/css', href='../css/Sstyle.css')
+    style.
+        html, body {
+            height: auto;
+        }
+
+        html {
+            padding-bottom: 3rem;
+        }
+
+block body
+    .catalog
+        .avaiace
+            span.manage 课程缓存管理
+            p.space
+                | 可用空间39.48MB
+            span
+        .content#content
+    mixin lst
+        .bewrite
+            .bewtitl
+                span
+                p {{=val.chapterTitle}}
+        ul.download
+            | {{~val.children:value}}
+            li(tapmode,onclick="next('{{=val.chapterId}}','{{=value.chapterId}}')")
+                p {{=value.chapterTitle}}
+                span.dosp1
+            | {{~}}
+    #arcProgress
+    script(id='tpl',type='text/x-dot-template')
+        | {{~it:val}}
+        +lst
+        | {{~}}
+block scripts
+    script(src='../script/fx.js', type='text/javascript', charset='utf-8')
+    script(src='../script/pagejs/atydying-datile-f.js', type='text/javascript', charset='utf-8')
+
+

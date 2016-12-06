@@ -1,0 +1,139 @@
+extends ../layout/layout
+block body
+    .course-test-selector.course_selector1.none
+        .answer_tit 答案
+        textarea.answer_box(placeholder="The scope andrpose of,finanal statements")
+    .course-test-selector.course_selector2.cl.none
+        .answer_left 答案
+        .answer_right The scope andrpose of,finanal statements
+    .course-test-selector.course_selector3.none
+        table.table_box
+            tr.first_tr
+                td
+                td 选项1
+            -for(var i=0; i<4; i++)
+            tr
+                td.first_td The scope andrpose of,finanal statements
+                td
+                    input.fill_blank(placeholder="填空")
+    .course-test-selector.course_selector3.course_selector4.none
+        .question_box
+            img(src="../image/jz_icon.png")
+        table.table_box.table_box2
+            tr.first_tr
+                td.first_td
+                td 选项1
+                td 选项2
+                td 选项3
+                td 选项4
+                td 选项5
+            tr
+                td.first_td 矩阵1
+                td.w_tit The scope andrpose of,finanal statements
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+            tr
+                td.first_td 矩阵2
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+            tr
+                td.first_td 矩阵3
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+            tr
+                td.first_td 矩阵4
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+                td
+                    input.fill_blank(placeholder="填空")
+    .course-test-selector.course_selector3.course_selector4.course_selector5.none
+        .question_box
+            img(src="../image/jz_icon.png")
+        table.table_box.table_box2.table_box3
+            tr.first_tr
+                td.first_td
+                td 选项1
+                td 选项2
+                td 选项3
+                td 选项4
+                td 选项5
+            tr
+                td.first_td A
+                -for(var i=0; i<5; i++)
+                td
+                    .circle_box
+            tr
+                td.first_td B
+                -for(var i=0; i<5; i++)
+                td
+                    .circle_box
+            tr
+                td.first_td C
+                -for(var i=0; i<5; i++)
+                td
+                    .circle_box
+            tr
+                td.first_td D
+                -for(var i=0; i<5; i++)
+                td
+                    .circle_box
+    .course-test-selector.course_selector3.course_selector5.course_selector6.none
+        table.table_box.table_box2.table_box6
+            tr.first_tr
+                td.first_td
+                td 1
+                td 2
+                td 3
+                td 4
+                td 5
+            -for(var i=0; i<5; i++)
+            tr
+                td.first_td The scope and tpurpose of,financial statementsfor external reportingstatements for externalreporting
+                -for(var i=0; i<5; i++)
+                td
+                    .circle_box
+    include course2
+block scripts
+    script.
+        $('.fill_blank').click(function () {
+            $(this).attr('placeholder', '');
+            $(this).blur(function () {
+                $(this).attr('placeholder', '填空');
+            })
+        })
+        $('.circle_box').click(function () {
+            if ($(this).hasClass('.circle_green')) {
+                $(this).removeClass('.circle_green');
+            }
+            else {
+                $(this).addClass('.circle_green');
+            }
+        })

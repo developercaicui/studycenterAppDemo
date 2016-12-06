@@ -1,0 +1,90 @@
+extends ../layout/layout
+block html
+    -var htmlClass='detail'
+block head
+    link(rel='stylesheet', href='../css/common-component.css')
+    link(rel='stylesheet', href='../css/about-note.css')
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+block body
+    .editbt#editbt
+        .needaideo
+        .needimg
+        input.reply(type='text')
+        .replybtn 发布
+        .newaudio
+            #audio.audio
+                canvas.mycanvas1
+                .aucrt
+                    img(src='../image/b_icon.png')
+            p.newaut 按住开始录音
+            p.newtip
+                span.newtime 0.00
+                span "
+            button 重录
+        .newimg
+            p 最多可添加五张图片
+            .adchimg
+                .checkimg
+                    div
+                        p
+                .checkimg
+                    div
+                        p
+                .addimg
+                    div
+block scripts
+    script(src='../script/fx.js', type='text/javascript', charset='utf-8')
+    script(type="text/javascript").
+        var _abc = null;
+        var yh = 0.9 * parseInt($('html').css('font-size').split('px'));
+        var yh2 = 5.7 * parseInt($('html').css('font-size').split('px'));
+        function newblock(need, newai, filter) {
+            $(need).on('tap', function (e) {
+                api.setFrameAttr({
+                    name: 'audio',
+                    url: 'audio.html',
+                    bounces: false,
+                    opaque: false,
+                    bgColor: 'rgba(225,225,225,0)',
+                    vScrollBarEnabled: false,
+                    rect: {
+                        x: 0,
+                        y: api.winHeight - yh2,
+                        w: api.winWidth,
+                        h: yh2
+                    }
+                });
+                e.stopPropagation();
+                _abc = $(this);
+                $(this).parent().css({'-webkit-transition': 'bottom .5s', bottom: $(newai).height()});
+                api.refreshHeaderLoadDone();
+            });
+            var dd = $("body *").not(".editbt *");
+            dd.on('tap', function (e) {
+                e.stopPropagation();
+                if (_abc == null) {
+                    return false;
+                }
+                _abc.parent().css({bottom: 0});
+                setTimeout(function () {
+                    api.setFrameAttr({
+                        name: 'audio',
+                        url: 'audio.html',
+                        bounces: false,
+                        opaque: false,
+                        bgColor: 'rgba(225,225,225,0)',
+                        vScrollBarEnabled: false,
+                        rect: {
+                            x: 0,
+                            y: api.winHeight - yh,
+                            w: api.winWidth,
+                            h: yh
+                        }
+                    });
+                }, 500);
+                $('body').removeClass('homebody');
+            });
+        }
+        newblock('.needaideo', '.newaudio');
+        newblock('.needimg', '.newimg');
+

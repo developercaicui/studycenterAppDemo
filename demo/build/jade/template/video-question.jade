@@ -1,0 +1,131 @@
+extends ../layout/layout
+block html
+    -var htmlClass = "transparent"
+block head
+    link(rel='stylesheet', href='../css/common-component.css')
+    link(rel='stylesheet', href='../css/about-video.css')
+block body
+    .about-video
+        .video-title
+            ul.clear-fix
+                li.vList-selected 章节列表
+                li 本章任务
+                li 本章附件
+                li 扩展阅读
+        // 章节列表
+        .about-video-content.chapter-list(style='display: none;')
+            ul
+                li.video-content-list
+                    p Part A  Accounting oh yeah oh no oh baby . o oh baby . Accounting oh yeah o
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+        // 章节任务
+        .about-video-content.chapter-task(style='display: none;')
+            ul
+                li
+                    | 1.Part A  Accoununting oh yeah
+                li
+                    | 2.Part A  Accoununting oh yeah
+                li
+                    | 3.Part A  Accoununting oh yeah
+                li
+                    | 4.Part A  Accoununting oh yeah
+                li
+                    | 5.Part A  Accoununting oh yeah
+        // 章节附件
+        .about-video-content.chapter-task
+            ul
+                li
+                    span
+                    p
+                    p
+                li
+                li
+                li
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+        // 扩展阅读
+        .about-video-content.chapter-list(style='display: none;')
+            ul
+                li.video-content-list
+                    p Part A  Accounting oh yeah oh no oh baby . o oh baby . Accounting oh yeah o
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+                li
+                    span.progress-behind
+                    span Depreciation and amortization
+                    span
+                        i.video-tag-1
+                        | ×3
+                        i.video-tag-2
+                        | ×1
+                    span.download
+block scripts
+    script.
+        document.documentElement.style.fontSize = (document.documentElement.clientWidth / 1280) * 100 + 'px';

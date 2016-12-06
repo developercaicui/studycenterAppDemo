@@ -1,0 +1,135 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/z_style.css')
+block body
+    #wrap.warp2
+        .notes
+            .mynotes
+                .toptit
+                    h4 ACCA F1  Accountant in Business
+                    span 23
+                    p 5
+                .content
+                    .bewrite
+                        .bewtitl.bewtitl2
+                            span
+                            p PART A Business organisa tor
+                    ul.download
+                        li
+                            p Chapter 1 - Organisation and Types
+                            span.notesp 6
+                            p.prorn 1
+                        li
+                            p Chapter 2 - Organisation as of Organisation
+                            span.notesp 3
+                            p.prorn 1
+                        li
+                            p Chapter 3 - Organisation and Types
+                            span.notesp 5
+                            p.prorn 1
+                        li
+                            p Chapter 4 - Organisation and Types of
+                            span.notesp 8
+                            p.prorn 1
+                .content
+                    .bewrite
+                        .bewtitl.bewtitl2
+                            span
+                            p PART A Business organisa torgan
+                    ul.download
+                        li
+                            p Chapter 1 - Organisation and Types
+                            span.notesp 8
+                            p.prorn 1
+                        li
+                            p Chapter 2 - Organisation as of Organisation
+                            span.notesp 8
+                            p.prorn 1
+                        li
+                            p Chapter 3 - Organisation and Types
+                            span.notesp 8
+                            p.prorn 1
+                        li
+                            p Chapter 4 - Organisation and Types of
+                            span.notesp 8
+                            p.prorn 1
+                .content
+                    .bewrite
+                        .bewtitl.bewtitl2
+                            span
+                            p PART A Business AAAA bbb CCC organisa tor
+                    ul.download
+                        li
+                            p Chapter 1 - Organisation and Types
+                            span.notesp 6
+                            p.prorn 1
+                        li
+                            p Chapter 2 - Organisation as of Organisation
+                            span.notesp 8
+                            p.prorn 1
+                        li
+                            p Chapter 3 - Organisation and Types
+                            span.notesp 8
+                            p.prorn 1
+                        li
+                            p Chapter 4 - Organisation and Types of
+                            span.notesp 8
+                            p.prorn 2
+block scripts
+    script(src='../script/fx.js', type='text/javascript', charset='utf-8')
+    script(type='text/javascript').
+        //显示隐藏动画
+        $('.bewrite .bewtitl').parent().siblings().css({height: '0px'});
+        $('.bewrite .bewtitl').click(function () {
+            if ($(this).children('span').attr("class") == 'bewritesp1') {
+                $(this).children('span').addClass('bewritesp2');
+                $(this).children('span').removeClass('bewritesp1');
+                $(this).parent().siblings().animate({height: '0px'}, 500);
+            } else {
+                $(this).children('span').addClass('bewritesp1');
+                $(this).children('span').removeClass('bewritesp2');
+                $(this).parent().siblings().animate({height: 1 * 4 + 'rem'}, 500);
+            }
+        });
+        $('nav p').css({left: 1 * 50 + '%'});
+        $('.nav_right').css({color: '#22a891'}).siblings().css({color: '#878787'});
+        $('.left span').on('tap', function (e) {
+            e.preventDefault();
+            api.closeWin({
+                name: 'My-notes',
+                url: 'My-notes.html'
+            });
+        }, false);
+        $('.nav_left').on('tap', function (e) {
+            e.preventDefault();
+            api.closeWin({
+                name: 'My-notes',
+                url: 'My notes.html'
+            });
+        }, false);
+        $('.notesp').on('tap', function (e) {
+            e.preventDefault();
+            api.openWin({
+                name: 'Chapter-notes',
+                url: 'Chapter-notes.html'
+            });
+        }, false);
+        function Noti(prorn, toptit) {
+            var arry = [];
+            var y;
+            var x = 0;
+            var b = 0;
+            $(prorn).each(function (i) {
+                y = parseInt($(prorn).eq(i).html());
+                arry = arry;
+                arry.push(y);
+                x = arry[i];
+                b += x;
+                //		console.log(b);
+            });
+            $(toptit).html(b);
+        }
+        var noti1 = new Noti('.classnotes .prorn', '.classnotes .toptit p');
+        var noti2 = new Noti('.mynotes .prorn', '.mynotes .toptit p');
+
+

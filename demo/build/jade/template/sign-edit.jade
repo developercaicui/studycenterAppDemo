@@ -1,0 +1,46 @@
+extends ../layout/layout
+block body
+    -var closeTo = 1
+    -var cont = '基本资料'
+    .header#header
+        .right 2/2
+        case headCon
+            when 0
+                .center=cont
+            default
+                .left-next.no-arow=cont
+
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            $('.back').addClass('none');
+            setTimeout(function () {
+                api.setStatusBarStyle({
+                    style: 'light'
+                });
+            }, 200);
+            api.addEventListener({
+                name: 'keyback'
+            }, function (ret, err) {
+            });
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'sign-edit-f',
+                url: 'sign-edit-f.html',
+                bounces: true,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                },
+                pageParam: api.pageParam
+            });
+        };

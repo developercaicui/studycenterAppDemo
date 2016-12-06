@@ -1,0 +1,9 @@
+extends ../layout/layout
+block body
+    -var closeTo = 1
+    -var cont = 'ICFE财务英语标准课ACCA前导'
+    include ../modules/header
+        .right(onclick="openCharpterMenu();",tapmode)
+            i.icon-list-ul
+block scripts
+    script(type='text/javascript', src='../script/pagejs/course-test.js')

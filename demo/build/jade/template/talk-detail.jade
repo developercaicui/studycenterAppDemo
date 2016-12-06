@@ -1,0 +1,101 @@
+extends ../layout/layout
+block html
+    -var closeTo=1
+    -var htmlClass='detail'
+block body
+    -var cont = '讨论详情'
+    include ../modules/header
+        ul.right
+            li#pe(tapmode, onclick='pen()')
+                i.icon-edit
+            li#del(tapmode, onclick='del()')
+                i.icon-trash
+    -var submitTo = '讨论详情'
+    include ../modules/editor-bar
+block scripts
+    script(type="text/javascript").
+        function my_close() {
+            var jsfun = 'getData(1);';
+            api.execScript({
+                name: 'course-studying-top',
+                frameName: 'course-talk-f',
+                script: jsfun
+            });
+            var jsfun1 = 'getData(1,1);';
+            api.execScript({
+                name: 'course-talk-top',
+                frameName: 'course-talk-moref',
+                script: jsfun1
+            });
+            api.closeWin();
+        }
+        function pen() {
+            api.openWin({
+                name: 'editor-talk',
+                url: 'editor-talk.html',
+                pageParam: api.pageParam
+            });
+        }
+        function del() {
+            api.actionSheet({
+                title: '温馨提示',
+                cancelTitle: '取消',
+                buttons: ['确定删除']
+            }, function (ret, err) {
+                if (ret.buttonIndex == 1) {
+                    var param = {
+                        token: $api.getStorage('token'),
+                        id: id,
+                        type: 'discuss'
+                    };
+                    api.showProgress({
+                        title: '删除中',
+                        modal: true
+                    });
+                    ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除讨论
+                        api.hideProgress();
+                        if (err) {
+                            api.toast({
+                                msg: err.msg,
+                                location: 'middle'
+                            });
+                            return false;
+                        }
+                        if (ret && ret.state == 'success') {
+                            api.sendEvent({
+                                name: 'my-talk-lx'
+                            });
+                            setTimeout(function () {
+                                api.closeWin({name: 'talk-detail'});
+                            }, 800);
+                        } else {
+                            api.toast({
+                                msg: '讨论删除接口异常',
+                                location: 'middle'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        var id = '';
+        apiready = function () {
+            id = api.pageParam.id;
+            var memberId = getstor('memberId');
+            if (api.pageParam.memberId != memberId) {
+                $('#del').addClass('none');
+                $('#pe').addClass('none');
+            }
+            api.addEventListener({
+                name: 'keyback'
+            }, function (ret) {
+                my_close();
+            });
+            editorFrame('talk-detail-f', '');
+            //if(api.pageParam.yj == 'yj'){
+            //    api.closeFrame({
+            //       name: 'footer-editor'
+            //   });
+            //   $('.editor-bar').addClass('none');
+            // }
+        };

@@ -1,0 +1,33 @@
+extends ../layout/layout
+
+block body
+    -var cont = '设置'
+    include ../modules/header
+
+
+block scripts
+    script(type='text/javascript').
+        apiready = function () {
+            $('.top-navigator-text').html(api.pageParam.title);
+            var header = $api.byId('header');
+            $api.fixIos7Bar(header);
+            var headerPos = $api.offset(header);
+            var width = api.winWidth;
+            var height = api.winHeight - headerPos.h;
+            api.openFrame({
+                name: 'out_side',
+                url: api.pageParam.url,
+                showProgress: true,
+                bgColor: '#fff',
+                bounces: true,
+                opaque: true,
+                reload: true,
+                vScrollBarEnabled: false,
+                rect: {
+                    x: 0,
+                    y: headerPos.h,
+                    w: width,
+                    h: height
+                }
+            });
+        };

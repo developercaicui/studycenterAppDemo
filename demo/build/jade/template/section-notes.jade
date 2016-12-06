@@ -1,0 +1,65 @@
+extends ../layout/layout
+
+block head
+    link(rel='stylesheet', href='../css/about-note.css')
+block body
+    //-顶部导航条  这个页面有用吗？--杨澍11-19
+    -var cont = '章节笔记'
+    include ../modules/header
+        .right
+            i.icon-file-plus
+
+    //- 章节笔记内容
+    .section-note
+        .section-note-content.note-content-Img
+            .section-note-top
+                .note-img
+                    img(src='../image/test-note-img.png', alt='')
+                .note-font
+                    p 英语能力资格必须持有CET6、TOEFL、GMAT或IELTS证书如果未能达到该要求…
+            .section-note-message
+                span
+                    i
+                        img.video-link-img(src='../image/section-note-timer.png', alt='')
+                        b 00:08
+                    b 2015-10-12
+                    b 10:34
+                    b 王维
+                span
+                    i
+                        img.star(src='../image/note-star-o.png', alt='')
+                    b 5
+                    i
+                        img.good(src='../image/note-praise-o.png', alt='')
+                    b 22
+        .section-note-content.note-content-Img
+            .section-note-top
+                .note-img
+                    img(src='../image/test-note-img.png', alt='')
+                .note-font
+                    p 英语能力资格必须持有CET6、TOEFL、GMAT或IELTS证书如果未能达到该要求…
+            .section-note-message
+                span
+                    i
+                        img.video-link-img(src='../image/section-note-timer.png', alt='')
+                        b 00:08
+                    b 2015-10-12
+                    b 10:34
+                    b 王维
+                span
+                    i
+                        img.star(src='../image/note-star-o.png', alt='')
+                    b 5
+                    i
+                        img.good(src='../image/note-praise-o.png', alt='')
+                    b 22
+        .section-note-content.note-content-noneImg
+            .section-note-top
+                .note-font
+                    p 英语能力资格必须持有CET6、TOEFL、GMAT或IELTS证书如果未能达到该要求…
+            .section-note-message
+                span
+                    b 2015-11-02
+                    b 10:34
+                    b 王维
+block scripts

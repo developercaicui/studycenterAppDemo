@@ -1,0 +1,98 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    #content
+        mixin lst
+            .course-stydy
+                .courseStyTp.clearfix
+                    //img.pic(src='../image/s11.jpg')
+                    img.pic(src='{{=static_url+it.courseBkImage}}')
+                    ul.wod
+                        li.wodTit.wodTitH {{=it.courseName}}
+                        li.buyTime
+                            | 购买时间：{{=(formatDate(it.buyTime,'Y')+'-'+formatDate(it.buyTime,'M')+'-'+formatDate(it.buyTime,'D'))}}
+                        li.buyTime.youx
+                            | 有效时间：
+                            b {{=it.effectiveDay}}
+                            |  天
+                .courseStyBm.clearfix
+                    //img.toux.avatar.touxT(src='../image/s12.jpg')
+                    img.toux.avatar(src='{{=static_url+it.teacherImage}}')(style='display:block;margin-top:0.15rem')
+                    ul.mes
+                        li.name {{=it.teacherName}}
+                        li.tab  {{=it.teacherHonor}}
+            ul.Noativeam.clearfix(tapmode,onclick="openExam()")
+                li.tit 选择考试时间
+                li.jiant
+                    img(src='../image/sgrenJt.png')
+            p.acvWod
+                | 激活课程后即可正常学习，请注意，激活动作无法撤销，此课程一旦激活将在{{=it.effectiveDay}}天后失效,失效后将无法继续学习。请在有效期内合理安排学习进度。
+    script(id='tpl',type='text/x-dot-template')
+        +lst
+block scripts
+    script(src='../script/sn_font640.js', type='text/javascript', charset='utf-8')
+    script(type='text/javascript').
+        var data;
+
+        var courseTime;
+
+        apiready = function () {
+            api.addEventListener({
+                name: 'exam_time'
+            }, function (ret, err) {
+                $('.tit').html('考试时间  ' + ret.value.time);
+            });
+
+
+            data = JSON.parse(api.pageParam.data);
+            var tpl = $('#tpl').html();
+            var content = doT.template(tpl)(data);
+            $('#content').html(content);
+
+
+            var param = {};
+            param.token = $api.getStorage('token');
+            param.courseId = data.courseId;
+            ajaxRequest('api/v2/exam/timeList', 'get', param, function (ret, err) {//004.010 查询课程考试时间
+                if (err) {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (ret && ret.state == 'success') {
+                    if (isEmpty(ret.data)) {
+                        courseTime=false;
+                    }else{
+                        courseTime=ret.data;
+                    }
+                }
+            });
+
+
+        };
+        function openExam() {
+
+                if (isEmpty(courseTime)) {
+                        api.toast({
+                            msg: '暂无考试时间',
+                            location: 'middle'
+                        });
+                        return false;
+                    }
+                    api.openFrame({
+                        name: 'course-exam',
+                        url: 'course-exam.html',
+                        bgColor: "rgba(0,0,0,0.05)",
+                        pageParam: {data: courseTime},
+                        rect: {
+                            x: 0,
+                            y: 0,
+                            w: 'auto',
+                            h: 'auto'
+                        },
+                        reload:true
+                    });
+        }

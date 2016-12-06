@@ -1,0 +1,284 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', href='../css/Sstyle.css')
+block body
+    // 验证表单
+    .ndy
+        .indexFom
+            .hasright
+                input.input-txt(type='text', placeholder='手机号', name='phone',maxlength='11')
+                span.forget.inputbug.msg_code(tapmode='', onclick='get_code(this)') 获取验证码
+            input.input-txt(type='text', placeholder='验证码', name='code')
+            .hasright
+                input.input-txt.paw(type='password', placeholder='密   码', name='pwd')
+                img.look.inputbug(src='../image/S05.png', alt='',tapmode,onclick="look(this)")
+            .img_captcha.clear-fix.none
+                input.txt-validate(type='text', placeholder='图形验证码', name='captcha')
+                img.validate-img.get_img(tapmode='', onclick='get_img(this)')
+            .xieyi.clearfix
+                b.chek.chose(for='checkbox',tapmode,onclick='protocol_check()')
+                label.title
+                    | 我已阅读并同意
+                    b(onclick='open_protocol()', tapmode='') 《财萃网服务协议》
+            input.land.next(type='button', value='下一步', tapmode='', onclick='next()')
+            input(type='hidden', name='has_img', value='')
+block scripts
+    script(type='text/javascript').
+        //表单问题bug
+        $('.inputbug').click(function () {
+            $(".input-txt").unbind();
+        });
+
+        var is_ok = true;
+        function get_img() {//获取图形验证码
+            var now = Date.now();
+            var img = common_url + '/api/v2.1/captcha?timestamp=' + now / 1000;
+            $('.img_captcha').removeClass('none');
+            $('.get_img').attr('src', img);
+        }
+        function get_code(obj) {//获取短信验证码
+            var phone = $.trim($('input[name=phone]').val());
+            if (phone == '') {
+                api.toast({
+                    msg: '请输入手机号',
+                    location: 'middle'
+                });
+                return false;
+            }
+            //var regex = /^0?(13[0-9]|15[012356789]|18[0123456789]|17[0]|14[57])[0-9]{8}$/;
+            var regex = /^1[0-9]{10}$/i;
+            if (!regex.test(phone)) {
+                api.toast({
+                    msg: '手机号格式错误',
+                    location: 'middle'
+                });
+                return false;
+            }
+            var param = {};
+            if ($('input[name=has_img]').val() == 1) {
+                var captcha = $.trim($('input[name=captcha]').val());
+                if (captcha == '') {
+                    api.toast({
+                        msg: '图形验证码不能为空',
+                        location: 'middle'
+                    });
+                    return false;
+                } else {
+                    param.j_captcha = captcha;
+                }
+            }
+            if (is_ok) {
+                is_ok = false;
+                /*api.showProgress({
+                 title : '获取中',
+                 modal : false
+                 });*/
+                set_token(function (res, error) {
+                    if (error) {
+                        if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                            is_ok = true;
+                        }
+                        api.toast({
+                            msg: error.msg,
+                            location: 'middle'
+                        });
+                        return false;
+                    }
+                    if (res.state == 'success') {
+                        param.phone = phone;
+                        param.type = 'send';
+                        param.token = res.data.token;
+                        ajaxRequest('api/v2.1/msg/code', 'post', param, function (ret, err) {//007.007 发送手机验证码地址
+                            api.hideProgress();
+                            if (err) {
+                                if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                                    is_ok = true;
+                                }
+                                api.toast({
+                                    msg: err.msg,
+                                    location: 'middle'
+                                });
+                                return false;
+                            }
+                            if (ret && ret.state == 'success' && ret.data == 'true') {
+                                //get_token();
+                                var x = 60;
+                                var t;
+                                t = setInterval(function () {
+                                    x--;
+                                    if (x < 1) {
+                                        $('.msg_code').html('获取验证码');
+                                        is_ok = true;
+                                        clearInterval(t);
+                                    } else {
+                                        $('.msg_code').html(x + 's');
+                                    }
+                                }, 1000);
+                            } else {
+                                if (ret.msg == 'false') {
+                                    is_ok = true;
+                                    api.toast({
+                                        msg: '发送短信过于频繁,请您稍后再试',
+                                        location: 'middle'
+                                    });
+                                } else if (ret.msg == '1000') {
+                                    is_ok = true;
+                                    api.toast({
+                                        msg: 'type类型错误',
+                                        location: 'middle'
+                                    });
+                                } else if (ret.msg == 3) {
+                                    is_ok = true;
+                                    get_img();
+                                    $('input[name=has_img]').val(1);
+                                }
+                            }
+                        });
+                    } else {
+                        var err = '';
+                        if (!isEmpty(err_conf_007[res.msg])) {
+                            err = err_conf_007[res.msg];
+                            api.toast({
+                                msg: err,
+                                location: 'middle'
+                            });
+                        }
+
+                    }
+                });
+            }
+        }
+        function next() {//完成注册
+            if ($('.chek').hasClass('chose')) {
+                var phone = $.trim($('input[name=phone]').val());
+                var code = $.trim($('input[name=code]').val());
+                var pwd = $.trim($('input[name=pwd]').val());
+                if (phone == '') {
+                    api.toast({
+                        msg: '手机号不能为空',
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                var regex = /^1[0-9]{10}$/i;
+                if (!regex.test(phone)) {
+                    api.toast({
+                        msg: '手机号格式不正确',
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                if (code == '') {
+                    api.toast({
+                        msg: '验证码不能为空',
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                var regex = /^\d{9,16}$|^(?!\d+$)\w{8,16}$/;
+                if (!regex.test(pwd)) {
+                    api.toast({
+                        msg: '密码8-16位,不能有空格,纯数字最少要9位',
+                        location: 'middle'
+                    });
+                    return false;
+                }
+                api.showProgress({
+                    title: '处理中',
+                    modal: true
+                });
+
+                set_token(function (res, error) {
+                    if (error) {
+                        if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                            is_ok = true;
+                        }
+                        api.toast({
+                            msg: error.msg,
+                            location: 'middle'
+                        });
+                        return false;
+                    }
+                    if (res.state == 'success') {
+                        var param = {};
+                        param.nickname = '';
+                        param.phone = phone;
+                        param.password = pwd;
+                        param.code = code;
+                        param.agreement = 1;
+                        param.token = res.data.token;
+                        ajaxRequest('api/v2.1/memberReg', 'post', param, function (ret, err) {//007.006  会员手机注册
+                            api.hideProgress();
+                            if (err) {
+                                api.toast({
+                                    msg: err.msg,
+                                    location: 'middle'
+                                });
+                                return false;
+                            }
+                            if (ret && ret.state == 'success') {
+                                $api.setStorage('token', ret.data.token);
+                                $api.setStorage('mine', ret.data);
+                                $('input').val('');
+                                api.openWin({
+                                    name: 'sign-edit',
+                                    url: './sign-edit.html',
+                                    delay: 200
+                                });
+                            } else {
+                                api.toast({
+                                    msg: err_conf_007[ret.msg],
+                                    location: 'middle'
+                                });
+                            }
+                        });
+                    } else {
+                        var err = '';
+                        if (!isEmpty(err_conf_007[res.msg])) {
+                            err = err_conf_007[res.msg];
+                            api.toast({
+                                msg: err,
+                                location: 'middle'
+                            });
+                        }
+
+                    }
+                });
+            } else {
+                api.toast({
+                    msg: '请先同意财萃网服务协议',
+                    location: 'middle'
+                });
+            }
+        }
+        function open_protocol() {
+            api.openWin({
+                name: 'protocol',
+                url: 'protocol.html',
+                delay: 200
+            });
+        }
+        function protocol_check() {
+            var checkShow = $('.chek');
+            if (checkShow.hasClass('chose')) {
+                checkShow.removeClass('chose');
+            } else {
+                checkShow.addClass('chose');
+            }
+        }
+        apiready = function () {
+            commonFun.adjustHeight(0.077);
+        };
+        //控制密码显示与隐藏
+        function look(obj) {
+            var iSrc = $(obj).attr('src');
+            var pos = iSrc.search(/image/g);
+            var lsatSrc = iSrc.substring(pos, iSrc.length);
+            if (lsatSrc == "image/S05.png") {
+                obj.src = "../image/S05-can.png";
+                $(".paw").attr('type', 'text');
+            } else {
+                obj.src = "../image/S05.png";
+                $(".paw").attr('type', 'password');
+            }
+        }

@@ -1546,7 +1546,7 @@ window.shut_network = false;
 
 
 function delVideoFile(videoId){
-//	alert(videoId);
+  //	alert(videoId);
     var userid = getstor("memberId");
     var courseArr = $api.getStorage(userid+"video-buffer");
     var videoIdArr = [];
@@ -1604,7 +1604,7 @@ function delVideoFile(videoId){
                 }
             }
         }
-//      alert(videoId);
+  //      alert(videoId);
         // api.alert({msg:videoIdArr});
     }
     //判断是否删除

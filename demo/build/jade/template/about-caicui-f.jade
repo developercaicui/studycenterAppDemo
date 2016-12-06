@@ -1,0 +1,128 @@
+extends ../layout/layout
+block head
+    title 关于财萃
+block body
+    .about-caicui
+        .flip-container
+            .flipper
+                img.frontimg.course-show(src='../image/about-caicui.png', alt='')
+                img.backimg.weixin-show(src='../image/caicui-weixin.jpg', alt='',style='display:none;')
+        h4 财萃课堂
+        p.tip-font.version
+        p.wx.tip-font.none 微信号：caicuiacca
+    ul.list-group
+        li.none(tapmode,onclick = 'next(1)')
+            span 官方网站
+        li(tapmode,onclick = 'changeTip(this)')
+            span 微信公众号
+        li(tapmode,onclick='next(2)')
+            span 官方微博
+        li.update.none(tapmode,onclick="update()")
+            span 在线升级
+        li.none(tapmode,onclick="praise()")
+            span 给财萃课堂好评
+block scripts
+    script.
+        //检查更新
+        function update() {
+            var mam = api.require('mam');
+            mam.checkUpdate(function (ret, err) {
+                if (ret) {
+                    var result = ret.result;
+                    if (!ret.status) {
+                        api.toast({
+                            msg: '版本检测失败！',
+                            location: 'middle'
+                        });
+                        return false;
+                    }
+                    if (!result.update) {
+                        api.toast({
+                            msg: '已经是最新版本！',
+                            location: 'middle'
+                        });
+                    } else {
+                        api.openApp({
+                            androidPkg: 'android.intent.action.VIEW',
+                            mimeType: 'text/html',
+                            uri: result.source
+                        }, function (ret, err) {
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: err.msg,
+                        location: 'middle'
+                    });
+                }
+                ;
+            });
+        }
+        apiready = function () {
+            if (api.systemType == 'android') {
+                $('.update').removeClass('none');
+            }
+            var appVersion = api.appVersion;
+            $('.version').html('版本号：' + appVersion + '   copyright@caicui.com');
+        }
+        $('.body').click(function () {
+            $('.version').removeClass('none');
+            $('.wx').addClass('none');
+            $('.frontimg').show();
+            $('.backimg').hide();
+        });
+        function next(m) {
+            var url;
+            var systemType = api.systemType;  // 比如: ios
+            switch (m) {
+                case 1:
+                    url = "http://www.caicui.com";
+                    break;
+                case 2:
+                    url = "http://weibo.com/icaicui";
+                    break;
+            }
+            if (systemType == 'ios') {
+                api.openApp({
+                    iosUrl: url
+                });
+            } else {
+                api.openApp({
+                    androidPkg: 'android.intent.action.VIEW',
+                    mimeType: 'text/html',
+                    uri: url
+                }, function (ret, err) {
+                });
+            }
+        }
+        function praise() {
+            var systemType = api.systemType;  // 比如: ios
+            if (systemType == 'ios') {
+                api.openApp({
+                    iosUrl: aphone_prise_url
+                });
+            } else {
+                api.openApp({
+                    androidPkg: 'android.intent.action.VIEW',
+                    mimeType: 'text/html',
+                    uri: iphone_prise_url
+                }, function (ret, err) {
+                });
+            }
+        }
+        function changeTip(obj) {
+            $('.version').addClass('none');
+            $('.wx').removeClass('none');
+            $('.frontimg').hide();
+            $('.backimg').show();
+            /*(if(obj.classList[1] == 'caicui-web'){
+             $('.frontimg').show();
+             $('.backimg').hide();
+             var appVersion = api.appVersion;
+             $('.tip-font').html('版本号：'+appVersion+'   copyright@caicui.com');
+             }else{
+             $('.frontimg').hide();
+             $('.backimg').show();
+             $('.tip-font').html('微信号：caicuiacca');
+             }*/
+        }

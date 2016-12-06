@@ -1,0 +1,39 @@
+extends ../layout/layout
+block html
+    -var htmlClass='transparent editor-page'
+block body
+    .backdrop1
+    .backdrop.opacity(onclick="toggleEditor('mini')")
+    ul.set-photo
+        li 上传图片
+        li(tapmode='', onclick="getPic('camera',1024,768)") 拍照
+        li(tapmode='', onclick="getPic('album',1024,768)") 选择本地图片
+    .editor-bar
+        .editor-tool
+            i.icon-picture2(onclick="open_edit(this)")
+            i.icon-cut(onclick="open_edit(this)")
+            i.icon-recording-o(onclick="open_edit(this)")
+            i.icon-picture(onclick="open_edit(this)")
+            textarea.textarea(onfocus="my_focus()")
+            .btn.btn-success(tapmode,onclick="sub(this)") 发布
+            .switch
+                p
+                span 私人
+        .newaudio
+            #audio.audio.audio-progress
+                i.icon-recording
+                .val 0
+                i.icon-play(tapmode,url="",onclick="playAudioMe(this)",bg='',time="34")
+            p.newaut 按住开始录音
+            p.newtip 0.0
+            button(,tapmode,onclick="resetAudio()") 重录
+        .newimg
+            p 最多可添加五张图片
+            .adchimg
+                .addimg(tapmode,onclick='open_img()')
+                    i.icon-plus
+block scripts
+    script(src='../script/pagejs/footer-editor.js', type='text/javascript')
+
+
+

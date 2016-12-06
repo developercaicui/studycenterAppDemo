@@ -1,0 +1,60 @@
+extends ../layout/layout
+block head
+
+    link(rel='stylesheet', href='../css/user-center.css')
+block body
+
+    .user-center-wrap(style='height:100%;')
+        .user-center-content
+            .user-info.none
+                img.headimg(src='../image/test-photo.png', alt='',tapmode,onclick="go_next('modify')")
+                .user-name
+                    h5.nickName 张萌萌
+                    p
+                        | 财迷排名
+                        span.ranking 977
+                        |  位
+                .message-bells(tapmode,onclick="go_next('message-center')")
+                    i.icon-message
+                    //-- 新消息提示
+                    .msg-mark.msg-num.ri_h
+            ul
+                li
+                    i.icon-time
+                    .user-center-font 学习提醒
+                    .checkbox.user-center-switch
+                        input(name='notice_time',type='checkbox')
+                        label
+                li.user-center-list.set-time(tapmode,onclick="setTime()")
+                    .user-center-font 提醒时间
+                    span.user-center-account#setTime 19:30
+            //---课程相关
+            ul
+                li(tapmode,onclick="go_next('mine-notes')")
+                    i.icon-edit
+                    .user-center-font  我的笔记
+                    span.user-center-account.nodeNum
+                    i.icon-arrow-right
+                li(tapmode,onclick="go_next('my-question')")
+                    i.icon-comments
+                    .user-center-font  我的问答
+                    span.user-center-account.questionNum
+                    i.icon-arrow-right
+                li(tapmode,onclick="go_next('my-talk')")
+                    i.icon-news
+                    .user-center-font 我的讨论
+                    span.user-center-account.discuss
+                    i.icon-arrow-right
+                li(tapmode,onclick="go_next('video-buffer')")
+                    i.icon-download.png
+                    .user-center-font  缓存课程
+                    span.user-center-account.none  22.22M
+                    i.icon-arrow-right
+            //---意见反馈
+            ul(tapmode,onclick="go_next('opinion-feedback')")
+                li
+                    i.icon-mail
+                    .user-center-font 意见反馈
+                    i.icon-arrow-right
+block scripts
+    script(src='../script/pagejs/user-mine-f.js', type='text/javascript', charset='utf-8')

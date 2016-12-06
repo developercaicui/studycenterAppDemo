@@ -1,0 +1,26 @@
+extends ../layout/layout
+block head
+    link(rel='stylesheet', type='text/css', href='../css/about-note.css')
+block body
+    .new
+        .newtit.none
+            p
+                | capter 4 function of main departments in  the business organisation
+            span
+        .newentry
+            input(type='text', maxlength='100', class='lx_title', autofocus='autofocus', placeholder='讨论标题',onchange="upperCase()",oninput="upperCase()" ,onblur="upperCase()")
+            textarea(placeholder='讨论内容', class='lx_content', onblur="upperCase()",onchange="upperCase()", oninput="upperCase()")
+            //.newtyau
+            //    .voice-player(tapmode, url="{{=it[p].soundPath}}", onclick="playAudio(this)", bg, time="{{=it[p].soundlen}}")
+block scripts
+    script.
+        function upperCase() {
+            var title = $('.lx_title').val();
+            if (title.length > 100) {
+                api.toast({msg: '标题字数最多可写100个字'});
+            } else {
+                var content = $('.lx_content').val();
+                $api.setStorage('title', title);
+                $api.setStorage('content', content);
+            }
+        }
