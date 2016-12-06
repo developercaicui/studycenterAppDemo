@@ -24,22 +24,22 @@
 ## 二，目录结构&提交代码
 > studycenterAppDemo：根目录
 >
-> 	build：jade(html)模版&stylus(css)模版
->
 > 	demo：apicloud 的测试代码
 >
 > 	node_modules：npm库文件
+>
+> 	build：jade(html)模版&stylus(css)模版
 
-获取远程dev分支
+获取远程demo分支,并切换到demo分支
 	
-	'git checkout  –b dev origin/dev'
+	'git checkout  –b demo origin/demo'
 进入demo目录，提交代码并添加提交信息
 	
 	'git add *'
 	'git commmit -m "提交信息"'
-返回根目录，上传到dev分支
+返回根目录，上传到demo分支
 		
-	'git push origin dev'
+	'git push origin demo'
 
 >多人协作工作模式一般是这样的：
 >
