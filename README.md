@@ -33,6 +33,17 @@
 获取远程demo分支,并切换到demo分支
 	
 	'git checkout  –b demo origin/demo'
+
+在本地建立自己开发的分支branchName，开发完，
+
+切换到demo分支
+
+  'git checkout demo'
+
+合并分支到当前分支
+  
+  'git merge branchName'
+
 进入demo目录，提交代码并添加提交信息
 	
 	'git add *'
