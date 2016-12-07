@@ -696,6 +696,8 @@ function DosaveTaskProgress() {
         //}
     });
 }
+
+
 /*
 *保存课程过期时间
 * */
@@ -762,4 +764,65 @@ function CourseIsexpire(courseId){
         return false;
     }
 
+}
+
+//保存进度到本地数据库
+function DosaveDataBase() {
+	 
+   function openDatabase(){
+  	
+	db.openDatabase({
+	    name: 'data3'
+	}, function(ret, err) {
+	    if (ret.status) {
+	        alert(JSON.stringify(ret));
+	    } else {
+	        alert('数据库开启失败');
+	        alert(JSON.stringify(err));
+	    }
+	});
+     
+   }
+   
+	alert("保存数据库")
+    var data=$api.getStorage('saveDataBase');
+    var db = api.require('db');
+    openDatabase(); 
+    db.executeSql({
+        name: 'data3',
+        sql: 'INSERT INTO data3 (courseId, charpgerid, charpgerid) VALUES ("111", "222", "333")'
+    }, function(ret, err) {
+        if (ret.status) {
+             alert(JSON.stringify(ret));
+        } else {
+             alert(JSON.stringify(err));
+        }
+    });
+
+
+
+
+
+
+  //验证本次保存时间和上次保存时间的差值，必须为正数，否则提示用户本地时间异常????
+ 
+//  if(post_param.modifyDate - ret.data.modifyDate <0){
+////              api.toast({
+////                   msg : '您手机时间异常，请调整当前时间！',
+////                   location : 'middle'
+////               });
+////               return;
+//     api.alert({
+//            title : '温馨提示',
+//            msg : '您手机时间异常，请调整当前时间！',
+//            buttons : ['返回']
+//        }, function(ret, err) {
+//            if (ret.buttonIndex == 1) {
+//                closeThisWin(0);
+//            }
+//        });
+//        return false;
+//     
+//  }
+    
 }

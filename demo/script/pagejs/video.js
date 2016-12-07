@@ -12,11 +12,11 @@ var demo;//视频模块
 var task_arr;//所有的任务信息
 var task_info_detail;
 var last_progress = 0;
+var saveTime = null;
 function  closeVideo() {
     demo.close();
 }
 apiready = function() {
-
     api.setScreenOrientation({
         orientation : 'auto_landscape'
     });
@@ -159,6 +159,7 @@ apiready = function() {
         demo.start({type:1});
     });
 
+
 };
 
 //根据进度索引,获取章节信息
@@ -200,7 +201,7 @@ function check_net(videoid){
 }
 //播放视频函数
 function play_video() {
-
+    
     getCCconfig(function(CCconfig){
         if(CCconfig){
             var UserId=task_info.videoSiteId;
@@ -246,8 +247,19 @@ function play_video() {
                 });
                 return false;
             }
+ clearInterval(saveTime);
+ //定时保存进度（2分钟）新增后期开发需求
+ saveTime = setInterval(function(){
+     alert("save")
+     
+     //保存数据库
+     
+     
+     
+ },1000*5)
+         
             demo.open(param, function(ret, err) {
-
+                
                 $api.rmStorage('saveTaskProgress');
                 if(ret.status=='filedel'){
                   if(!isEmpty($api.getStorage('cache'+videoid))){
@@ -565,6 +577,20 @@ function play_video() {
                         var state = 'init';
                     }
                     saveTaskProgress(tmp_progress, total, state);*/
+
+if (api.systemType == 'android') {
+    var tmp_progress = parseInt(ret.ctime / 1000);
+} else {
+    var tmp_progress = parseInt(ret.ctime);
+}
+var total = videoTimes;
+if (total * 0.9 <= tmp_progress) {
+    var state = 'complate';
+} else {
+    var state = 'init';
+}
+saveTaskProgress(tmp_progress, total, state);
+
                     is_check=false;
                     if(last_progress>0){
                         var jumptime;
@@ -576,6 +602,7 @@ function play_video() {
                         demo.seekTo({
                             totime : jumptime
                         }, function() {
+                          
                         });
                     }
                 } else if(ret.btnType == '-1' || ret.btnType== -1 || ret.btnType=='play') {
@@ -594,8 +621,11 @@ function play_video() {
                     }
                     saveTaskProgress(tmp_progress, total, state);
                 }
+
+            
             });
         }
+       
     });
 }
 
@@ -755,13 +785,29 @@ function saveTaskProgress(now_progress, total, state){
         task_info_detail:task_info_detail,
         course_detail:course_detail
     };
+    
+    $api.setStorage('saveDataBase',data);
+        var jsfun = "DosaveDataBase();";
+            api.execScript({
+                name: 'root',
+                script: jsfun
+            });
+    //离线状态下将进度保存到数据库不保存到服务器
+    if (api.connectionType == 'none' || api.connectionType == 'unknown') {      
+        return false;
+    }
+    //非离线状态下进度保存到本地及服务器
     saveVideoProgress(videoid,now_progress);
     $api.setStorage('saveTaskProgress',data);
+    alert("有网了，保存服务器")
     var jsfun = "DosaveTaskProgress();";
     api.execScript({
         name: 'root',
         script: jsfun
     });
+    
+    //数据库与服务器之间的同步
+    
 }
 function saveVideoProgress(videoid,progress){
         var memberId= getstor('memberId');
@@ -783,3 +829,27 @@ function getVideoProgress(videoid){
         }
         return 0;
 }
+
+//保存进度到本地数据库
+// function saveDataBase(id,courseId,charpgerId,taskId,progress,state,issend,modifyDate,downLoadProgress,downLoadState,downLoadDate,expiredDate){
+//     var data={
+//         id:id,
+//         courseId:courseId,
+//         charpgerId:charpgerId,
+//         taskId:taskId,
+//         progress:progress,
+//         state:state,
+//         issend:issend,
+//         modifyDate:modifyDate,
+//         downLoadProgress:downLoadProgress,
+//         downLoadState:downLoadState,
+//         downLoadDate:downLoadDate,
+//         expiredDate:expiredDate
+//     };
+//     $api.setStorage('saveDataBase',data);
+//     var jsfun = "DosaveDataBase();";
+//     api.execScript({
+//         name: 'root',
+//         script: jsfun
+//     });
+// }
