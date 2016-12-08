@@ -666,22 +666,22 @@ function DosaveTaskProgress() {
     var user_token = $api.getStorage('token');
     var user_memberId = get_loc_val('mine', 'memberId');
     var post_param = {
-        memberId : user_memberId, //必须，用户id	ff8080815065f95a01506627ad4c0007
-        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码	5
-        taskId : task_info.taskId, //必须，任务id	1
-        //chapterId : chapter_info.chapterId, //必须，章节id	chapterId
-        chapterId : task_info_detail.chapterId, //必须，章节id	chapterId
-        courseId : course_detail.courseId, //必须，课程id	ff808081486933e6014889882d9c0590
-        taskName : task_info.title, //必须，任务名称	taskName
-        //chapterName : chapter_info.chapterTitle, //必须，章节名称	chapterName
-        chapterName : task_info_detail.chapterName, //必须，章节名称	chapterName
-        courseName : course_detail.courseName, //必须，课程名称	courseName
-        total : total, //必须，任务总长度	48
-        subjectId : course_detail.subjectId, //必须，科目id	ff808081473905e7014762542d940078
-        categoryId : course_detail.categoryId, //必须，证书id	ff808081473905e701475cd3c2080001
-        token : user_token, //必须，用户token	144594636417159iPhoneCourse
-        memberName : user_nickname, //必须，用户昵称	zhangxiaoyu01
-        state : state//必须，进度状态默认init，完成：complate	complate
+        memberId : user_memberId, //必须，用户id ff8080815065f95a01506627ad4c0007
+        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+        taskId : task_info.taskId, //必须，任务id    1
+        //chapterId : chapter_info.chapterId, //必须，章节id chapterId
+        chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
+        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
+        taskName : task_info.title, //必须，任务名称   taskName
+        //chapterName : chapter_info.chapterTitle, //必须，章节名称    chapterName
+        chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
+        courseName : course_detail.courseName, //必须，课程名称    courseName
+        total : total, //必须，任务总长度   48
+        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+        categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
+        token : user_token, //必须，用户token    144594636417159iPhoneCourse
+        memberName : user_nickname, //必须，用户昵称   zhangxiaoyu01
+        state : state//必须，进度状态默认init，完成：complate    complate
     };
     ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
         if(err){
@@ -768,36 +768,77 @@ function CourseIsexpire(courseId){
 
 //保存进度到本地数据库
 function DosaveDataBase() {
-	 
+     
    function openDatabase(){
-  	
-	db.openDatabase({
-	    name: 'data3'
-	}, function(ret, err) {
-	    if (ret.status) {
-	        alert(JSON.stringify(ret));
-	    } else {
-	        alert('数据库开启失败');
-	        alert(JSON.stringify(err));
-	    }
-	});
+    
+    db.openDatabase({
+        name: 'data3'
+    }, function(ret, err) {
+        if (ret.status) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert('数据库开启失败');
+            alert(JSON.stringify(err));
+        }
+    });
      
    }
    
-	alert("保存数据库")
+//  alert("保存数据库")
     var data=$api.getStorage('saveDataBase');
-    var db = api.require('db');
-    openDatabase(); 
-    db.executeSql({
-        name: 'data3',
-        sql: 'INSERT INTO data3 (courseId, charpgerid, charpgerid) VALUES ("111", "222", "333")'
-    }, function(ret, err) {
-        if (ret.status) {
-             alert(JSON.stringify(ret));
-        } else {
-             alert(JSON.stringify(err));
-        }
-    });
+    var now_progress=data.now_progress,
+        total=data.total,
+        state=data.state,
+        task_info=data.task_info,
+        task_info_detail=data.task_info_detail,
+        course_detail=data.course_detail;
+    var user_nickname = get_loc_val('mine', 'nickName');
+    var user_token = $api.getStorage('token');
+    var user_memberId = get_loc_val('mine', 'memberId');
+    var post_param = {
+        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
+        chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
+        taskId : task_info.taskId, //必须，任务id    1
+        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+        state : state,//必须，进度状态默认init，完成：complate   complate
+        
+        issend : 1, //必须，是否同步到服务器
+        modifyDate : new Date(),//必须，视频进度保存的时间
+        downLoadProgress :  75,    //下载进度
+        downLoadState :  'end',      //下载状态  ing 、stop、end
+        downLoadDate : 144594636417159, //下载时间
+        expiredDate : 144594636417159  //过期日期
+        
+        
+//      memberId : user_memberId, //必须，用户id ff8080815065f95a01506627ad4c0007        
+//      //chapterId : chapter_info.chapterId, //必须，章节id chapterId      
+//      taskName : task_info.title, //必须，任务名称   taskName
+//      //chapterName : chapter_info.chapterTitle, //必须，章节名称    chapterName
+//      chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
+//      courseName : course_detail.courseName, //必须，课程名称    courseName
+//      total : total, //必须，任务总长度   48
+//      subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+//      categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
+//      token : user_token, //必须，用户token    144594636417159iPhoneCourse
+//      memberName : user_nickname, //必须，用户昵称   zhangxiaoyu01
+        
+    };
+    
+//  alert(JSON.stringify(post_param))
+//  
+//  var db = api.require('db');
+//  openDatabase(); 
+//  db.executeSql({
+//      name: 'data3',
+//      sql: 'INSERT INTO data3 (courseId, chapterId, taskId,progress,state,issend,modifyDate,downLoadProgress,downLoadState,downLoadDate,expiredDate) VALUES ("'+post_param.courseId+'", "'+post_param.courseId+'", "'+post_param.courseId+'", "'+post_param.courseId+'", "'+post_param.courseId+'", "", "", "2", "3", "2", "3")'
+//      
+//  }, function(ret, err) {
+//      if (ret.status) {
+//           alert(JSON.stringify(ret));
+//      } else {
+//           alert(JSON.stringify(err));
+//      }
+//  });
 
 
 

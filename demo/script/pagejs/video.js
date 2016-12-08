@@ -29,65 +29,65 @@ apiready = function() {
     
 
     is_check=false;
-	api.closeWin({
-		name : 'course-test'
-	});
-	$('body').css('background', '#21292b');
-	//获取参数
-	courseId = api.pageParam.courseId;//课程id
-	course_detail = api.pageParam.course_detail;//课程详情
-	courseName = course_detail.courseName;//课程名字
-	//study_progress = api.pageParam.study_progress;//当前的进度
+    api.closeWin({
+        name : 'course-test'
+    });
+    $('body').css('background', '#21292b');
+    //获取参数
+    courseId = api.pageParam.courseId;//课程id
+    course_detail = api.pageParam.course_detail;//课程详情
+    courseName = course_detail.courseName;//课程名字
+    //study_progress = api.pageParam.study_progress;//当前的进度
 
-	task_info = api.pageParam.task_info;//任务信息
-	videoid = task_info.videoCcid;
-	videoTimes = task_info.videoTime;
+    task_info = api.pageParam.task_info;//任务信息
+    videoid = task_info.videoCcid;
+    videoTimes = task_info.videoTime;
     if(!isEmpty(api.pageParam.last_progress)){
         last_progress = api.pageParam.last_progress;
     }
     task_arr = save_tasks(course_detail);
 
     task_info_detail = task_arr[task_info.taskId];
-	//获取章节信息
-	//getChapterInfo();
+    //获取章节信息
+    //getChapterInfo();
 
-	if (isEmpty(task_info) || task_info.taskType != 'video') {
-		api.alert({
-			title : '温馨提示',
-			msg : '数据异常，请返回重试',
-			buttons : ['返回']
-		}, function(ret, err) {
-			if (ret.buttonIndex == 1) {
-				api.setStatusBarStyle({
-					style : 'dark'
-				});
-				api.closeWin();
-				//课程结束，关闭页面
-			}
-		});
-		return false;
-	}
+    if (isEmpty(task_info) || task_info.taskType != 'video') {
+        api.alert({
+            title : '温馨提示',
+            msg : '数据异常，请返回重试',
+            buttons : ['返回']
+        }, function(ret, err) {
+            if (ret.buttonIndex == 1) {
+                api.setStatusBarStyle({
+                    style : 'dark'
+                });
+                api.closeWin();
+                //课程结束，关闭页面
+            }
+        });
+        return false;
+    }
 
-	//设置ios状态栏背景色
-	if (api.systemType == 'ios') {
-		api.setStatusBarStyle({
-			style : 'light'
-		});
-	}
-	demo = api.require('lbbVideo');
-	//监听切换视频事件
-	api.addEventListener({
-		name : 'change_video'
-	}, function(ret) {
-		if (ret && ret.value) {
-			/*
+    //设置ios状态栏背景色
+    if (api.systemType == 'ios') {
+        api.setStatusBarStyle({
+            style : 'light'
+        });
+    }
+    demo = api.require('lbbVideo');
+    //监听切换视频事件
+    api.addEventListener({
+        name : 'change_video'
+    }, function(ret) {
+        if (ret && ret.value) {
+            /*
             study_progress = ret.value.study_progress;
-			study_progress.progress = 0;//新任务从0开始
-			task_info = ret.value.task_info;
-			videoid = task_info.videoCcid;
-			videoTimes = task_info.videoTime;
-			//更新章节信息
-			//getChapterInfo();
+            study_progress.progress = 0;//新任务从0开始
+            task_info = ret.value.task_info;
+            videoid = task_info.videoCcid;
+            videoTimes = task_info.videoTime;
+            //更新章节信息
+            //getChapterInfo();
             */
             lastVtime = 0;//新任务从0开始
             var task_id = ret.value.taskId;
@@ -95,58 +95,58 @@ apiready = function() {
             task_info_detail = task_arr[task_id];
             videoid = task_info.videoCcid;
             videoTimes = task_info.videoTime;
-			if (api.systemType == 'android') {
-				demo.close();
-			}
-			play_video();
-		}
-	});
+            if (api.systemType == 'android') {
+                demo.close();
+            }
+            play_video();
+        }
+    });
 
-	//监听继续播放事件
-	api.addEventListener({
-		name : 'continue_video'
-	}, function(ret) {
-		if (ret && ret.value) {
-			demo.start();
-			//var times = ret.value.times;
-			//if (times > 20) {
-			//	times = times - 20;
-			//} else {
-			//	times = 0;
-			//}
-			//if (api.systemType == 'android') {
-			//	times = times * 1000;
-			//	demo.seekTo({
-			//		totime : times
-			//	}, function() {
-			//		demo.start();
-			//	});
-			//} else {
-			//	demo.start();
-			//}
-		}
-	});
+    //监听继续播放事件
+    api.addEventListener({
+        name : 'continue_video'
+    }, function(ret) {
+        if (ret && ret.value) {
+            demo.start();
+            //var times = ret.value.times;
+            //if (times > 20) {
+            //  times = times - 20;
+            //} else {
+            //  times = 0;
+            //}
+            //if (api.systemType == 'android') {
+            //  times = times * 1000;
+            //  demo.seekTo({
+            //      totime : times
+            //  }, function() {
+            //      demo.start();
+            //  });
+            //} else {
+            //  demo.start();
+            //}
+        }
+    });
 
-	//监听返回键
-	api.addEventListener({
-		name : 'keyback'
-	}, function(ret, err) {
-		closeThisWin(0);
-		//关闭页面
-	});
-	//监听关闭视频
-	api.addEventListener({
-		name : 'close_video_demo'
-	}, function(ret, err) {
-		if (api.systemType == 'android') {
-			demo.close();
-		}else{
-			demo.close();
-		}
-	});
+    //监听返回键
+    api.addEventListener({
+        name : 'keyback'
+    }, function(ret, err) {
+        closeThisWin(0);
+        //关闭页面
+    });
+    //监听关闭视频
+    api.addEventListener({
+        name : 'close_video_demo'
+    }, function(ret, err) {
+        if (api.systemType == 'android') {
+            demo.close();
+        }else{
+            demo.close();
+        }
+    });
 
-	//播放视频
-	play_video();
+    //播放视频
+    play_video();
 
     api.addEventListener({
         name : 'lbbpause'
@@ -165,17 +165,17 @@ apiready = function() {
 //根据进度索引,获取章节信息
 /*
 function getChapterInfo(){
-	if (study_progress.chapterDeep >= 0) {
-		var res = course_detail.chapters[study_progress.oneChapterIndex];
-	}
-	if (study_progress.chapterDeep >= 1) {
-		var res = res.children[study_progress.twoChapterIndex];
-	}
-	if (study_progress.chapterDeep >= 2) {
-		var res = res.children[study_progress.threeChapterIndex];
-	}
-	chapter_info = res;
-	chapterName = chapter_info.chapterTitle;
+    if (study_progress.chapterDeep >= 0) {
+        var res = course_detail.chapters[study_progress.oneChapterIndex];
+    }
+    if (study_progress.chapterDeep >= 1) {
+        var res = res.children[study_progress.twoChapterIndex];
+    }
+    if (study_progress.chapterDeep >= 2) {
+        var res = res.children[study_progress.threeChapterIndex];
+    }
+    chapter_info = res;
+    chapterName = chapter_info.chapterTitle;
 }
 */
 var is_check=false;
@@ -256,7 +256,7 @@ function play_video() {
      
      
      
- },1000*5)
+ },1000*60*2)
          
             demo.open(param, function(ret, err) {
                 
@@ -687,71 +687,71 @@ function prevVideo() {
 }
 //执行新任务
 function exeNewTask() {
-	//如果任务类型为视频，则直接播放
-	if (task_info.taskType == 'video') {
-		videoid = task_info.videoCcid;
-		videoTimes = task_info.videoTime;
+    //如果任务类型为视频，则直接播放
+    if (task_info.taskType == 'video') {
+        videoid = task_info.videoCcid;
+        videoTimes = task_info.videoTime;
         
-		if (api.systemType == 'android') {
-			demo.close();
-		}
+        if (api.systemType == 'android') {
+            demo.close();
+        }
 
-		play_video();
+        play_video();
         
-	} else {
-		//要传递到下个页面的参数
-		var page_param = {
-			courseId : courseId, //课程id
-			course_detail : course_detail, //课程详情
-			//study_progress : study_progress,
+    } else {
+        //要传递到下个页面的参数
+        var page_param = {
+            courseId : courseId, //课程id
+            course_detail : course_detail, //课程详情
+            //study_progress : study_progress,
             last_progress : 0,
-			task_info : task_info, //任务信息
-			type : 'task'
-		};
-		api.openWin({
-			name : 'course-test',
-			url : 'course-test.html',
-			reload : true,
-			pageParam : page_param,
-			delay : 200
-		});
-		api.closeWin({
-			animation : {
-				type : 'flip',
-				subType : 'from_left',
-				duration : 500
-			}
-		});
-	}
+            task_info : task_info, //任务信息
+            type : 'task'
+        };
+        api.openWin({
+            name : 'course-test',
+            url : 'course-test.html',
+            reload : true,
+            pageParam : page_param,
+            delay : 200
+        });
+        api.closeWin({
+            animation : {
+                type : 'flip',
+                subType : 'from_left',
+                duration : 500
+            }
+        });
+    }
 }
 
 
 
 //关闭当前页面，返回课程页面
 function closeThisWin(playtime) {
-	//保存进度,关闭页面
+    //保存进度,关闭页面
     if(api.systemType == 'android'){
         api.setFullScreen({
             fullScreen:false
         });
     }
     var total = videoTimes;
-	if (!isEmpty(playtime)) {
+    if (!isEmpty(playtime)) {
 
-		if (total * 0.9 <= playtime) {
-			var state = 'complate';
-		} else {
-			var state = 'init';
-		}
-		saveTaskProgress(playtime, total, state);
-	} else {
+        if (total * 0.9 <= playtime) {
+            var state = 'complate';
+        } else {
+            var state = 'init';
+        }
+        saveTaskProgress(playtime, total, state);
+    } else {
         saveTaskProgress(0, total, state);
-		if (api.systemType == 'android') {
-			demo.close();
-		}else{
+        if (api.systemType == 'android') {
+            demo.close();
+        }else{
             demo.close();
         }
-	}
+    }
 
 
         //横屏切换到竖屏
@@ -785,14 +785,14 @@ function saveTaskProgress(now_progress, total, state){
         task_info_detail:task_info_detail,
         course_detail:course_detail
     };
-    
+  
     $api.setStorage('saveDataBase',data);
         var jsfun = "DosaveDataBase();";
             api.execScript({
                 name: 'root',
                 script: jsfun
             });
-    //离线状态下将进度保存到数据库不保存到服务器
+    //离线状态下将进度保存到本地数据库不保存到服务器
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {      
         return false;
     }

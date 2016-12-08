@@ -1,7 +1,7 @@
 //SHA1加密算法
 function SHA1(msg) {
     function rotate_left(n, s) {
-        var t4 = (n << s ) | (n >>> (32 - s));
+        var t4 = (n << s) | (n >>> (32 - s));
         return t4;
     }
 
@@ -170,6 +170,7 @@ function SHA1(msg) {
 //groupName - 推送组名，多个组用英文逗号隔开.默认:全部组。eg.group1,group2 .
 //userIds - 推送用户id, 多个用户用英文逗号分隔，eg. user1,user2。
 var push_url = "https://p.apicloud.com/api/push/message";
+
 function push(bodyParam) {
     bodyParam.platform = 0;
     bodyParam.userIds = api.deviceId;
@@ -189,20 +190,21 @@ function push(bodyParam) {
         data: {
             values: bodyParam
         }
-    }, function (ret, err) {
+    }, function(ret, err) {
         //api.alert({msg:ret});
     });
 }
 
 // var course_detail_expire = 86400 * 14 * 1000;
-var course_detail_expire = 86400*1000;
+var course_detail_expire = 86400 * 1000;
 // var course_detail_expire = 60*1000;
 var push_timer;
+
 function init_push() {
     var time = isEmpty($api.getStorage('notice_time')) ? '' : $api.getStorage('notice_time');
     if (!isEmpty(time)) {
         clearInterval(push_timer);
-        push_timer = setInterval(function () {
+        push_timer = setInterval(function() {
             var date = new Date(Date.now());
             var hourse = extra(date.getHours());
             var minute = extra(date.getMinutes());
@@ -260,6 +262,7 @@ if (debug) {
     common_url = 'http://api.caicui.com';
     static_url = 'http://static.caicui.com';
 }
+
 function get_static() {
     if (debug) {
         //测试地址
@@ -302,7 +305,7 @@ function myajaxRequest(url, method, params, callBack) {
         timeout: 1200,
         headers: headers,
         data: data
-    }, function (ret, err) {
+    }, function(ret, err) {
         if (api.connectionType == 'none' || api.connectionType == 'unknown') {
             is_ok = true;
         }
@@ -311,7 +314,7 @@ function myajaxRequest(url, method, params, callBack) {
 }
 
 function ajaxRequest(url, method, params, callBack) {
-    var src = url ;
+    var src = url;
     var headers = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     };
@@ -338,7 +341,7 @@ function ajaxRequest(url, method, params, callBack) {
         timeout: 1200,
         headers: headers,
         data: data
-    }, function (ret, err) {
+    }, function(ret, err) {
         if (api.connectionType == 'none' || api.connectionType == 'unknown') {
             is_ok = true;
         }
@@ -363,7 +366,7 @@ function set_token(callback) {
         param.appId = 'aPhoneCourse';
         param.appKey = '4b6454d8cf903498116e26b26dd5791a';
     }
-    myajaxRequest('api/v2.1/getToken', 'get', param, function (ret, err) {
+    myajaxRequest('api/v2.1/getToken', 'get', param, function(ret, err) {
         if (ret.state == 'success') {
             $api.setStorage('token', ret.data.token);
         }
@@ -372,7 +375,7 @@ function set_token(callback) {
 }
 
 function get_token() {
-    set_token(function (ret, err) {
+    set_token(function(ret, err) {
         if (err) {
             api.toast({
                 msg: err.msg,
@@ -385,7 +388,7 @@ function get_token() {
         } else {
 
             if (!isEmpty(err_conf_007[ret.msg])) {
-                var  error = err_conf_007[ret.msg];
+                var error = err_conf_007[ret.msg];
                 api.toast({
                     msg: error,
                     location: 'middle'
@@ -606,21 +609,21 @@ function isEmpty1(data) {
 
 function isEmpty2(v) {
     switch (typeof v) {
-        case 'undefined' :
+        case 'undefined':
             return true;
-        case 'string' :
+        case 'string':
             if ($api.trim(v).length == 0)
                 return true;
             break;
-        case 'boolean' :
+        case 'boolean':
             if (!v)
                 return true;
             break;
-        case 'number' :
+        case 'number':
             if (0 === v)
                 return true;
             break;
-        case 'object' :
+        case 'object':
             if (null === v)
                 return true;
             if (undefined !== v.length && v.length == 0)
@@ -648,7 +651,7 @@ function get_loc_val(key, index) {
 function app_installed(appBundle, callback) {
     api.appInstalled({
         appBundle: appBundle
-    }, function (ret, err) {
+    }, function(ret, err) {
         if (ret.installed) {
             callback(true);
         } else {
@@ -682,6 +685,7 @@ function html_decode(str) {
 }
 
 var cache_model = null;
+
 function video_cache(method, title, ccid, UserId, apiKey, callback) {
     var param = {
         title: title,
@@ -696,15 +700,15 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
         callback(false);
     }
     if (method == 'download') {
-        getCCconfig(function (CCconfig) {
+        getCCconfig(function(CCconfig) {
             if (CCconfig) {
                 //alert(UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
                 param['isEncryption'] = isEmpty(CCconfig[UserId]) ? 0 : 1;
                 //api.alert({
                 //    msg:param
                 //});
-                cache_model.download(param, function (ret, err) {
-                    if(api.systemType == "ios" && parseInt(ret.status)==2){
+                cache_model.download(param, function(ret, err) {
+                    if (api.systemType == "ios" && parseInt(ret.status) == 2) {
                         return false;
                     }
                     callback(ret, err);
@@ -712,11 +716,11 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
             }
         });
     } else if (method == 'downloadStop') {
-        cache_model.downloadStop(function (ret, err) {
+        cache_model.downloadStop(function(ret, err) {
             callback(ret, err);
         });
     } else if (method == 'downloadStart') {
-        cache_model.downloadStart(function (ret, err) {
+        cache_model.downloadStart(function(ret, err) {
             callback(ret, err);
         });
         //cache_model.downloadStart(function(ret, err) {
@@ -729,7 +733,7 @@ function write_file(filename, data, callback) {
     api.writeFile({
         path: 'fs://' + filename,
         data: data
-    }, function (ret, err) {
+    }, function(ret, err) {
         callback(ret, err);
     });
 }
@@ -737,7 +741,7 @@ function write_file(filename, data, callback) {
 function read_file(filename, callback) {
     api.readFile({
         path: 'fs://' + filename
-    }, function (ret, err) {
+    }, function(ret, err) {
         callback(ret, err);
     });
 }
@@ -759,15 +763,13 @@ function set_cache(courseId, data) {
         if (!in_array(courseId, obj_data)) {
             obj_data.push(courseId);
             $api.setStorage(memberId + 'video-buffer', obj_data);
-            write_file(memberId + courseId + '.db', JSON.stringify(data), function (ret, err) {
-            })
+            write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
         }
     } else {
         obj_data = [];
         obj_data.push(courseId);
         $api.setStorage(memberId + 'video-buffer', obj_data);
-        write_file(memberId + courseId + '.db', JSON.stringify(data), function (ret, err) {
-        })
+        write_file(memberId + courseId + '.db', JSON.stringify(data), function(ret, err) {})
     }
 }
 
@@ -781,7 +783,7 @@ function set_cache_lst(courseId, chapId) {
     } else {
         var param = {};
         param.courseId = courseId;
-        ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (rets, errs) {
+        ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function(rets, errs) {
             if (rets && rets.state == 'success') {
                 var data = rets.data;
                 if (isEmpty(data)) {
@@ -799,7 +801,7 @@ function set_cache_lst(courseId, chapId) {
     }
 }
 
-function getFixName(filename) {//获取文件后缀名
+function getFixName(filename) { //获取文件后缀名
     var index1 = filename.lastIndexOf(".");
     var index2 = filename.length;
     return filename.substring(index1, index2);
@@ -809,7 +811,12 @@ function getFixName(filename) {//获取文件后缀名
 //下载按钮点击
 function down(_this) {
     var memberId = getstor('memberId');
-    var courseId = $(_this).attr('courseid'), type = $(_this).attr('type'), chapterIdA = $(_this).attr('chapterida'), chapterIdB = $(_this).attr('chapteridb'), chapterIdC = $(_this).attr('chapteridc'), tasks = $.trim($(_this).siblings('.down_data').html());
+    var courseId = $(_this).attr('courseid'),
+        type = $(_this).attr('type'),
+        chapterIdA = $(_this).attr('chapterida'),
+        chapterIdB = $(_this).attr('chapteridb'),
+        chapterIdC = $(_this).attr('chapteridc'),
+        tasks = $.trim($(_this).siblings('.down_data').html());
     if (isEmpty(tasks)) {
         api.toast({
             msg: '无视频任务',
@@ -854,18 +861,22 @@ function set_down(data) {
 }
 
 var is_added = true;
+
 function mydown(result) {
     is_added = true;
     var down_data = result;
     var memberId = getstor('memberId');
     var tasks = result.tasks;
-    var courseId = result.courseId, type = result.type, chapterIdA = result.chapterIdA, chapterIdB = result.chapterIdB, chapterIdC = result.chapterIdC;
-    if(!CourseIsexpire(courseId)){
+    var courseId = result.courseId,
+        type = result.type,
+        chapterIdA = result.chapterIdA,
+        chapterIdB = result.chapterIdB,
+        chapterIdC = result.chapterIdC;
+    if (!CourseIsexpire(courseId)) {
         api.alert({
-            title : '温馨提示',
-            msg : '该课程已过期'
-        }, function(ret, err) {
-        });
+            title: '温馨提示',
+            msg: '该课程已过期'
+        }, function(ret, err) {});
         return false;
     }
 
@@ -887,8 +898,8 @@ function mydown(result) {
         case '1':
         case 1:
             //正在下载-》暂停
-            stop_down(function (r) {
-                if(api.systemType == "ios" && parseInt(r.status) == 0){
+            stop_down(function(r) {
+                if (api.systemType == "ios" && parseInt(r.status) == 0) {
                     return false;
                 }
                 // $api.rmStorage(memberId + 'downed');
@@ -900,8 +911,8 @@ function mydown(result) {
         case 2:
 
             //暂停-》开始下载
-            stop_down(function (r) {
-                if(api.systemType == "ios" && parseInt(r.status) == 0){
+            stop_down(function(r) {
+                if (api.systemType == "ios" && parseInt(r.status) == 0) {
                     return false;
                 }
                 // $api.rmStorage(memberId + 'downed');
@@ -911,7 +922,7 @@ function mydown(result) {
             break;
         case '3':
         case 3:
-            api.getFreeDiskSpace(function (Space, err) {
+            api.getFreeDiskSpace(function(Space, err) {
                 var size = (Space.size / 1000 / 1000).toFixed(0);
                 if (size < 300) {
                     data.type = 'less_space';
@@ -940,11 +951,16 @@ function mydown(result) {
                         set_down(data);
                         return false;
                     }
+
                     function to_down(m) {
                         if (isEmpty(task_data[m]) || isEmpty(task_data[m].data.videoCcid) || isEmpty(task_data[m].data.apiKey)) {
                             return false;
                         }
-                        var title = task_data[m].data.title, videoCcid = task_data[m].data.videoCcid, videoSiteId = task_data[m].data.videoSiteId, apiKey = task_data[m].data.apiKey, taskId = task_data[m].data.taskId;
+                        var title = task_data[m].data.title,
+                            videoCcid = task_data[m].data.videoCcid,
+                            videoSiteId = task_data[m].data.videoSiteId,
+                            apiKey = task_data[m].data.apiKey,
+                            taskId = task_data[m].data.taskId;
                         if (is_down) {
                             //一级章节下载记录
                             if (!isEmpty(chapterIdA) && isEmpty(chapterIdB) && isEmpty(chapterIdC)) {
@@ -962,7 +978,7 @@ function mydown(result) {
                                 $api.setStorage(memberId + chapterIdC + 'progress', 1);
                             }
                             //下载队列
-                            read_file(memberId + 'Queue.db', function (res, err) {
+                            read_file(memberId + 'Queue.db', function(res, err) {
                                 if (res.status && res.data) {
                                     var Queue = JSON.parse(res.data);
                                     ////变成等待中的状态
@@ -991,14 +1007,12 @@ function mydown(result) {
                                     }
                                     if (flag) {
                                         Queue.push(down_data);
-                                        write_file(memberId + 'Queue.db', JSON.stringify(Queue), function (ret, err) {
-                                        })
+                                        write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
                                     }
                                 } else {
                                     Queue = [];
                                     Queue.push(down_data);
-                                    write_file(memberId + 'Queue.db', JSON.stringify(Queue), function (ret, err) {
-                                    })
+                                    write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
                                 }
                             });
                             return false;
@@ -1007,14 +1021,14 @@ function mydown(result) {
                         data.type = 'ing';
                         set_down(data);
 
-                        var lslcallback = function (ret, err) {
+                        var lslcallback = function(ret, err) {
                             // api.sendEvent({
                             //     name: 'DOWN',
                             //     extra: {
                             //         ret:ret
                             //     }
                             // });
-                            if(api.systemType=='ios' &&  (ret.status== 3 || ret.status == '3')){
+                            if (api.systemType == 'ios' && (ret.status == 3 || ret.status == '3')) {
                                 var downed = $api.getStorage(memberId + 'downed');
                                 if (downed) {
                                     var mychapterIdA = isEmpty(downed['chapterIdA']) ? '' : downed['chapterIdA'];
@@ -1035,7 +1049,7 @@ function mydown(result) {
                                     return false;
                                 }
                             }
-                            if(ret.progress<=0 && ret && ret.status !=0){
+                            if (ret.progress <= 0 && ret && ret.status != 0) {
                                 return false;
                             }
 
@@ -1051,7 +1065,7 @@ function mydown(result) {
                                 }
                             }
 
-                            if (ret && (ret.status==1 || ret.status=='1')) {
+                            if (ret && (ret.status == 1 || ret.status == '1')) {
                                 var progress = parseInt(ret.progress);
                                 if (progress > 100) {
                                     return false;
@@ -1063,7 +1077,7 @@ function mydown(result) {
                                     data.type = 'ing';
                                     set_down(data);
                                     //下载队列
-                                    read_file(memberId + 'Queue.db', function (res, err) {
+                                    read_file(memberId + 'Queue.db', function(res, err) {
                                         if (res.status && res.data) {
                                             var Queue = JSON.parse(res.data);
                                             var flag = true;
@@ -1089,14 +1103,12 @@ function mydown(result) {
                                             }
                                             if (flag) {
                                                 Queue.push(down_data);
-                                                write_file(memberId + 'Queue.db', JSON.stringify(Queue), function (ret, err) {
-                                                })
+                                                write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
                                             }
                                         } else {
                                             Queue = [];
                                             Queue.push(down_data);
-                                            write_file(memberId + 'Queue.db', JSON.stringify(Queue), function (ret, err) {
-                                            })
+                                            write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {})
                                         }
                                     });
                                     is_added = false;
@@ -1145,7 +1157,7 @@ function mydown(result) {
                                 }
                                 //三级章节下载记录
                                 if (!isEmpty(chapterIdC) && !isEmpty(chapterIdA) && !isEmpty(chapterIdB)) {
-                                    if (typeof cahce_data[chapterIdA][chapterIdB] == "undefined" || isEmpty(cahce_data[chapterIdA][chapterIdB])){
+                                    if (typeof cahce_data[chapterIdA][chapterIdB] == "undefined" || isEmpty(cahce_data[chapterIdA][chapterIdB])) {
                                         cahce_data[chapterIdA][chapterIdB] = {};
                                     }
                                     if (typeof cahce_data[chapterIdA][chapterIdB][chapterIdC] == "undefined" || isEmpty(cahce_data[chapterIdA][chapterIdB][chapterIdC])) {
@@ -1163,7 +1175,7 @@ function mydown(result) {
                                     cahce_data[chapterIdA][chapterIdB][chapterIdC]['progress'] = num;
                                 }
 
-                               
+
 
 
                                 $api.setStorage('cahce_data' + memberId + courseId, cahce_data);
@@ -1207,10 +1219,10 @@ function mydown(result) {
 
 
 
-                                api.getFreeDiskSpace(function (retd, err) {
+                                api.getFreeDiskSpace(function(retd, err) {
                                     var size = (retd.size / 1000 / 1000).toFixed(2);
                                     if (size <= 300) {
-                                        stop_down(function (r) {
+                                        stop_down(function(r) {
                                             data.type = 'less_space';
                                             set_down(data);
                                         });
@@ -1275,7 +1287,7 @@ function mydown(result) {
                                                 set_down(data);
                                                 //删除下载队列  接着下一下载
                                                 //下载队列
-                                                read_file(memberId + 'Queue.db', function (res, err) {
+                                                read_file(memberId + 'Queue.db', function(res, err) {
                                                     if (res.status && res.data) {
                                                         var Queue = JSON.parse(res.data);
                                                         for (var p in Queue) {
@@ -1299,8 +1311,7 @@ function mydown(result) {
                                                                         mydown(result);
                                                                     }
                                                                 }
-                                                                write_file(memberId + 'Queue.db', JSON.stringify(Queue), function (ret, err) {
-                                                                });
+                                                                write_file(memberId + 'Queue.db', JSON.stringify(Queue), function(ret, err) {});
                                                                 break;
                                                             }
                                                         }
@@ -1421,14 +1432,14 @@ function is_loadC(chatac) {
     return isEmpty($api.getStorage(chatac)) || $api.getStorage(chatac) == undefined || $api.getStorage(chatac) == 'NaN' ? 'none' : '';
 }
 
-function down_stop(callback) {//删除下载
+function down_stop(callback) { //删除下载
     var memberId = getstor('memberId');
     var downed = $api.getStorage(memberId + 'downed');
 
     if (cache_model == null) {
         cache_model = api.require('lbbVideo');
     }
-    cache_model.downloadStop(function (ret, err) {
+    cache_model.downloadStop(function(ret, err) {
 
         $api.rmStorage(memberId + 'downed');
         if (downed) {
@@ -1452,13 +1463,13 @@ function down_stop(callback) {//删除下载
     });
 }
 
-function stop_down(callback) {//暂停下载
+function stop_down(callback) { //暂停下载
     var memberId = getstor('memberId');
 
     if (cache_model == null) {
         cache_model = api.require('lbbVideo');
     }
-    cache_model.downloadStop(function (ret, err) {
+    cache_model.downloadStop(function(ret, err) {
         $api.rmStorage(memberId + 'downed');
         callback(ret);
     });
@@ -1467,7 +1478,7 @@ function stop_down(callback) {//暂停下载
 function my_to_down() {
     var data = $api.getStorage('my_to_down');
 
-    if (api.connectionType == 'wifi') {//为wifi可以下载
+    if (api.connectionType == 'wifi') { //为wifi可以下载
 
         mydown(data);
 
@@ -1498,8 +1509,8 @@ function rmVideo(res) {
         cache_model = api.require('lbbVideo');
     }
     if (!isEmpty(cache_model) && !isEmpty(videoIds)) {
-        for (var p in videoIds) {      
-        		delVideoFile(videoIds[p]); 		
+        for (var p in videoIds) {
+            delVideoFile(videoIds[p]);
             /*cache_model.rmVideo({
                 videoId: videoIds[p]
             });*/
@@ -1513,15 +1524,16 @@ function rmVideo(res) {
 var is_count = false;
 var down_timer;
 var down_setTimeout;
+
 function count_speed() {
     if (!is_count) {
         clearInterval(down_timer);
         clearTimeout(down_setTimeout);
-        down_timer = setInterval(function () {
-            api.getFreeDiskSpace(function (ret, err) {
+        down_timer = setInterval(function() {
+            api.getFreeDiskSpace(function(ret, err) {
                 var size1 = ret.size;
-                down_setTimeout = setTimeout(function () {
-                    api.getFreeDiskSpace(function (retd, err) {
+                down_setTimeout = setTimeout(function() {
+                    api.getFreeDiskSpace(function(retd, err) {
                         var size2 = retd.size;
                         if (size1 >= size2) {
                             var speed = (((size1 - size2) / 1000 / 1000) * 1024).toFixed(0);
@@ -1545,53 +1557,53 @@ window.allow_down = true;
 window.shut_network = false;
 
 
-function delVideoFile(videoId){
-  //	alert(videoId);
+function delVideoFile(videoId) {
+    //  alert(videoId);
     var userid = getstor("memberId");
-    var courseArr = $api.getStorage(userid+"video-buffer");
+    var courseArr = $api.getStorage(userid + "video-buffer");
     var videoIdArr = [];
-    if(!isEmpty(courseArr)){
-        for(var key in courseArr){
+    if (!isEmpty(courseArr)) {
+        for (var key in courseArr) {
             var courseId = courseArr[key];
-            var data = JSON.parse(api.readFile({sync:true,path: 'fs://'+userid+courseId+".db"}));
+            var data = JSON.parse(api.readFile({ sync: true, path: 'fs://' + userid + courseId + ".db" }));
             //alert(data);
             //把正在下在的列表中的视频id放入一个数据中
-            for(var i in data){
+            for (var i in data) {
                 var data1 = data[i].chapters;
                 //chapters
-                for(var j in data1){
+                for (var j in data1) {
                     var data2 = data1[j];
-                    if(data2.isLeaf == "true"){//一级处理
+                    if (data2.isLeaf == "true") { //一级处理
                         //api.toast({msg:"111111-----"+data2.chapterId});
-                        if(is_loadA(data2.chapterId) == ''){
+                        if (is_loadA(data2.chapterId) == '') {
                             var data3 = data2.tasks;
-                            for(var g in data3){
+                            for (var g in data3) {
                                 //判断是否在下载
                                 videoIdArr.push(data3[g].videoCcid);
                             }
                         }
-                    }else{
+                    } else {
                         //二级处理
                         var children = data2[j];
-                        for(var c in children){
+                        for (var c in children) {
                             var data4 = children[c];
-                            if(data4.isLeaf == "true"){
-                                if("" ==is_loadB(data4.chapterId)){
+                            if (data4.isLeaf == "true") {
+                                if ("" == is_loadB(data4.chapterId)) {
                                     var data5 = data4.tasks;
-                                    for(var k in data5){
+                                    for (var k in data5) {
                                         //判断是否在下载
                                         videoIdArr.push(data5[k].videoCcid);
                                     }
                                 }
-                            }else{
+                            } else {
                                 //三级处理
                                 var children3 = data4[c];
-                                for(var c3 in children3){
+                                for (var c3 in children3) {
                                     var data6 = children3[c3];
-                                    if(data6.isLeaf == "true"){
-                                        if("" == is_loadC(data6.chapterId)){
+                                    if (data6.isLeaf == "true") {
+                                        if ("" == is_loadC(data6.chapterId)) {
                                             var data7 = data6.tasks;
-                                            for(var m in data7){
+                                            for (var m in data7) {
                                                 //判断是否在下载
                                                 videoIdArr.push(data7[m].videoCcid);
                                             }
@@ -1604,21 +1616,21 @@ function delVideoFile(videoId){
                 }
             }
         }
-  //      alert(videoId);
+        //      alert(videoId);
         // api.alert({msg:videoIdArr});
     }
     //判断是否删除
     var isdel = true;
-    for(var v1 in videoIdArr){
-        if(videoIdArr[v1] == videoId){
+    for (var v1 in videoIdArr) {
+        if (videoIdArr[v1] == videoId) {
             isdel = false;
             break;
         }
-    } 
-    if(isdel){
+    }
+    if (isdel) {
         //alert(isdel+"----"+videoId);
         $api.rmStorage(videoId);
         $api.rmStorage('cache' + videoId);
-        cache_model.rmVideo({videoId:videoId});
+        cache_model.rmVideo({ videoId: videoId });
     }
 }
