@@ -130,7 +130,7 @@
 					DB.selectSql(DB.taskNameDB,'SELECT * FROM '+DB.taskNameTable,function(ret, err){
 						if(ret.status && ret.data && ret.data.length){
 						}else{
-							DB.executeSql(DB.taskNameDB,'CREATE TABLE '+DB.taskNameTable+'(nid integer primary key, courseId varchar(255), charpgerId varchar(255), taskId varchar(255), progress varchar(255), state varchar(255), isSend varchar(255), modifyDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
+							DB.executeSql(DB.taskNameDB,'CREATE TABLE '+DB.taskNameTable+'(nid integer primary key, categoryId varchar(255), subjectId varchar(255), courseId varchar(255), courseName varchar(255), charpgerId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255), isSend varchar(255), modifyDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
 						}
 						if(callback){callback(ret, err)};
 					});
@@ -139,7 +139,6 @@
 		},
 		insetTaskDB : function(data){// 添加 || 更新 数据库-任务
 			DB.selectSql(DB.taskNameDB,"SELECT * FROM Task where taskId='"+data.taskId+"'",function(ret, err){
-				
 				if(ret.status && ret.data && ret.data.length){//更新
 					DB.updateTaskDB(data);
 				}else{//添加
@@ -149,7 +148,7 @@
 		},
 		addTaskDB : function(data){// 添加一条记录 数据库-任务
 		    var currenttime=Date.parse(new Date()); //当前时间戳
-		    DB.executeSql(DB.taskNameDB,"INSERT INTO "+DB.taskNameTable+" (nid, courseId, charpgerId, taskId, progress, state, isSend, modifyDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
+		    DB.executeSql(DB.taskNameDB,"INSERT INTO "+DB.taskNameTable+" (nid, categoryId, subjectId, courseId, courseName, charpgerId, chapterName, taskId, taskName, progress, total, state, isSend, modifyDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
 	            " VALUES (" +
 	            "NULL," +
 	            "'"+data.categoryId+"'," +
