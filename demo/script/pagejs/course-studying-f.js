@@ -994,6 +994,7 @@ function getData(page) {
 }
 
 apiready = function() {
+
 	//获取页面的数据
 	getData(1);
 	api.addEventListener({
