@@ -104,12 +104,13 @@
     <script type="text/javascript" src="./script/zepto.js"></script>
     <script type="text/javascript" src="./script/comm.js"></script>
     <script type="text/javascript" src="./script/caicui.js"></script>
+    <script type="text/javascript" src="./script/db.js"></script>
     <script type="text/javascript">
     //页面跳转
     var clickCount = 1;
     var timePicker;
     var y, h;
-
+    
 
     function to_set() { //打开设置
         api.setStatusBarStyle({
@@ -755,7 +756,13 @@
         if (notice == 1) {
             init_push();
         }
+        // 登录成功 获取所有未提交的任务进度
+        DB.getTaskProgressNoSend(function(data){
+    		// alert('nosend:::'+JSON.stringify(data));
+    		if(data && data.length){
 
+    		}
+    	})
     }
 
     function to_login() { //去登陆
@@ -1001,8 +1008,39 @@
     }
     var is_resume;
     apiready = function() {
-
-
+    	var tasksProgress = {
+    		categoryId : '', // 证书id
+    		subjectId : '', // 科目id
+			courseId : '2', // 课程id
+			courseName : '', // 课程名称
+			charpgerId : '', // 章节id
+			charpgerName : '', //章节名称
+			taskId : '21', // 任务id
+			taskName : '', //任务名称
+			progress : '21', // 最后1次学习进度
+			total : '', // 任务总长度
+			state : '', // 是否播放结束
+			isSend : '', // 是否已同步服务器
+			modifyDate : '', // 视频进度保存时间
+			downloadProgress : '', // 下载进度
+			downloadState : '', // 下载状态（ing，stop，end）
+			downloadDate : '', // 下载日期
+			expiredDate : '' // 过期日期
+		}
+    	// DB.saveTasksProgress(tasksProgress);
+    	
+    	// DB.clearTasksProgress();
+    	// DB.showTasksProgress();
+    	// DB.getCourseIdAll(function(data){
+    	// 	alert(JSON.stringify(data));
+    	// })
+    	// DB.getTaskProgress('21',function(data){
+    	// 	alert(data);
+    	// })
+    	// DB.getTaskProgressNoSend(function(data){
+    	// 	alert('nosend:::'+JSON.stringify(data));
+    	// })
+    	
 
         is_resume = false;
         api.setKeepScreenOn({
@@ -1016,6 +1054,7 @@
                 cache_model.init();
             }
         }
+        //应用进入后台事件
         api.addEventListener({
             name: 'pause'
         }, function(ret, err) {
@@ -1050,9 +1089,14 @@
                 }
             }
         });
+        //应用从后台回到前台事件
         api.addEventListener({
             name: 'resume'
         }, function(ret, err) {
+        	// 获取所有未提交的任务进度
+        	DB.getTaskProgressNoSend(function(data){
+	    		// alert('nosend:::'+JSON.stringify(data));
+	    	})
             api.sendEvent({
                 name: "lbbresume"
             });
@@ -1106,16 +1150,15 @@
         api.addEventListener({
             name: 'offline'
         }, function(ret, err) {
-
             window.shut_network = true;
             window.allow_down = false;
 
             var memberId = getstor('memberId');
+            //是否在播放页面
+            //保存进度
             var downed = $api.getStorage(memberId + 'downed');
             if (downed) {
-
                 $api.rmStorage(memberId + 'downed');
-
                 var chapterIdA = downed['chapterIdA'];
                 var chapterIdB = downed['chapterIdB'];
                 var chapterIdC = downed['chapterIdC'];
@@ -1158,6 +1201,8 @@
         api.addEventListener({
             name: 'online'
         }, function(ret, err) {
+        	//是否在播放页面
+        	//保存进度
             window.shut_network = false;
             var connectionType = ret.connectionType;
             if (connectionType == 'wifi') {

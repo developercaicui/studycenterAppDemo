@@ -1,9 +1,9 @@
 /**
  * Created by H5-dev on 2015/9/8.
  */
-var myFunction = function () {
+var myFunction = function() {
     //键盘弹出后输入框缩小
-    this.adjustHeight = function (num) {
+    this.adjustHeight = function(num) {
         var docHeight = document.documentElement.clientHeight;
         document.body.style.height = docHeight + 'px';
         var adjustHeight = document.querySelectorAll('.adjust-height');
@@ -27,13 +27,13 @@ if (imgArrLength !== 0) {
         imgArr[j].style.width = imgHeight;
     }
 }
-var $get = function (dom) {
+var $get = function(dom) {
     return document.querySelector(dom);
 };
-var $getAll = function (dom) {
+var $getAll = function(dom) {
     return document.querySelectorAll(dom);
 };
-var $getSib = function (dom) {
+var $getSib = function(dom) {
     var a = [];
     var b = dom.parentNode.children;
     var length = b.length;
@@ -101,7 +101,7 @@ if (window.localStorage.systemType) {
 
 function circleProgress() {
     var cirDonW = $('#svgDown').width();
-    $('.circle-progress,.audio-progress').each(function () {
+    $('.circle-progress,.audio-progress').each(function() {
         var _ts = $(this);
         var dt = new Date();
         var cirI = dt.getTime();
@@ -122,7 +122,7 @@ function circleProgress() {
         //console.log("#circle" + cirI, cirW, cirVal);
         circleTrans("#circle" + cirI, cirW, cirVal);
     });
-    $('.down-progress').each(function () {
+    $('.down-progress').each(function() {
         var _ts = $(this);
         var dt = new Date();
         var cirI = dt.getTime();
@@ -133,15 +133,17 @@ function circleProgress() {
         }
     });
 }
+
 function circleTrans(e, s, v) {
-    var percent = v / 100, perimeter = Math.PI * 0.9 * s;
-    setTimeout(function () {
+    var percent = v / 100,
+        perimeter = Math.PI * 0.9 * s;
+    setTimeout(function() {
         $(e).css('stroke-dasharray', parseInt(perimeter * percent) + " " + parseInt(perimeter * (1 - percent)));
     }, 100);
 }
 
 function audioDom() {
-    $('.voice-player').each(function () {
+    $('.voice-player').each(function() {
         var _this = $(this);
         _this.html('<b>' + _this.attr("time") + '</b><span class="icon_box"><i class="icon-rss3"></i><i class="icon-rss2"></i><i class="icon-rss1"></i></span><i class="icon-spinner"></i>');
     })
@@ -163,10 +165,10 @@ function playAudio(item) {
             cache: true,
             savePath: 'fs://audio/' + Date.now() + fixname,
             allowResume: true
-        }, function (ret, err) {
+        }, function(ret, err) {
             if (ret && ret.state) {
                 clearInterval(timer);
-                timer = setInterval(function () {
+                timer = setInterval(function() {
                     cc--;
                     $(item).children('b').text(parseInt(cc));
                     //alert(cc);
@@ -183,7 +185,7 @@ function playAudio(item) {
 
                 api.startPlay({
                     path: ret.savePath
-                }, function (res) {
+                }, function(res) {
                     clearInterval(timer);
                     if (_time < 0) {
                         _time = 0
@@ -271,7 +273,7 @@ function editorFrame(p, t) {
     });
 }
 
-function openImageBrower(arr, i) {//图片浏览器
+function openImageBrower(arr, i) { //图片浏览器
     var str = arr.split(',');
     var data = [];
     for (var p in str) {
@@ -287,12 +289,12 @@ function openImageBrower(arr, i) {//图片浏览器
 
 /*信息99+*/
 function num_99() {
-    $('.prorn').each(function () {
+    $('.prorn').each(function() {
         if ($(this).html() >= 99) {
             $(this).html('99+');
         }
     });
-    $('.toptit p').each(function () {
+    $('.toptit p').each(function() {
         if ($(this).html() >= 99) {
             $(this).html('99+');
         }
@@ -300,8 +302,8 @@ function num_99() {
 }
 // 横向进度条
 function progressBar() {
-    setTimeout(function () {
-        $('.progress-bar2').each(function () {
+    setTimeout(function() {
+        $('.progress-bar2').each(function() {
             var _t = $(this);
             var _num = Math.round(_t.attr('min') / _t.attr('max') * 100);
             if (_num > 90) {
@@ -408,7 +410,7 @@ function jump_task(taskprogress, courseId, taskid) {
             });
             //获取课程的详细信息
             //api/v2.1/course/courseDetail，接口编号：004-006
-            ajaxRequest('api/v2.1/course/courseDetail', 'get', {courseId: courseId}, function (ret, err) {//004.006获取课程的详细信息
+            ajaxRequest('api/v2.1/course/courseDetail', 'get', { courseId: courseId }, function(ret, err) { //004.006获取课程的详细信息
                 if (err) {
                     api.hideProgress();
                     api.toast({
@@ -418,7 +420,7 @@ function jump_task(taskprogress, courseId, taskid) {
                     return false;
                 }
                 if (ret && ret.state == 'success') {
-                    var course_detail = ret.data[0];//课程详情数据
+                    var course_detail = ret.data[0]; //课程详情数据
                     task_arr = save_tasks(course_detail);
                     $api.setStorage(courseId, course_detail);
                     var res_process = {};
@@ -428,13 +430,14 @@ function jump_task(taskprogress, courseId, taskid) {
                 }
             });
         } else {
-            var course_detail = tmp_course_detail;//存储课程详细信息
+            var course_detail = tmp_course_detail; //存储课程详细信息
             task_arr = save_tasks(course_detail);
             var res_process = {};
             res_process.task_info = task_arr[taskid];
             res_process.last_progress = taskprogress;
             judge_task(res_process, course_detail);
         }
+
         function judge_task(res_process, course_detail) {
             if (isEmpty(course_detail) || isEmpty(course_detail.chapters) || isEmpty(res_process)) {
                 api.toast({
@@ -443,7 +446,7 @@ function jump_task(taskprogress, courseId, taskid) {
                 });
                 return false;
             }
-            var task_info = res_process.task_info.taskInfo;//当前任务信息
+            var task_info = res_process.task_info.taskInfo; //当前任务信息
             if (isEmpty(task_info)) {
                 api.toast({
                     msg: '暂无任务',
@@ -471,10 +474,10 @@ function jump_task(taskprogress, courseId, taskid) {
             //需要传递的参数
             var pageParams = {
                 from: 'course-studying',
-                courseId: course_detail.courseId,//课程id
-                last_progress: res_process.last_progress,//学习进度
-                course_detail: course_detail,//课程详情
-                task_info: task_info,//当前要学习的任务信息
+                courseId: course_detail.courseId, //课程id
+                last_progress: res_process.last_progress, //学习进度
+                course_detail: course_detail, //课程详情
+                task_info: task_info, //当前要学习的任务信息
                 type: 'task'
             };
             api.hideProgress();
@@ -487,7 +490,7 @@ function jump_task(taskprogress, courseId, taskid) {
                 name: new_win_name,
                 url: new_win_url,
                 delay: 200,
-                slidBackEnabled: false,//iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
+                slidBackEnabled: false, //iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
                 pageParam: pageParams
             });
         }
@@ -508,13 +511,13 @@ function buys(id, goods_price) {
     });
     iap.getProducts({
         productIds: [goods_id]
-    }, function (res, err) {
+    }, function(res, err) {
         if (res) {
             if (res.products) {
                 iap.purchase({
-                    productId: goods_id        //有效商品id
-                }, function (ret, err) {
-                    setTimeout(function () {
+                    productId: goods_id //有效商品id
+                }, function(ret, err) {
+                    setTimeout(function() {
                         api.hideProgress();
                     }, 1500);
                     if (ret) {
@@ -522,59 +525,59 @@ function buys(id, goods_price) {
                         var msg = '';
                         switch (state) {
                             case 0:
-                            {
-                                //msg= '交易已加入队列';
-                            }
+                                {
+                                    //msg= '交易已加入队列';
+                                }
                                 break;
                             case 1:
-                            {
-                                var param = {};
-                                param.userId = getstor('memberId');
-                                param.token = $api.getStorage('token');
-                                param.courseId = id;
-                                param.paidAmount = goods_price;
-                                ajaxRequest('api/v2.1/mobile/order', 'post', param, function (ret, err) {
-                                    api.hideProgress();
-                                    if (err) {
-                                        api.toast({
-                                            msg: err.msg,
-                                            location: 'middle'
-                                        });
-                                        return false;
-                                    }
-                                    if (ret && ret.isSuccess == true) {
-                                        api.sendEvent({
-                                            name: 'flush_noactive'
-                                        });
-                                        api.setStatusBarStyle({
-                                            style: 'dark'
-                                        });
-                                        api.closeWin({
-                                            name: 'course-buy'
-                                        });
-                                    } else {
-                                        api.alert({
-                                            msg: '订单提交接口异常'
-                                        });
-                                    }
-                                });
-                            }
+                                {
+                                    var param = {};
+                                    param.userId = getstor('memberId');
+                                    param.token = $api.getStorage('token');
+                                    param.courseId = id;
+                                    param.paidAmount = goods_price;
+                                    ajaxRequest('api/v2.1/mobile/order', 'post', param, function(ret, err) {
+                                        api.hideProgress();
+                                        if (err) {
+                                            api.toast({
+                                                msg: err.msg,
+                                                location: 'middle'
+                                            });
+                                            return false;
+                                        }
+                                        if (ret && ret.isSuccess == true) {
+                                            api.sendEvent({
+                                                name: 'flush_noactive'
+                                            });
+                                            api.setStatusBarStyle({
+                                                style: 'dark'
+                                            });
+                                            api.closeWin({
+                                                name: 'course-buy'
+                                            });
+                                        } else {
+                                            api.alert({
+                                                msg: '订单提交接口异常'
+                                            });
+                                        }
+                                    });
+                                }
                                 break;
                             case 2:
-                            {
-                                //msg='交易失败';
-                            }
+                                {
+                                    //msg='交易失败';
+                                }
                                 break;
                             case 3:
-                            {
-                                msg = '交易恢复';
-                            }
+                                {
+                                    msg = '交易恢复';
+                                }
                                 break;
                             case 4:
-                            {
-                                msg = '交易等待被确认';
-                                //交易等待被确认，待确认后交易状态会变更为其它状态
-                            }
+                                {
+                                    msg = '交易等待被确认';
+                                    //交易等待被确认，待确认后交易状态会变更为其它状态
+                                }
                                 break;
                             default:
                                 break;
@@ -585,7 +588,7 @@ function buys(id, goods_price) {
                             });
                         }
                     } else {
-                        api.alert({msg: err.msg});
+                        api.alert({ msg: err.msg });
                     }
                 });
                 return false;
@@ -605,13 +608,14 @@ function buys(id, goods_price) {
         }
     });
 }
+
 function getCCconfig(callback, is_force) {
     var CCconfig = isEmpty($api.getStorage('CCconfig')) ? false : $api.getStorage('CCconfig');
     if ((!CCconfig || is_force) && $api.getStorage('token')) {
         ajaxRequest('api/v2.1/oauth/getConfig', 'post', {
             token: $api.getStorage('token'),
             societyType: 'ccidinfo'
-        }, function (ret, err) {//003.303.1  发布讨论
+        }, function(ret, err) { //003.303.1  发布讨论
             if (err) {
                 callback(false);
             }
@@ -630,10 +634,11 @@ function getCCconfig(callback, is_force) {
         callback(CCconfig);
     }
 }
+
 function bufferCourese(arrays) {
-    var array=[];
-    for(var p  in arrays){
-        if(!isEmpty(arrays[p]['lastTaskdate'])){
+    var array = [];
+    for (var p in arrays) {
+        if (!isEmpty(arrays[p]['lastTaskdate'])) {
             array.push(arrays[p]);
         }
     }
@@ -654,40 +659,40 @@ function bufferCourese(arrays) {
 //保存任务进度
 function DosaveTaskProgress() {
 
-    var data=$api.getStorage('saveTaskProgress');
-    var now_progress=data.now_progress,
-        total=data.total,
-        state=data.state,
-        task_info=data.task_info,
-        task_info_detail=data.task_info_detail,
-        course_detail=data.course_detail;
+    var data = $api.getStorage('saveTaskProgress');
+    var now_progress = data.now_progress,
+        total = data.total,
+        state = data.state,
+        task_info = data.task_info,
+        task_info_detail = data.task_info_detail,
+        course_detail = data.course_detail;
 
     var user_nickname = get_loc_val('mine', 'nickName');
     var user_token = $api.getStorage('token');
     var user_memberId = get_loc_val('mine', 'memberId');
     var post_param = {
-        memberId : user_memberId, //必须，用户id	ff8080815065f95a01506627ad4c0007
-        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码	5
-        taskId : task_info.taskId, //必须，任务id	1
-        //chapterId : chapter_info.chapterId, //必须，章节id	chapterId
-        chapterId : task_info_detail.chapterId, //必须，章节id	chapterId
-        courseId : course_detail.courseId, //必须，课程id	ff808081486933e6014889882d9c0590
-        taskName : task_info.title, //必须，任务名称	taskName
-        //chapterName : chapter_info.chapterTitle, //必须，章节名称	chapterName
-        chapterName : task_info_detail.chapterName, //必须，章节名称	chapterName
-        courseName : course_detail.courseName, //必须，课程名称	courseName
-        total : total, //必须，任务总长度	48
-        subjectId : course_detail.subjectId, //必须，科目id	ff808081473905e7014762542d940078
-        categoryId : course_detail.categoryId, //必须，证书id	ff808081473905e701475cd3c2080001
-        token : user_token, //必须，用户token	144594636417159iPhoneCourse
-        memberName : user_nickname, //必须，用户昵称	zhangxiaoyu01
-        state : state//必须，进度状态默认init，完成：complate	complate
+        memberId: user_memberId, //必须，用户id  ff8080815065f95a01506627ad4c0007
+        progress: now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码    5
+        taskId: task_info.taskId, //必须，任务id 1
+        //chapterId : chapter_info.chapterId, //必须，章节id chapterId
+        chapterId: task_info_detail.chapterId, //必须，章节id    chapterId
+        courseId: course_detail.courseId, //必须，课程id ff808081486933e6014889882d9c0590
+        taskName: task_info.title, //必须，任务名称    taskName
+        //chapterName : chapter_info.chapterTitle, //必须，章节名称    chapterName
+        chapterName: task_info_detail.chapterName, //必须，章节名称    chapterName
+        courseName: course_detail.courseName, //必须，课程名称 courseName
+        total: total, //必须，任务总长度    48
+        subjectId: course_detail.subjectId, //必须，科目id   ff808081473905e7014762542d940078
+        categoryId: course_detail.categoryId, //必须，证书id ff808081473905e701475cd3c2080001
+        token: user_token, //必须，用户token 144594636417159iPhoneCourse
+        memberName: user_nickname, //必须，用户昵称    zhangxiaoyu01
+        state: state //必须，进度状态默认init，完成：complate    complate
     };
-    ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
-        if(err){
+    ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) { //008.024保存任务进度日志（new）tested
+        if (err) {
             api.toast({
-                msg : err.msg,
-                location : 'middle'
+                msg: err.msg,
+                location: 'middle'
             });
         }
         //if (ret && ret.state == 'success') {
@@ -697,22 +702,22 @@ function DosaveTaskProgress() {
     });
 }
 /*
-*保存课程过期时间
-* */
-function saveExpire(list){
+ *保存课程过期时间
+ * */
+function saveExpire(list) {
 
-    if(isEmpty(list)){
+    if (isEmpty(list)) {
         return false;
     }
 
     var memberId = getstor('memberId');
 
-    var course_expire =  isEmpty($api.getStorage(memberId+'course_expire')) ?  ''  : $api.getStorage(memberId+'course_expire');
+    var course_expire = isEmpty($api.getStorage(memberId + 'course_expire')) ? '' : $api.getStorage(memberId + 'course_expire');
 
-    for(var p in list){
+    for (var p in list) {
         var courseId = list[p]['courseId'];
-        var expirationTime = isEmpty(list[p]['expirationTime']) ? 0  : list[p]['expirationTime'];
-        if(course_expire){
+        var expirationTime = isEmpty(list[p]['expirationTime']) ? 0 : list[p]['expirationTime'];
+        if (course_expire) {
             var is_same = false;
             for (var q in course_expire) {
                 _courseId = course_expire[q]['courseId'];
@@ -723,43 +728,44 @@ function saveExpire(list){
                 }
             }
             if (!is_same) {
-                var data ={};
+                var data = {};
                 data[courseId] = expirationTime;
                 course_expire.push(data);
-                $api.setStorage(memberId+'course_expire',course_expire);
-            }else{
-                $api.setStorage(memberId+'course_expire',course_expire);
+                $api.setStorage(memberId + 'course_expire', course_expire);
+            } else {
+                $api.setStorage(memberId + 'course_expire', course_expire);
             }
-        }else{
+        } else {
             course_expire = [];
             var data = {};
             data[courseId] = expirationTime;
             course_expire.push(data);
-            $api.setStorage(memberId+'course_expire',course_expire)
+            $api.setStorage(memberId + 'course_expire', course_expire)
 
         }
     }
 }
 /*
-* 判断视频是否过期
-* */
-function CourseIsexpire(courseId){
+ * 判断视频是否过期
+ * */
+function CourseIsexpire(courseId) {
     var memberId = getstor('memberId');
-    var course_expire =  isEmpty($api.getStorage(memberId+'course_expire')) ?  ''  : $api.getStorage(memberId+'course_expire');
+    var course_expire = isEmpty($api.getStorage(memberId + 'course_expire')) ? '' : $api.getStorage(memberId + 'course_expire');
     var is_ok = false;
-    if(course_expire){
-        for(var p in course_expire){
-            if(course_expire[p][courseId]!=undefined && (parseInt(Date.now())<=parseInt((course_expire[p][courseId]=='' ? 0 : course_expire[p][courseId])*1000))){
+    if (course_expire) {
+        for (var p in course_expire) {
+            if (course_expire[p][courseId] != undefined && (parseInt(Date.now()) <= parseInt((course_expire[p][courseId] == '' ? 0 : course_expire[p][courseId]) * 1000))) {
                 is_ok = true;
             }
         }
-        if(is_ok){
+        if (is_ok) {
             return true;
-        }else{
+        } else {
             return false;
         }
-    }else{
+    } else {
         return false;
     }
 
 }
+
