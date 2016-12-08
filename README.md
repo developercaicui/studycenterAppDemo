@@ -37,7 +37,6 @@
 在本地建立自己开发的分支branchName，开发完，
 
 切换到demo分支
-
   'git checkout demo'
 
 合并分支到当前分支
