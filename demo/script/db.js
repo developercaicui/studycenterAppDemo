@@ -28,7 +28,8 @@
 	*	clearTasksProgress(taskId); 删除任务进度数据库的数据 参数taskId：任务id，无参数：删除所有
 	*	delTasksProgress(); 删除任务进度数据库表
 	*	getCourseIdAll(callback); 获取所有的courseId 
-	*	getTaskProgress(taskId, callback);  获取任务进度 
+	*	getTaskProgress(taskId, callback);  获取任务进度
+	*	getCourseTaskProgress(courseId, callback);  获取课程下面所有的任务进度
 	*	getTaskProgressNoSend(callback); 获取所有未同步的任务进度
 */
 ;(function(window){
@@ -130,6 +131,26 @@
 							DB.selectSql(DB.taskNameDB,selectSql,function(ret, err){
 								if(ret.status){
 									if(callback){callback(ret.data[0].progress)}
+								}else{//
+									alert('获取失败');
+								}
+							})
+						}else{
+							alert('数据库为空');
+						}
+					})
+				}
+			});
+		},
+		getCourseTaskProgress : function(courseId, callback){
+			DB.create(DB.taskNameDB,function(ret, err){
+				if(ret.status){
+					DB.isEmptyTasksProgress(function(isEmpty){
+						if(isEmpty){
+							var selectSql = 'SELECT * FROM '+DB.taskNameTable+' where courseId="'+courseId+'"';
+							DB.selectSql(DB.taskNameDB,selectSql,function(ret, err){
+								if(ret.status){
+									if(callback){callback(ret.data)}
 								}else{//
 									alert('获取失败');
 								}
@@ -260,6 +281,7 @@
 		delTasksProgress : DB.delTasksProgress,
 		getCourseIdAll : DB.getCourseIdAll,
 		getTaskProgress : DB.getTaskProgress,
+		getCourseTaskProgress : DB.getCourseTaskProgress,
 		getTaskProgressNoSend : DB.getTaskProgressNoSend
 	}
 })(window);
