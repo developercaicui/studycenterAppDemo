@@ -152,7 +152,7 @@
 		},
 		insetTaskDB : function(data){// 添加 || 更新 数据库-任务
 			DB.selectSql(DB.taskNameDB,'SELECT * FROM '+DB.taskNameTable+' where taskId="'+data.taskId+'"',function(ret, err){
-				alert('insetTaskDB:::'+JSON.stringify(ret)+JSON.stringify(err))
+				// alert('insetTaskDB:::'+JSON.stringify(ret)+JSON.stringify(err))
 				if(ret.status && ret.data && ret.data.length){//更新
 					DB.updateTaskDB(data);
 				}else{//添加
@@ -184,7 +184,7 @@
 	            "'"+data.expiredDate+"'" +
 	            ");"
 		    ,function(ret,err){
-		    	alert('addTaskDB:::'+JSON.stringify(ret)+';'+JSON.stringify(err))
+		    	// alert('addTaskDB:::'+JSON.stringify(ret)+';'+JSON.stringify(err))
 		    });
 		},
 		updateTaskDB : function(data){// 更新一条记录 数据库-任务

@@ -247,20 +247,14 @@ function play_video() {
                 });
                 return false;
             }
- clearInterval(saveTime);
- //定时保存进度（2分钟）新增后期开发需求
- saveTime = setInterval(function(){
-     alert("save")
-     
-     //保存数据库
-     
-     
-     
- },1000*60*2)
+
          
             demo.open(param, function(ret, err) {
                 
                 $api.rmStorage('saveTaskProgress');
+                
+
+ 
                 if(ret.status=='filedel'){
                   if(!isEmpty($api.getStorage('cache'+videoid))){
                         var cache_ccid=$api.getStorage('cache'+videoid);
@@ -578,19 +572,32 @@ function play_video() {
                     }
                     saveTaskProgress(tmp_progress, total, state);*/
 
-if (api.systemType == 'android') {
-    var tmp_progress = parseInt(ret.ctime / 1000);
-} else {
-    var tmp_progress = parseInt(ret.ctime);
-}
-var total = videoTimes;
-if (total * 0.9 <= tmp_progress) {
-    var state = 'complate';
-} else {
-    var state = 'init';
-}
-saveTaskProgress(tmp_progress, total, state);
+	//定时保存进度（2分钟）新增后期开发需求
+   clearInterval(saveTime);
+   saveTime = setInterval(function(){  	
+   		alert("定时保存数据库"); 
+	    var data = $api.getStorage('saveDataBase'),
+	    	tmp_progress = parseInt(data.now_progress),
+	    	total = data.total;	    
+	    if (total * 0.9 <= tmp_progress) {
+	        var state = 'complate';
+	    } else {
+	        var state = 'init';
+	    }
+	    var jumptime;
+        if (api.systemType == 'android') {
+            jumptime =last_progress * 1000;
+        }else{
+            jumptime =last_progress;
+        }
+        demo.seekTo(param, function(res) {
+          alert(JSON.stringify(res))
+        });	
 
+	    saveTaskProgress(tmp_progress, total, state);      
+   },1000*5)
+   
+   
                     is_check=false;
                     if(last_progress>0){
                         var jumptime;
@@ -799,7 +806,7 @@ function saveTaskProgress(now_progress, total, state){
     //非离线状态下进度保存到本地及服务器
     saveVideoProgress(videoid,now_progress);
     $api.setStorage('saveTaskProgress',data);
-    alert("有网了，保存服务器")
+    alert("有网络连接，同时保存服务器")
     var jsfun = "DosaveTaskProgress();";
     api.execScript({
         name: 'root',
@@ -829,27 +836,3 @@ function getVideoProgress(videoid){
         }
         return 0;
 }
-
-//保存进度到本地数据库
-// function saveDataBase(id,courseId,charpgerId,taskId,progress,state,issend,modifyDate,downLoadProgress,downLoadState,downLoadDate,expiredDate){
-//     var data={
-//         id:id,
-//         courseId:courseId,
-//         charpgerId:charpgerId,
-//         taskId:taskId,
-//         progress:progress,
-//         state:state,
-//         issend:issend,
-//         modifyDate:modifyDate,
-//         downLoadProgress:downLoadProgress,
-//         downLoadState:downLoadState,
-//         downLoadDate:downLoadDate,
-//         expiredDate:expiredDate
-//     };
-//     $api.setStorage('saveDataBase',data);
-//     var jsfun = "DosaveDataBase();";
-//     api.execScript({
-//         name: 'root',
-//         script: jsfun
-//     });
-// }
