@@ -26,6 +26,7 @@
 	*	saveTasksProgress(data); 保存数据到任务进度数据库 参数data：保存的数据
 	*	showTasksProgress(); 显示任务进度数据库的数据
 	*	clearTasksProgress(taskId); 删除任务进度数据库的数据 参数taskId：任务id，无参数：删除所有
+	*	delTasksProgress(); 删除任务进度数据库表
 	*	getCourseIdAll(callback); 获取所有的courseId 
 	*	getTaskProgress(taskId, callback);  获取任务进度 
 	*	getTaskProgressNoSend(callback); 获取所有未同步的任务进度
@@ -45,6 +46,15 @@
 				
 			}
 		},
+		showTasksProgress : function(){
+			DB.create(DB.taskNameDB,function(ret, err){
+				if(ret.status){
+					DB.selectSql(DB.taskNameDB,'SELECT * FROM '+DB.taskNameTable,function(ret, err){
+						alert('showTasksProgress:::'+JSON.stringify(ret)+';'+JSON.stringify(err))
+					});
+				}
+			});
+		},
 		clearTasksProgress : function(taskId){
 			var clearTaskId = arguments.length ? true : false;
 			DB.create(DB.taskNameDB,function(ret, err){
@@ -63,6 +73,15 @@
 				}
 			});
 			
+		},
+		delTasksProgress : function(){
+			DB.create(DB.taskNameDB,function(ret, err){
+				if(ret.status){
+					DB.selectSql(DB.taskNameDB,'DROP TABLE '+DB.taskNameTable,function(ret, err){
+						alert('delTasksProgress:::'+JSON.stringify(ret)+';'+JSON.stringify(err))
+					});
+				}
+			});
 		},
 		getCourseIdAll : function(callback){
 			DB.create(DB.taskNameDB,function(ret, err){
@@ -117,20 +136,14 @@
 
 		saveTasksProgressSync : function(){ // 同步保存
 		},
-		showTasksProgress : function(){
-			DB.create(DB.taskNameDB,function(ret, err){
-				if(ret.status){
-					DB.selectTaskDB();
-				}
-			});
-		},
+		
 		taskDB : function(callback){// 创建 || 打开 数据库-任务
 			DB.create(DB.taskNameDB,function(ret, err){
 				if(ret.status){
 					DB.selectSql(DB.taskNameDB,'SELECT * FROM '+DB.taskNameTable,function(ret, err){
 						if(ret.status && ret.data && ret.data.length){
 						}else{
-							DB.executeSql(DB.taskNameDB,'CREATE TABLE '+DB.taskNameTable+'(nid integer primary key, categoryId varchar(255), subjectId varchar(255), courseId varchar(255), courseName varchar(255), charpgerId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255), isSend varchar(255), modifyDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
+							DB.executeSql(DB.taskNameDB,'CREATE TABLE '+DB.taskNameTable+' (nid integer primary key, categoryId varchar(255), subjectId varchar(255), courseId varchar(255), courseName varchar(255), charpgerId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255), isSend varchar(255), modifyDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
 						}
 						if(callback){callback(ret, err)};
 					});
@@ -138,7 +151,8 @@
 			});
 		},
 		insetTaskDB : function(data){// 添加 || 更新 数据库-任务
-			DB.selectSql(DB.taskNameDB,"SELECT * FROM Task where taskId='"+data.taskId+"'",function(ret, err){
+			DB.selectSql(DB.taskNameDB,'SELECT * FROM '+DB.taskNameTable+' where taskId="'+data.taskId+'"',function(ret, err){
+				alert('insetTaskDB:::'+JSON.stringify(ret)+JSON.stringify(err))
 				if(ret.status && ret.data && ret.data.length){//更新
 					DB.updateTaskDB(data);
 				}else{//添加
@@ -169,7 +183,9 @@
 	            "'"+data.downloadDate+"'," +
 	            "'"+data.expiredDate+"'" +
 	            ");"
-		    );
+		    ,function(ret,err){
+		    	alert('addTaskDB:::'+JSON.stringify(ret)+';'+JSON.stringify(err))
+		    });
 		},
 		updateTaskDB : function(data){// 更新一条记录 数据库-任务
 			// 更新 progress state isSend modifyDate 

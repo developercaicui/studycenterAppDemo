@@ -1011,13 +1011,13 @@
     	var tasksProgress = {
     		categoryId : '', // 证书id
     		subjectId : '', // 科目id
-			courseId : '2', // 课程id
+			courseId : '1', // 课程id
 			courseName : '', // 课程名称
 			charpgerId : '', // 章节id
 			charpgerName : '', //章节名称
-			taskId : '21', // 任务id
+			taskId : '1', // 任务id
 			taskName : '', //任务名称
-			progress : '21', // 最后1次学习进度
+			progress : '11', // 最后1次学习进度
 			total : '', // 任务总长度
 			state : '', // 是否播放结束
 			isSend : '', // 是否已同步服务器
@@ -1027,9 +1027,10 @@
 			downloadDate : '', // 下载日期
 			expiredDate : '' // 过期日期
 		}
+		//DB.delTasksProgress();
     	DB.saveTasksProgress(tasksProgress);
-    	
-    	// DB.clearTasksProgress();
+    	DB.showTasksProgress();
+    	//DB.clearTasksProgress();
     	 //DB.showTasksProgress();
     	// DB.getCourseIdAll(function(data){
     	// 	alert(JSON.stringify(data));
