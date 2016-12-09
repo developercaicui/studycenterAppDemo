@@ -17,6 +17,44 @@ function  closeVideo() {
     demo.close();
 }
 apiready = function() {
+    //应用进入后台事件
+    api.addEventListener({
+        name: 'pause'
+    }, function(ret, err) {
+        //判断在线还是离线
+
+        //在线 保存进度-服务器/数据库
+
+        //离线 保存进度-数据库
+
+    });
+    //应用从后台回到前台事件
+    api.addEventListener({
+        name: 'resume'
+    }, function(ret, err) {
+        //判断在线还是离线
+
+        //在线 保存进度-服务器/数据库
+
+        //离线 保存进度-数据库
+        
+    });
+    //在线变为离线
+    api.addEventListener({
+        name: 'offline'
+    }, function(ret, err) {
+        //保存进度-数据库
+        
+    });
+    //离线变为在线
+    api.addEventListener({
+        name: 'online'
+    }, function(ret, err) {
+        //保存进度-服务器/数据库
+
+    });
+
+    
     api.setScreenOrientation({
         orientation : 'auto_landscape'
     });
@@ -590,9 +628,9 @@ function play_video() {
         }else{
             jumptime =last_progress;
         }
-        demo.seekTo(param, function(res) {
-          alert(JSON.stringify(res))
-        });	
+//      demo.seekTo(param, function(res) {
+//        alert(JSON.stringify(res))
+//      });	
 
 	    saveTaskProgress(tmp_progress, total, state);      
    },1000*5)

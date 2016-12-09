@@ -756,13 +756,14 @@
         if (notice == 1) {
             init_push();
         }
-        // 登录成功 获取所有未提交的任务进度
-        DB.getTaskProgressNoSend(function(data){
-    		// alert('nosend:::'+JSON.stringify(data));
-    		if(data && data.length){
 
-    		}
-    	})
+        //	登录成功、打开app 获取所有未提交的任务进度
+     	//	DB.getTaskProgressNoSend(function(data){
+    	// 	// alert('nosend:::'+JSON.stringify(data));
+    	// 	if(data && data.length){
+
+    	// 	}
+    	// })
     }
 
     function to_login() { //去登陆
@@ -1008,6 +1009,7 @@
     }
     var is_resume;
     apiready = function() {
+    	
     	var tasksProgress = {
     		categoryId : '', // 证书id
     		subjectId : '', // 科目id
@@ -1020,21 +1022,25 @@
 			progress : '21', // 最后1次学习进度
 			total : '', // 任务总长度
 			state : '', // 是否播放结束
-			isSend : '', // 是否已同步服务器
+			isSend : 'false', // 是否已同步服务器
 			modifyDate : '', // 视频进度保存时间
 			downloadProgress : '', // 下载进度
 			downloadState : '', // 下载状态（ing，stop，end）
 			downloadDate : '', // 下载日期
 			expiredDate : '' // 过期日期
 		}
-    	//DB.saveTasksProgress(tasksProgress);
+
+		// DB.delTasksProgress();
+    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
+    	// 	DB.showTasksProgress();
+    	// });
     	
-    	 //DB.clearTasksProgress();
-    	 //DB.showTasksProgress();
+    	//DB.clearTasksProgress();
+    	//DB.showTasksProgress();
     	// DB.getCourseIdAll(function(data){
     	// 	alert(JSON.stringify(data));
     	// })
-    	// DB.getTaskProgress('21',function(data){
+    	// DB.getTaskProgress('2',function(data){
     	// 	alert(data);
     	// })
     	// DB.getTaskProgressNoSend(function(data){
@@ -1390,21 +1396,21 @@
                 }, function(ret, err) { //007.010 会员退出
                 });
 
-                $api.rmStorage('token');
-                $api.rmStorage('password');
+                // $api.rmStorage('token');
+                // $api.rmStorage('password');
             }
-            $api.rmStorage('mine');
-            $api.rmStorage('outh');
+            // $api.rmStorage('mine');
+            // $api.rmStorage('outh');
 
-            $api.rmStorage('notice_time');
-            $api.rmStorage('open_notice');
-            $api.rmStorage('center_num');
-            var memberId = getstor('memberId');
-            $api.rmStorage(memberId + 'scale/browsers');
-            $api.rmStorage(memberId + 'learning/lines');
-            $api.rmStorage(memberId + 'learningcourse');
-            $api.rmStorage(memberId + 'capabilityAssessment');
-
+            // $api.rmStorage('notice_time');
+            // $api.rmStorage('open_notice');
+            // $api.rmStorage('center_num');
+            // var memberId = getstor('memberId');
+            // $api.rmStorage(memberId + 'scale/browsers');
+            // $api.rmStorage(memberId + 'learning/lines');
+            // $api.rmStorage(memberId + 'learningcourse');
+            // $api.rmStorage(memberId + 'capabilityAssessment');
+            $api.clearStorage();
             to_login();
 
         });
