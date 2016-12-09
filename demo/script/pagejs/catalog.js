@@ -322,7 +322,6 @@ function set_down_status(str){
 }
 
 apiready = function() {
-
     // api.addEventListener({
     //     name : 'DOWN'
     // }, function(ret) {
@@ -331,8 +330,10 @@ apiready = function() {
     //        location:'middle'
     //    })
     // });
+    var pageParam = api.pageParam;
+    
 
-     memberId = getstor('memberId');
+    memberId = getstor('memberId');
 	getData();
 	api.addEventListener({
 		name : 'flush_catalog'
