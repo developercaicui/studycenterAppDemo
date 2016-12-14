@@ -105,8 +105,10 @@
     <script type="text/javascript" src="./script/comm.js"></script>
     <script type="text/javascript" src="./script/caicui.js"></script>
     <script type="text/javascript" src="./script/db.js"></script>
+    <script type="text/javascript" src="./script/saveTasksProgress.js"></script>
     <script type="text/javascript">
     //页面跳转
+    window.CAICUI = {};
     var clickCount = 1;
     var timePicker;
     var y, h;
@@ -756,16 +758,43 @@
         if (notice == 1) {
             init_push();
         }
+				var tasksProgress = {
+					categoryId : 'ff808081473905e701475cd3c2080001', // 证书id
+					subjectId : 'ff808081473905e701476204cb6c006f', // 科目id
+					courseId : 'ff8080814dad5062014db32051b801a2', // 课程id
+					courseName : 'testTasksProgress', // 课程名称
+					chapterId : 'ff8080814dad5062014db320524e01c0', // 章节id
+					chapterName : 'testTasksProgress', //章节名称
+					taskId : 'ff8080814dad5062014db320525401c1', // 任务id
+					taskName : 'testTasksProgress', //任务名称
+					progress : '2222', // 最后1次学习进度
+					total : '2493', // 任务总长度
+					state : 'init', // 是否播放结束
+					downloadProgress : '', // 下载进度
+					downloadState : '', // 下载状态（ing，stop，end）
+					downloadDate : '', // 下载日期
+					expiredDate : '' // 过期日期
+				}
 
-        //	登录成功、打开app 获取所有未提交的任务进度
-     	//	DB.getTaskProgressNoSend(function(data){
-    	// 	// alert('nosend:::'+JSON.stringify(data));
-    	// 	if(data && data.length){
-
-    	// 	}
-    	// })
+				// DB.delTasksProgress();
+	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
+	    	// 	// DB.showTasksProgress();
+	    	// });
+	    	
+	    	// DB.clearTasksProgress();
+	    	// DB.showTasksProgress();
+	    	// DB.getCourseIdAll(function(data){
+	    	// 	alert(JSON.stringify(data));
+	    	// })
+	    	// DB.getTaskProgress('2',function(data){
+	    	// 	alert(data);
+	    	// })
+	    	// DB.getTaskProgressNoSend(function(data){
+	    	// 	alert('nosend:::'+JSON.stringify(data));
+	    	// })
+        // saveTasksProgress.init();
+        
     }
-
     function to_login() { //去登陆
         var jsfun = "cancel_login();";
         api.execScript({
@@ -1009,43 +1038,7 @@
     }
     var is_resume;
     apiready = function() {
-    	
-    	var tasksProgress = {
-    		categoryId : '', // 证书id
-    		subjectId : '', // 科目id
-			courseId : '2', // 课程id
-			courseName : '', // 课程名称
-			charpgerId : '', // 章节id
-			charpgerName : '', //章节名称
-			taskId : '21', // 任务id
-			taskName : '', //任务名称
-			progress : '21', // 最后1次学习进度
-			total : '', // 任务总长度
-			state : '', // 是否播放结束
-			isSend : 'false', // 是否已同步服务器
-			modifyDate : '', // 视频进度保存时间
-			downloadProgress : '', // 下载进度
-			downloadState : '', // 下载状态（ing，stop，end）
-			downloadDate : '', // 下载日期
-			expiredDate : '' // 过期日期
-		}
-
-		// DB.delTasksProgress();
-    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
-    	// 	DB.showTasksProgress();
-    	// });
-    	
-    	//DB.clearTasksProgress();
-    	//DB.showTasksProgress();
-    	// DB.getCourseIdAll(function(data){
-    	// 	alert(JSON.stringify(data));
-    	// })
-    	// DB.getTaskProgress('2',function(data){
-    	// 	alert(data);
-    	// })
-    	// DB.getTaskProgressNoSend(function(data){
-    	// 	alert('nosend:::'+JSON.stringify(data));
-    	// })
+		
     	
 
         is_resume = false;
@@ -1064,6 +1057,7 @@
         api.addEventListener({
             name: 'pause'
         }, function(ret, err) {
+        	// saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbpause"
             });
@@ -1099,10 +1093,7 @@
         api.addEventListener({
             name: 'resume'
         }, function(ret, err) {
-        	// 获取所有未提交的任务进度
-        	DB.getTaskProgressNoSend(function(data){
-	    		// alert('nosend:::'+JSON.stringify(data));
-	    	})
+        	// saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbresume"
             });
@@ -1207,7 +1198,7 @@
         api.addEventListener({
             name: 'online'
         }, function(ret, err) {
-        	//是否在播放页面
+        	// saveTasksProgress.init();
         	//保存进度
             window.shut_network = false;
             var connectionType = ret.connectionType;

@@ -418,7 +418,7 @@
                               }
                           }
                       }
-              
+      
                       //获取课程任务进度列表（new）tested
                       var param = {
                           'token': $api.getStorage('token'), //必须
@@ -426,7 +426,18 @@
                           'charpterId': '', //章节ID,非必须
                           'taskId': ''//任务ID,非必须
                       };
-                      ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+                      DB.getCourseTaskProgress(courseId,function(data){
+                        if(data && data.length){
+                          var ret = {
+                            state : 'success',
+                            data : data
+                          }
+                        }else{
+                          var err = true;
+                        }
+                        alert(JSON.stringify(data))
+                      // })
+                      // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                           if (err) {
                               return false;
                           } else if (ret && ret.state == 'success') {
@@ -573,6 +584,7 @@
                   }
               }
       
+      
               //获取课程任务进度列表（new）tested
               var param = {
                   'token': $api.getStorage('token'), //必须
@@ -580,7 +592,17 @@
                   'charpterId': '', //章节ID,非必须
                   'taskId': ''//任务ID,非必须
               };
-              ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+              DB.getCourseTaskProgress(courseId,function(data){
+                if(data && data.length){
+                  var ret = {
+                    state : 'success',
+                    data : data
+                  }
+                }else{
+                  var err = true;
+                }
+              // })
+              // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                   if (err) {
                       return false;
                   } else if (ret && ret.state == 'success') {
@@ -619,6 +641,7 @@
                                       if (num > 0) {
                                           if (num == len * 3) {
                                               $(this).attr('type', '3');//实心圈
+                                              //api.alert({msg: arr['ff8080814db86d41014dc1a26c4f0539']});
                                           } else {
                                               //半圈
                                               $(this).attr('type', '2');
@@ -688,6 +711,7 @@
     <script type="text/javascript" src="../script/doT.min.js"></script>
     <script type="text/javascript" src="../script/caicui.js"></script>
     <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
     <script src="../script/pagejs/catalog.js" type="text/javascript" charset="utf-8"></script>
   </body>

@@ -330,16 +330,18 @@ apiready = function() {
     //        location:'middle'
     //    })
     // });
-    var pageParam = api.pageParam;
-    
+    // api.pageParam : {"course_id":"ff8080814dad5062014db32051b801a2","categoryId":"ff808081473905e701475cd3c2080001"}
+    // updateTasksProgress(api.pageParam.course_id,function(data){
 
+    // });
+    saveTasksProgress.getCourseTaskProgress(api.pageParam.course_id);
     memberId = getstor('memberId');
-	getData();
-	api.addEventListener({
-		name : 'flush_catalog'
-	}, function(ret) {
-		getData();
-	});
+  	getData();
+  	api.addEventListener({
+  		name : 'flush_catalog'
+  	}, function(ret) {
+  		getData();
+  	});
     api.addEventListener({
         name : 'down_speed'
     }, function(ret) {
