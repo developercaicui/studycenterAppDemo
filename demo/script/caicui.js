@@ -779,31 +779,31 @@ function DosaveDataBase() {
         task_info=data.task_info,
         task_info_detail=data.task_info_detail,
         course_detail=data.course_detail;
-    var post_param = {
-    	categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
-        categoryName : course_detail.categoryName, // 证书名称
-        subjectName : course_detail.subjectName, // 科目名称
-        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
-        courseName : course_detail.courseName, //必须，课程名称    courseName
-        chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
-        chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
-        taskId : task_info.taskId, //必须，任务id    1
-        taskName : task_info.title, //任务名称
-        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-        total : total, //必须，任务总长度   48
-        state : state,//必须，进度状态默认init，完成：complate   complate       
-        downLoadProgress :  '',    //下载进度
-        downLoadState :  '',      //下载状态  ing 、stop、end
-        downLoadDate : '', //下载时间
-        expiredDate : ''  //过期日期
-    };
-    // DB.saveTasksProgress(post_param,function(ret, err){
-    //     if(ret.status){
-    //         DB.showTasksProgress();
-    //     }
+    var post_param =  {
+                    categoryId : 'ff808081473905e701475cd3c2080001', // 证书id
+                    categoryName : 'testTasksProgress',
+                    subjectId : 'ff808081473905e701476204cb6c006f', // 科目id
+                    subjectName : 'testTasksProgress',
+                    courseId : 'ff8080814dad5062014db32051b801a2', // 课程id
+                    courseName : 'testTasksProgress', // 课程名称
+                    chapterId : 'ff8080814dad5062014db320524e01c0', // 章节id
+                    chapterName : 'testTasksProgress', //章节名称
+                    taskId : 'ff8080814dad5062014db320525401c1', // 任务id
+                    taskName : 'testTasksProgress', //任务名称
+                    progress : "1111", // 最后1次学习进度
+                    total : "2493", // 任务总长度
+                    state : 'init', // 是否播放结束
+                    downloadProgress : '', // 下载进度
+                    downloadState : '', // 下载状态（ing，stop，end）
+                    downloadDate : '', // 下载日期
+                    expiredDate : '' // 过期日期
+                };
+    DB.saveTasksProgress(post_param,function(ret, err){
+        if(ret.status){
+            DB.showTasksProgress();
+        }
         
-    // });
+    });
 	
 //验证本次保存时间和上次保存时间的差值，必须为正数，否则提示用户本地时间异常????
 //   DB.getTaskProgress(post_param.taskId,function(data){
