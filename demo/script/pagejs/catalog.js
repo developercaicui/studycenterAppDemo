@@ -321,56 +321,6 @@ function set_down_status(str){
     }
 }
 
-//比较数据库和服务器的数据，返回最新的数据任务进度
-function updateTasksProgress(courseId){
-    var tasksProgress = [];
-    var tasksProgressDB = [];
-    var tasksProgressServer = [];
-    var tasksProgressDBLength = 0;
-    var tasksProgressServerLength = 0;
-    DB.getCourseTaskProgress('1',function(data){
-        //alert(JSON.stringify(data));
-        tasksProgressDB = data;
-        tasksProgressDBLength = data.length;
-        if(api.connectionType!='unknown' || api.connectionType!='none'){ // 有网络
-            //获取课程任务进度列表（new）tested
-            var param = {
-                'token': $api.getStorage('token'), //必须
-                'courseId': courseId //课程ID,必须
-            };
-            ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
-                if (err) {
-                    return false;
-                } else if (ret && ret.state == 'success') {
-
-                    tasksProgressServer = ret.data;
-                    tasksProgressServerLength = ret.data.length;
-                    for(var i=0;i<tasksProgressDBLength;i++){
-                        var different = 0;
-                        for(var j=0;j<tasksProgressServerLength;j++){
-                            if(tasksProgressDB[i].taskId==tasksProgressServer[i].taskId){
-                                if(tasksProgressDB[i].progress>tasksProgressServer[i].progress){
-                                    tasksProgressServer[i].progress = tasksProgressDB[i].progress;
-                                }
-                            }else{
-                                different ++;
-                            }
-                        }
-                    }
-
-                    if(different == tasksProgressDBLength){
-                        tasksProgressServer.push(tasksProgressDB[i]);
-                    }
-                    tasksProgress = tasksProgressServer;
-                }
-            });
-        }
-
-    })
-    
-}
-
-
 apiready = function() {
     // api.addEventListener({
     //     name : 'DOWN'
@@ -381,15 +331,17 @@ apiready = function() {
     //    })
     // });
     // api.pageParam : {"course_id":"ff8080814dad5062014db32051b801a2","categoryId":"ff808081473905e701475cd3c2080001"}
-    updateTasksProgress(api.pageParam.course_id);
+    // updateTasksProgress(api.pageParam.course_id,function(data){
 
+    // });
+    saveTasksProgress.getCourseTaskProgress(api.pageParam.course_id);
     memberId = getstor('memberId');
-	getData();
-	api.addEventListener({
-		name : 'flush_catalog'
-	}, function(ret) {
-		getData();
-	});
+  	getData();
+  	api.addEventListener({
+  		name : 'flush_catalog'
+  	}, function(ret) {
+  		getData();
+  	});
     api.addEventListener({
         name : 'down_speed'
     }, function(ret) {
