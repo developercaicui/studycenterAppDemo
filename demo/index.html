@@ -792,7 +792,7 @@
 	    	// DB.getTaskProgressNoSend(function(data){
 	    	// 	alert('nosend:::'+JSON.stringify(data));
 	    	// })
-        // saveTasksProgress.init();
+        saveTasksProgress.init();
         
     }
     function to_login() { //去登陆
@@ -1038,8 +1038,6 @@
     }
     var is_resume;
     apiready = function() {
-		alert(DB.online())
-    	
 
         is_resume = false;
         api.setKeepScreenOn({
@@ -1057,7 +1055,7 @@
         api.addEventListener({
             name: 'pause'
         }, function(ret, err) {
-        	// saveTasksProgress.init();
+        	saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbpause"
             });
@@ -1093,7 +1091,7 @@
         api.addEventListener({
             name: 'resume'
         }, function(ret, err) {
-        	// saveTasksProgress.init();
+        	saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbresume"
             });
@@ -1198,7 +1196,7 @@
         api.addEventListener({
             name: 'online'
         }, function(ret, err) {
-        	// saveTasksProgress.init();
+        	saveTasksProgress.init();
         	//保存进度
             window.shut_network = false;
             var connectionType = ret.connectionType;
