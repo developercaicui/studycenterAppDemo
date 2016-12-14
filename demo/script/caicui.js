@@ -666,24 +666,26 @@ function DosaveTaskProgress() {
     var user_token = $api.getStorage('token');
     var user_memberId = get_loc_val('mine', 'memberId');
     var post_param = {
-        memberId : user_memberId, //必须，用户id ff8080815065f95a01506627ad4c0007
-        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-        taskId : task_info.taskId, //必须，任务id    1
-        //chapterId : chapter_info.chapterId, //必须，章节id chapterId
-        chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
-        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
-        taskName : task_info.title, //必须，任务名称   taskName
-        //chapterName : chapter_info.chapterTitle, //必须，章节名称    chapterName
-        chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
-        courseName : course_detail.courseName, //必须，课程名称    courseName
-        total : total, //必须，任务总长度   48
-        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
-        categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-        token : user_token, //必须，用户token    144594636417159iPhoneCourse
-        memberName : user_nickname, //必须，用户昵称   zhangxiaoyu01
-        state : state//必须，进度状态默认init，完成：complate    complate
+	        categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
+	        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+	        categoryName : course_detail.categoryName, // 证书名称
+	        subjectName : course_detail.subjectName, // 科目名称
+	        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
+	        courseName : course_detail.courseName, //必须，课程名称    courseName
+	        chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
+	        chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
+	        taskId : task_info.taskId, //必须，任务id    1
+	        taskName : task_info.title, //任务名称
+	        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+	        total : total, //必须，任务总长度   48
+	        state : state,//必须，进度状态默认init，完成：complate   complate       
+	        downLoadProgress :  '',    //下载进度
+	        downLoadState :  '',      //下载状态  ing 、stop、end
+	        downLoadDate : '', //下载时间
+	        expiredDate : '',  //过期日期
+	        isSupply : 0  //是否补发  0是实时报文
     };
-    ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+    ajaxRequest('api/userAction/course/taskProgress/v1.0/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
         if(err){
             api.toast({
                 msg : err.msg,
@@ -769,8 +771,8 @@ function CourseIsexpire(courseId){
 //保存进度到本地数据库
 function DosaveDataBase() {
      
-    alert("先保存数据库")
-    var data=$api.getStorage('saveDataBase');
+    //alert("先保存数据库")
+    var data=$api.getStorage('saveTaskProgress');
     var now_progress=data.now_progress,
         total=data.total,
         state=data.state,
@@ -779,35 +781,31 @@ function DosaveDataBase() {
         course_detail=data.course_detail;
     var post_param = {
     	categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-    	subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+        categoryName : course_detail.categoryName, // 证书名称
+        subjectName : course_detail.subjectName, // 科目名称
         courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
         courseName : course_detail.courseName, //必须，课程名称    courseName
         chapterId : task_info_detail.chapterId, //必须，章节id   chapterId
         chapterName : task_info_detail.chapterName, //必须，章节名称   chapterName
         taskId : task_info.taskId, //必须，任务id    1
+        taskName : task_info.title, //任务名称
         progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
         total : total, //必须，任务总长度   48
         state : state,//必须，进度状态默认init，完成：complate   complate       
-        issend : '', //必须，是否同步到服务器
-        modifyDate : new Date().getTime(),//必须，视频进度保存的时间
         downLoadProgress :  '',    //下载进度
         downLoadState :  '',      //下载状态  ing 、stop、end
         downLoadDate : '', //下载时间
-        expiredDate : ''  //过期日期      
+        expiredDate : ''  //过期日期
     };
     DB.saveTasksProgress(post_param);
-//DB.showTasksProgress();
+	//DB.showTasksProgress();
 //验证本次保存时间和上次保存时间的差值，必须为正数，否则提示用户本地时间异常????
 //   DB.getTaskProgress(post_param.taskId,function(data){
 //	 	alert(data);
 //	 })
 // 	var prevSaveDate;
 //  if(post_param.modifyDate - ret.data.modifyDate <0){
-////              api.toast({
-////                   msg : '您手机时间异常，请调整当前时间！',
-////                   location : 'middle'
-////               });
-////               return;
 //     api.alert({
 //            title : '温馨提示',
 //            msg : '您手机时间异常，请调整当前时间！',

@@ -238,29 +238,29 @@ function openCharpterMenu() {
 }
 
 //保存任务进度
-function saveTaskProgress(now_progress, total, state) {
-	var user_nickname = get_loc_val('mine', 'nickName');
-	var user_token = $api.getStorage('token');
-	var user_memberId = get_loc_val('mine', 'memberId');
-	var post_param = {
-		memberId : user_memberId, //必须，用户id	ff8080815065f95a01506627ad4c0007
-		progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码	5
-		taskId : task_info.taskId, //必须，任务id	1
-		chapterId : task_info_detail.chapterId, //必须，章节id	chapterId
-		courseId : courseId, //必须，课程id	ff808081486933e6014889882d9c0590
-		taskName : task_info.title, //必须，任务名称	taskName
-		chapterName : task_info_detail.chapterName, //必须，章节名称	chapterName
-		courseName : course_detail.courseName, //必须，课程名称	courseName
-		total : total, //必须，任务总长度	48
-		subjectId : course_detail.subjectId, //必须，科目id	ff808081473905e7014762542d940078
-		categoryId : course_detail.categoryId, //必须，证书id	ff808081473905e701475cd3c2080001
-		token : user_token, //必须，用户token	144594636417159iPhoneCourse
-		memberName : user_nickname, //必须，用户昵称	zhangxiaoyu01
-		state : state//必须，进度状态默认init，完成：complate	complate
-	};
-	ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
-		if (ret && ret.state == 'success') {
-			//$api.setStorage(user_nickname + 'self' + courseId, '');
-		}
-	});
-}
+//function saveTaskProgress(now_progress, total, state) {
+//	var user_nickname = get_loc_val('mine', 'nickName');
+//	var user_token = $api.getStorage('token');
+//	var user_memberId = get_loc_val('mine', 'memberId');
+//	var post_param = {
+//		memberId : user_memberId, //必须，用户id	ff8080815065f95a01506627ad4c0007
+//		progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码	5
+//		taskId : task_info.taskId, //必须，任务id	1
+//		chapterId : task_info_detail.chapterId, //必须，章节id	chapterId
+//		courseId : courseId, //必须，课程id	ff808081486933e6014889882d9c0590
+//		taskName : task_info.title, //必须，任务名称	taskName
+//		chapterName : task_info_detail.chapterName, //必须，章节名称	chapterName
+//		courseName : course_detail.courseName, //必须，课程名称	courseName
+//		total : total, //必须，任务总长度	48
+//		subjectId : course_detail.subjectId, //必须，科目id	ff808081473905e7014762542d940078
+//		categoryId : course_detail.categoryId, //必须，证书id	ff808081473905e701475cd3c2080001
+//		token : user_token, //必须，用户token	144594636417159iPhoneCourse
+//		memberName : user_nickname, //必须，用户昵称	zhangxiaoyu01
+//		state : state//必须，进度状态默认init，完成：complate	complate
+//	};
+//	ajaxRequest('api/userAction/course/taskProgress/v1.0/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+//		if (ret && ret.state == 'success') {
+//			//$api.setStorage(user_nickname + 'self' + courseId, '');
+//		}
+//	});
+//}
