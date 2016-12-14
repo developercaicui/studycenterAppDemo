@@ -15,7 +15,7 @@
 	*		chapterName : '', // 章节名称
 	*		taskId : '', // 任务id
 	*		taskName ：'', // 任务名称
-	
+
 	*		progress : '', // 最后1次学习进度
 	*		total: '', // 任务总长度
 	*		state : '', // 是否播放结束
@@ -38,12 +38,17 @@
 	*	getTasksProgressSupplyAll(); 获取所有未发送的进度
 */
 ;(function(window){
+
 	var DB = {
 		db : '',
 		taskNameDB : 'taskDB',
 		taskNameTable : 'Task'+getstor('memberId'),
 		online : function(){
-			return (api.connectionType!='unknown' || api.connectionType!='none')
+			if(api.connectionType!='unknown' || api.connectionType!='none'){
+				return true;
+			}else{
+				return false;
+			}
 		},
 		saveTasksProgress : function(data,callback){ // 异步保存 数据库-任务
 			if(data){

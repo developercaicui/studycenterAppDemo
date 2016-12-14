@@ -7,13 +7,17 @@
 		saveDBNum : 0,
 		init : function(){
 			if(saveTasksProgress.online()){
-				saveTasksProgress.save();
+				// saveTasksProgress.save();
 			}else{
 
 			}
 		},
 		online : function(){
-			return (api.connectionType!='unknown' || api.connectionType!='none');
+			if(api.connectionType!='unknown' || api.connectionType!='none'){
+				return true;
+			}else{
+				return false;
+			}
 		},
 		save : function(courseId){
 			DB.getCourseIdAll(function(ret, err){
@@ -57,10 +61,11 @@
 			var tasksProgressServer = [];
 			var tasksProgressServerLength = 0;
 
+
 			//获取课程任务进度列表（new）tested
 	        var param = {
 	            'token': getstor('token'), //必须
-	            'memberId' : getstor('memberId')
+	            'memberId' : getstor('memberId'),
 	            'courseId': courseId //课程ID,必须
 	        };
 	        ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
@@ -142,8 +147,8 @@
 			    taskId : taskProgressData.taskId, //必须，任务id    1
 			    taskName : taskProgressData.title, //必须，任务名称   taskName
 
-			    progress : taskProgressData.progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-			    total : taskProgressData.total, //必须，任务总长度   48
+			    progress : parseInt(taskProgressData.progress), //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+			    total : parseInt(taskProgressData.total), //必须，任务总长度   48
 			    state : taskProgressData.state,//必须，进度状态默认init，完成：complate    complate
 			    createDate : taskProgressData.createDate,
 			    isSupply : 1
