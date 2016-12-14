@@ -1016,10 +1016,9 @@
 					chapterName : 'testTasksProgress', //章节名称
 					taskId : 'ff8080814dad5062014db320525401c1', // 任务id
 					taskName : 'testTasksProgress', //任务名称
-					progress : 2222, // 最后1次学习进度
-					total : 2493, // 任务总长度
+					progress : "1111", // 最后1次学习进度
+					total : "2493", // 任务总长度
 					state : 'init', // 是否播放结束
-					isSupply : 0,
 					downloadProgress : '', // 下载进度
 					downloadState : '', // 下载状态（ing，stop，end）
 					downloadDate : '', // 下载日期
@@ -1027,11 +1026,11 @@
 				}
 
 				// DB.delTasksProgress();
-	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
-	    	// 	DB.showTasksProgress();
-	    	// });
+	    	DB.saveTasksProgress(tasksProgress,function(ret, err){
+	    		DB.showTasksProgress();
+	    	});
 	    	// DB.clearTasksProgress();
-	    	DB.showTasksProgress();
+	    	// DB.showTasksProgress();
 	    	// DB.getCourseIdAll(function(data){
 	    	// 	alert(JSON.stringify(data));
 	    	// })

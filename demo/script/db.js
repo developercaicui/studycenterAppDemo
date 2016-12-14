@@ -34,7 +34,6 @@
 	*	getCourseIdAll(callback); 获取所有的courseId 
 	*	getTaskProgress(taskId, callback);  获取任务进度
 	*	getCourseTaskProgress(courseId, callback);  获取课程下面所有的任务进度
-	*	getTaskProgressNoSend(courseId, callback); 获取课程/所有未同步的任务进度
 	*	getTasksProgressSupplyAll(); 获取所有未发送的进度
 */
 ;(function(window) {
@@ -217,7 +216,7 @@
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
                         if (ret.status && ret.data && ret.data.length) {} else {
-                            DB.executeSql(DB.taskNameDB, 'CREATE TABLE ' + DB.taskNameTable + ' (nid integer primary key, token  varchar(255), memberId varchar(255), memberName varchar(255), categoryId varchar(255), categoryName varchar(255), subjectId varchar(255), subjectName varchar(255), courseId varchar(255), courseName varchar(255), chapterId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255), isSend varchar(255), isSupply varchar(255), createDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
+                            DB.executeSql(DB.taskNameDB, 'CREATE TABLE ' + DB.taskNameTable + ' (nid integer primary key, token  varchar(255), memberId varchar(255), memberName varchar(255), categoryId varchar(255), categoryName varchar(255), subjectId varchar(255), subjectName varchar(255), courseId varchar(255), courseName varchar(255), chapterId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255),  isSupply varchar(255), createDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
                         }
                         if (callback) { callback(ret, err) };
                     });
@@ -254,7 +253,7 @@
             } else {
                 data.isSupply = 0;
             }
-            DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSend, isSupply, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
+            DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSupply, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
                 " VALUES (" +
                 "NULL," +
                 "'" + data.token + "'," +
@@ -273,7 +272,6 @@
                 "'" + data.progress + "'," +
                 "'" + data.total + "'," +
                 "'" + data.state + "'," +
-                "'" + data.isSend + "'," +
                 "'" + data.isSupply + "'," +
                 "'" + createDate + "'," +
                 "'" + data.downloadProgress + "'," +
@@ -287,7 +285,7 @@
         },
         updateTaskDB: function(data, callback) { // 更新一条记录 数据库-任务
             // 更新 progress state isSend createDate 
-            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",isSend="' + data.isSend + '",createDate="' + data.createDate + '" WHERE taskId="' + data.taskId + '"', function(ret, err) {
+            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",createDate="' + data.createDate + '" WHERE taskId="' + data.taskId + '"', function(ret, err) {
 
                 if (callback) { callback(ret, err) }
             });
@@ -338,7 +336,6 @@
         getCourseIdAll: DB.getCourseIdAll,
         getTaskProgress: DB.getTaskProgress,
         getCourseTaskProgress: DB.getCourseTaskProgress,
-        getTaskProgressNoSend: DB.getTaskProgressNoSend,
         getTasksProgressSupplyAll: DB.getTasksProgressSupplyAll
     }
 })(window);
