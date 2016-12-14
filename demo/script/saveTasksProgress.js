@@ -30,6 +30,7 @@
   		})
 		},
 		getCourseTaskProgress : function(courseId){
+			alert(window.DB)
 			DB.getCourseTaskProgress(courseId,function(data){
 				// alert('nosend:::'+JSON.stringify(data));
 				if(data && data.length){

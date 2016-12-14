@@ -17,6 +17,11 @@
   </head>
   <body>
     <div id="content"></div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <div style="opacity:.0001; position: absolute; top: 50%;z-index:-1">
       <div id="svgDown" class="down-progress"></div>
     </div>
@@ -426,18 +431,7 @@
                           'charpterId': '', //章节ID,非必须
                           'taskId': ''//任务ID,非必须
                       };
-                      DB.getCourseTaskProgress(courseId,function(data){
-                        if(data && data.length){
-                          var ret = {
-                            state : 'success',
-                            data : data
-                          }
-                        }else{
-                          var err = true;
-                        }
-                        alert(JSON.stringify(data))
-                      // })
-                      // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+                      ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                           if (err) {
                               return false;
                           } else if (ret && ret.state == 'success') {
@@ -592,17 +586,7 @@
                   'charpterId': '', //章节ID,非必须
                   'taskId': ''//任务ID,非必须
               };
-              DB.getCourseTaskProgress(courseId,function(data){
-                if(data && data.length){
-                  var ret = {
-                    state : 'success',
-                    data : data
-                  }
-                }else{
-                  var err = true;
-                }
-              // })
-              // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+              ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                   if (err) {
                       return false;
                   } else if (ret && ret.state == 'success') {
@@ -707,11 +691,6 @@
           }
       }
     </script>
-    <script type="text/javascript" src="../script/comm.js"></script>
-    <script type="text/javascript" src="../script/doT.min.js"></script>
-    <script type="text/javascript" src="../script/caicui.js"></script>
-    <script type="text/javascript" src="../script/db.js"></script>
-    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
     <script src="../script/pagejs/catalog.js" type="text/javascript" charset="utf-8"></script>
   </body>
