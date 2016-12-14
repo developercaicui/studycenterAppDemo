@@ -798,8 +798,13 @@ function DosaveDataBase() {
         downLoadDate : '', //下载时间
         expiredDate : ''  //过期日期
     };
-    DB.saveTasksProgress(post_param);
-	//DB.showTasksProgress();
+    // DB.saveTasksProgress(post_param,function(ret, err){
+    //     if(ret.status){
+    //         DB.showTasksProgress();
+    //     }
+        
+    // });
+	
 //验证本次保存时间和上次保存时间的差值，必须为正数，否则提示用户本地时间异常????
 //   DB.getTaskProgress(post_param.taskId,function(data){
 //	 	alert(data);

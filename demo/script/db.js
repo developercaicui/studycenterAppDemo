@@ -40,9 +40,7 @@
 		db : '',
 		taskNameDB : 'taskDB',
 		taskNameTable : 'Task'+getstor('memberId'),
-		online : function(){
-			return (api.connectionType!='unknown' || api.connectionType!='none')
-		},
+		online : api.connectionType!='unknown' || api.connectionType!='none',
 		saveTasksProgress : function(data,callback){ // 异步保存 数据库-任务
 			if(data){
 				DB.taskDB(function(ret, err){
@@ -207,12 +205,12 @@
 				// alert('insetTaskDB:::'+JSON.stringify(ret)+JSON.stringify(err))
 				if(ret.status && ret.data && ret.data.length){//更新
 					DB.updateTaskDB(data,callback);
-					if(!DB.online()){
+					if(!DB.online){
 						DB.addTaskDB(data,callback,true);
 					}
 				}else{//添加
 					DB.addTaskDB(data,callback);
-					if(!DB.online()){
+					if(!DB.online){
 						DB.addTaskDB(data,callback,true);
 					}
 				}

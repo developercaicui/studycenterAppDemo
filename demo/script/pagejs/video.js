@@ -289,40 +289,10 @@ function play_video() {
                 });
                 return false;
             }
-
-         
             demo.open(param, function(ret, err) {
                 
                 $api.rmStorage('saveTaskProgress');
-//定时保存进度（2分钟）新增后期开发需求
-   clearInterval(saveTime);
-   saveTime = setInterval(function(){   
-        var jumptime;
-        if (api.systemType == 'android') {
-            jumptime =last_progress * 1000;
-        }else{
-            jumptime =last_progress;
-        }
-        demo.seekTo({
-            totime : jumptime
-        }, function(res) {
-          var ctime=res.ctime;
-          alert(ctime);
-            if (api.systemType == 'android') {
-                var tmp_progress = parseInt(ctime / 1000);
-            } else {
-                var tmp_progress = parseInt(ctime);
-            }
-            var total = videoTimes;
-            if (total * 0.9 <= tmp_progress) {
-                var state = 'complate';
-            } else {
-                var state = 'init';
-            }
-            saveTaskProgress(tmp_progress, total, state);
-        }); 
-     
-   },1000*5)                
+         
 
  
                 if(ret.status=='filedel'){
@@ -643,6 +613,35 @@ function play_video() {
                     }
                     saveTaskProgress(tmp_progress, total, state);*/
 
+//定时保存进度（2分钟）新增后期开发需求
+   clearInterval(saveTime);
+   saveTime = setInterval(function(){   
+        var jumptime;
+        if (api.systemType == 'android') {
+            jumptime =last_progress * 1000;
+        }else{
+            jumptime =last_progress;
+        }
+        demo.seekTo({
+            totime : jumptime
+        }, function(res) {
+          var ctime=res.ctime;
+          alert(ctime);
+            if (api.systemType == 'android') {
+                var tmp_progress = parseInt(ctime / 1000);
+            } else {
+                var tmp_progress = parseInt(ctime);
+            }
+            var total = videoTimes;
+            if (total * 0.9 <= tmp_progress) {
+                var state = 'complate';
+            } else {
+                var state = 'init';
+            }
+            saveTaskProgress(tmp_progress, total, state);
+        }); 
+     
+   },1000*5)      
 	
    
    
