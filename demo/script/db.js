@@ -40,7 +40,7 @@
     var DB = {
         db: '',
         taskNameDB: 'taskDB',
-        taskNameTable: 'Task' + getstor('memberId'),
+        taskNameTable: '',
         online: function() {
             if (api.connectionType != 'unknown' || api.connectionType != 'none') {
                 return true;
@@ -230,13 +230,13 @@
                 if (ret.status && ret.data && ret.data.length) { //更新
                     DB.updateTaskDB(data, callback);
                     var online = DB.online();
-                    if (online) {
+                    if (!online) {
                         DB.addTaskDB(data, callback, true);
                     }
                 } else { //添加
                     DB.addTaskDB(data, callback);
                     var online = DB.online();
-                    if (online) {
+                    if (!online) {
                         DB.addTaskDB(data, callback, true);
                     }
                 }
@@ -298,6 +298,7 @@
 
         create: function(dbname, callback) { // 打开数据库，若数据库不存在则创建数据库。
             DB.db = api.require('db');
+            DB.taskNameTable = 'Task' + getstor('memberId');
             DB.db.openDatabase({
                 name: dbname
             }, function(ret, err) {
