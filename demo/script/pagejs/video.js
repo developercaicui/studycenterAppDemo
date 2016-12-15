@@ -615,7 +615,7 @@ function play_video() {
 
 //定时保存进度（2分钟）新增后期开发需求
    clearInterval(saveTime);
-   saveTime = setInterval(function(){   
+   saveTime = setInterval(function(){  
         var jumptime;
         if (api.systemType == 'android') {
             jumptime =last_progress * 1000;
@@ -623,10 +623,10 @@ function play_video() {
             jumptime =last_progress;
         }
         demo.seekTo({
-            totime : jumptime
+            totime : 1000
         }, function(res) {
           var ctime=res.ctime;
-          alert(ctime);
+         // alert(ctime);
             if (api.systemType == 'android') {
                 var tmp_progress = parseInt(ctime / 1000);
             } else {

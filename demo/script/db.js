@@ -82,6 +82,7 @@
                         clearSelectSql += ' WHERE taskId="' + taskId + '"'
                     }
                     DB.selectSql(DB.taskNameDB, clearSelectSql, function(ret, err) {
+                    	// alert('showTasksProgress:::' + JSON.stringify(ret)+ JSON.stringify(err));
                         if (ret.status) { //删除成功
 
                         } else { //删除失败
