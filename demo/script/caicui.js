@@ -801,7 +801,7 @@ function DosaveDataBase() {
     };
     DB.saveTasksProgress(post_param,function(ret, err){
         if(ret.status){
-           DB.showTasksProgress();
+          // DB.showTasksProgress();
         }
         
     });

@@ -322,7 +322,7 @@ function set_down_status(str){
 }
 
 apiready = function() {
-    DB.showTasksProgress();
+
     // api.addEventListener({
     //     name : 'DOWN'
     // }, function(ret) {
