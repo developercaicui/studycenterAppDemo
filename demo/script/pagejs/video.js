@@ -623,10 +623,10 @@ function play_video() {
             jumptime =last_progress;
         }
         demo.seekTo({
-            totime : 1000
+            totime : jumptime
         }, function(res) {
           var ctime=res.ctime;
-         // alert(ctime);
+        // alert(ctime);
             if (api.systemType == 'android') {
                 var tmp_progress = parseInt(ctime / 1000);
             } else {
@@ -641,7 +641,7 @@ function play_video() {
             saveTaskProgress(tmp_progress, total, state);
         }); 
      
-   },1000*5)      
+   },1000*10)      
 	
    
    
