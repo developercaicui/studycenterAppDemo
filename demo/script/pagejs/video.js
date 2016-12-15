@@ -290,9 +290,9 @@ function play_video() {
                 return false;
             }
             demo.open(param, function(ret, err) {
-                
+                alert(JSON.stringify(ret.ctime))
                 $api.rmStorage('saveTaskProgress');
-         
+                
 
  
                 if(ret.status=='filedel'){

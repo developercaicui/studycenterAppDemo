@@ -1005,8 +1005,6 @@
     }
     var is_resume;
     apiready = function() {
-
-
 				var tasksProgress = {
 					categoryId : 'ff808081473905e701475cd3c2080001', // 证书id
 					categoryName : 'testTasksProgress',
@@ -1027,12 +1025,12 @@
 					expiredDate : '' // 过期日期
 				}
 
+	    	DB.saveTasksProgress(tasksProgress,function(ret, err){
+	    		DB.showTasksProgress();
+	    	});
 				// DB.delTasksProgress();
-	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
-	    	// 	DB.showTasksProgress();
-	    	// });
 	    	// DB.clearTasksProgress();
-	    	//DB.showTasksProgress();
+	    	// DB.showTasksProgress();
 	    	// DB.getCourseIdAll(function(data){
 	    	// 	alert(JSON.stringify(data));
 	    	// })

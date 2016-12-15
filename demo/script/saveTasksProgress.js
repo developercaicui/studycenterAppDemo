@@ -7,7 +7,7 @@
 		saveDBNum : 0,
 		init : function(){
 			if(saveTasksProgress.online()){
-				// saveTasksProgress.save();
+				saveTasksProgress.save();
 			}else{
 
 			}
