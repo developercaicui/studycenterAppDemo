@@ -30,6 +30,7 @@
 	*	saveTasksProgress(data,callback); 保存数据到任务进度数据库 参数data：保存的数据
 	*	showTasksProgress(); 显示任务进度数据库的数据
 	*	clearTasksProgress(taskId); 删除任务进度数据库的数据 参数taskId：任务id，无参数：删除所有
+  * clearTasksProgressLog(createDate); 删除任务进度数据库的数据 参数taskId：任务id，无参数：删除所有
 	*	delTasksProgress(); 删除任务进度数据库表
 	*	getCourseIdAll(callback); 获取所有的courseId 
 	*	getTaskProgress(taskId, callback);  获取任务进度
@@ -63,10 +64,10 @@
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
                         if (ret.status && ret.data && ret.data.length) {
-                            alert('showTasksProgress:::' + JSON.stringify(ret));
+                            // alert('showTasksProgress:::' + JSON.stringify(ret));
                             if (callback) { callback() };
                         } else {
-                            alert('查询进度失败');
+                            // alert('查询进度失败');
                         }
                     });
                 }
@@ -85,7 +86,26 @@
                         if (ret.status) { //删除成功
 
                         } else { //删除失败
-                            alert('删除失败');
+                            // alert('删除失败');
+                        }
+                    })
+                }
+            });
+        },
+        clearTasksProgressLog: function(createDate) {
+            var clearTaskId = arguments.length ? true : false;
+            DB.create(DB.taskNameDB, function(ret, err) {
+                if (ret.status) {
+                    var clearSelectSql = 'DELETE FROM ' + DB.taskNameTable + ' WHERE isLog="1"';
+                    if (clearTaskId) {
+                        clearSelectSql += ' and createDate="' + createDate + '"'
+                    }
+                    DB.selectSql(DB.taskNameDB, clearSelectSql, function(ret, err) {
+                      // alert('showTasksProgress:::' + JSON.stringify(ret)+ JSON.stringify(err));
+                        if (ret.status) { //删除成功
+
+                        } else { //删除失败
+                            // alert('删除失败');
                         }
                     })
                 }
@@ -95,7 +115,7 @@
             DB.create(DB.taskNameDB, function(ret, err) {
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'DROP TABLE ' + DB.taskNameTable, function(ret, err) {
-                        alert('delTasksProgress:::' + JSON.stringify(ret) + ';' + JSON.stringify(err))
+                        // alert('delTasksProgress:::' + JSON.stringify(ret) + ';' + JSON.stringify(err))
                     });
                 }
             });
@@ -125,7 +145,7 @@
                                 if (callback) { callback(courseIdAll) }
                             })
                         } else {
-                            alert('数据库为空');
+                            // alert('数据库为空');
                         }
                     })
                 }
@@ -141,11 +161,11 @@
                                 if (ret.status) {
                                     if (callback) { callback(ret.data[0].progress) }
                                 } else { //
-                                    alert('获取失败');
+                                    // alert('获取失败');
                                 }
                             })
                         } else {
-                            alert('数据库为空');
+                            // alert('数据库为空');
                         }
                     })
                 }
@@ -165,7 +185,7 @@
                                 if (callback) { callback(courseTaskProgress) }
                             })
                         } else {
-                            alert('数据库为空');
+                            // alert('数据库为空');
                         }
                     })
                 }
@@ -185,7 +205,7 @@
                         if (ret.status) {
                             if (callback) { callback(ret.data) }
                         } else { //
-                            alert('获取失败');
+                            // alert('获取失败');
                         }
                     })
                 }
@@ -201,11 +221,11 @@
                                 if (ret.status) {
                                     if (callback) { callback(ret.data) }
                                 } else { //
-                                    alert('获取失败');
+                                    // alert('获取失败');
                                 }
                             })
                         } else {
-                            alert('数据库为空');
+                            // alert('数据库为空');
                         }
                     })
                 }
@@ -218,7 +238,7 @@
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
                         if (ret.status && ret.data && ret.data.length) {} else {
-                            DB.executeSql(DB.taskNameDB, 'CREATE TABLE ' + DB.taskNameTable + ' (nid integer primary key, token  varchar(255), memberId varchar(255), memberName varchar(255), categoryId varchar(255), categoryName varchar(255), subjectId varchar(255), subjectName varchar(255), courseId varchar(255), courseName varchar(255), chapterId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255),  isSupply varchar(255), createDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
+                            DB.executeSql(DB.taskNameDB, 'CREATE TABLE ' + DB.taskNameTable + ' (nid integer primary key, token  varchar(255), memberId varchar(255), memberName varchar(255), categoryId varchar(255), categoryName varchar(255), subjectId varchar(255), subjectName varchar(255), courseId varchar(255), courseName varchar(255), chapterId varchar(255), chapterName varchar(255), taskId varchar(255), taskName varchar(255), progress varchar(255), total varchar(255), state varchar(255),  isSupply varchar(255), isLog varchar(255), createDate varchar(255), downloadProgress varchar(255), downloadState varchar(255), downloadDate varchar(255), expiredDate varchar(255))');
                         }
                         if (callback) { callback(ret, err) };
                     });
@@ -250,12 +270,13 @@
             data.memberId = getstor('memberId');
             data.memberName = getstor('nickName');
             if (log) {
-                data.taskId = data.taskId + 'log';
+                data.islog = 1;
                 data.isSupply = 1;
             } else {
+                data.islog = 0;
                 data.isSupply = 0;
             }
-            DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSupply, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
+            DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSupply, isLog, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
                 " VALUES (" +
                 "NULL," +
                 "'" + data.token + "'," +
@@ -275,6 +296,7 @@
                 "'" + data.total + "'," +
                 "'" + data.state + "'," +
                 "'" + data.isSupply + "'," +
+                "'" + data.isLog + "'," +
                 "'" + createDate + "'," +
                 "'" + data.downloadProgress + "'," +
                 "'" + data.downloadState + "'," +
@@ -294,7 +316,7 @@
         },
         selectTaskDB: function() { // 显示数据库-任务
             DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
-                alert('showTasksProgress:::' + JSON.stringify(ret) + ';' + JSON.stringify(err))
+                // alert('showTasksProgress:::' + JSON.stringify(ret) + ';' + JSON.stringify(err))
             });
         },
 
@@ -335,6 +357,7 @@
         saveTasksProgress: DB.saveTasksProgress,
         showTasksProgress: DB.showTasksProgress,
         clearTasksProgress: DB.clearTasksProgress,
+        clearTasksProgressLog : DB.clearTasksProgressLog,
         delTasksProgress: DB.delTasksProgress,
         getCourseIdAll: DB.getCourseIdAll,
         getTaskProgress: DB.getTaskProgress,

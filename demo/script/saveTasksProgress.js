@@ -30,7 +30,6 @@
   		})
 		},
 		getCourseTaskProgress : function(courseId){
-			alert(window.DB)
 			DB.getCourseTaskProgress(courseId,function(data){
 				// alert('nosend:::'+JSON.stringify(data));
 				if(data && data.length){
@@ -161,6 +160,7 @@
 			            location : 'middle'
 			        });
 			    }else{
+			    	DB.clearTasksProgressLog(taskProgressData.createDate);
 			    	saveTasksProgress.saveServerNum++;
 			    	saveTasksProgress.saveServer(data);
 			    }

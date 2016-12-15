@@ -322,7 +322,6 @@ function set_down_status(str){
 }
 
 apiready = function() {
-    DB.showTasksProgress();
     // api.addEventListener({
     //     name : 'DOWN'
     // }, function(ret) {
@@ -335,7 +334,7 @@ apiready = function() {
     // updateTasksProgress(api.pageParam.course_id,function(data){
 
     // });
-    // saveTasksProgress.getCourseTaskProgress(api.pageParam.course_id);
+    saveTasksProgress.getCourseTaskProgress(api.pageParam.course_id);
     memberId = getstor('memberId');
   	getData();
   	api.addEventListener({
