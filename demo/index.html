@@ -1005,7 +1005,46 @@
     }
     var is_resume;
     apiready = function() {
+
 DB.clearTasksProgress();
+
+				var tasksProgress = {
+					categoryId : 'ff808081473905e701475cd3c2080001', // 证书id
+					categoryName : 'testTasksProgress',
+					subjectId : 'ff808081473905e701476204cb6c006f', // 科目id
+					subjectName : 'testTasksProgress',
+					courseId : 'ff8080814dad5062014db32051b801a2', // 课程id
+					courseName : 'testTasksProgress', // 课程名称
+					chapterId : 'ff8080814dad5062014db320524e01c0', // 章节id
+					chapterName : 'testTasksProgress', //章节名称
+					taskId : 'ff8080814dad5062014db320525401c1', // 任务id
+					taskName : 'testTasksProgress', //任务名称
+					progress : "1111", // 最后1次学习进度
+					total : "2493", // 任务总长度
+					state : 'init', // 是否播放结束
+					downloadProgress : '', // 下载进度
+					downloadState : '', // 下载状态（ing，stop，end）
+					downloadDate : '', // 下载日期
+					expiredDate : '' // 过期日期
+				}
+
+				// DB.delTasksProgress();
+	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
+	    	// 	DB.showTasksProgress();
+	    	// });
+	    	// DB.clearTasksProgress();
+	    	DB.showTasksProgress();
+	    	// DB.getCourseIdAll(function(data){
+	    	// 	alert(JSON.stringify(data));
+	    	// })
+	    	// DB.getTaskProgress('2',function(data){
+	    	// 	alert(data);
+	    	// })
+	    	// DB.getTaskProgressNoSend(function(data){
+	    	// 	alert('nosend:::'+JSON.stringify(data));
+	    	// })
+
+
         is_resume = false;
         api.setKeepScreenOn({
             keepOn: true
