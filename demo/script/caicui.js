@@ -800,6 +800,7 @@ function DosaveDataBase() {
                     isSupply : 0  //是否补发  0是实时报文
     };
     DB.saveTasksProgress(post_param,function(ret, err){
+
         if(ret.status){
           // DB.showTasksProgress();
         }

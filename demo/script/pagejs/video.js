@@ -289,6 +289,7 @@ function play_video() {
                 });
                 return false;
             }
+            //alert(JSON.stringify(param))
             demo.open(param, function(ret, err) {
                 
                 $api.rmStorage('saveTaskProgress');
@@ -333,7 +334,6 @@ function play_video() {
                     //demo.close();
                     //关闭页面
                     //api.closeWin();
-
                     if (ret.ctime == 'nan') {
                         //视频未加载完毕,视频进度为0
                         var tmp_progress = 0;
@@ -626,7 +626,7 @@ function play_video() {
             totime : jumptime
         }, function(res) {
           var ctime=res.ctime;
-        // alert(ctime);
+        //alert(ctime);
             if (api.systemType == 'android') {
                 var tmp_progress = parseInt(ctime / 1000);
             } else {
@@ -660,6 +660,7 @@ function play_video() {
                         // });
                     // }
                 } else if(ret.btnType == '-1' || ret.btnType== -1 || ret.btnType=='play') {
+                   
                     //暂停视频
                     var ctime=ret.ctime;
                     if (api.systemType == 'android') {
@@ -846,7 +847,7 @@ function saveTaskProgress(now_progress, total, state){
         name: 'root',
         script: jsfun
     });
-    
+    //alert(now_progress)
     //离线状态下将进度保存到本地数据库不保存到服务器
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {      
         return false;
@@ -860,15 +861,16 @@ function saveTaskProgress(now_progress, total, state){
         script: jsfun
     });
     
-    //数据库与服务器之间的同步
     
 }
 function saveVideoProgress(videoid,progress){
+
         var memberId= getstor('memberId');
         var key = memberId+"progress"+videoid;
         $api.setStorage(key,progress);
 }
-function getVideoProgress(videoid){
+function getVideoProgress(videoid){                  
+
         var memberId= getstor('memberId');
         var key = memberId+"progress"+videoid;
         var progress = $api.getStorage(key);
