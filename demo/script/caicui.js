@@ -695,9 +695,10 @@ function DosaveTaskProgress() {
                 location : 'middle'
             });
         }
-        if (ret && ret.state == 'success') {
-       alert(JSON.stringify(post_param))
-        }
+        //if (ret && ret.state == 'success') {
+        //$api.setStorage(user_nickname + 'self' + courseId, '');
+        //清除整个课程结构的课程进度
+        //}
     });
 }
 

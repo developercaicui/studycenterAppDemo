@@ -254,8 +254,10 @@ function play_video() {
                 });
             }
             if (last_progress == 0) {
-                last_progress = getVideoProgress(videoid);
+                // last_progress = getVideoProgress(videoid);
+                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId);
             }
+            alert(last_progress)
             //alert(task_info.apiKey+'===='+UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
             var param = {
