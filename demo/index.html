@@ -443,7 +443,7 @@
         //				}, 1500);
         var obj = api.require('qq');
         obj.login(function(ret, err) {
-        	alert('qq'+JSON.stringify(ret)+JSON.stringify(err))
+            alert('qq' + JSON.stringify(ret) + JSON.stringify(err))
             if (ret.openId) {
                 set_token(function(res, error) {
                     if (error) {
@@ -758,10 +758,50 @@
         if (notice == 1) {
             init_push();
         }
-				
+
+
+        var user_nickname = get_loc_val('mine', 'nickName');
+        var user_token = $api.getStorage('token');
+        var user_memberId = get_loc_val('mine', 'memberId');
+        var post_param = {
+            token: user_token,
+            memberId: user_memberId,
+            memberName: user_nickname,
+            categoryId: "ff808081473905e701475cd3c2080001", //必须，证书id    ff808081473905e701475cd3c2080001
+            categoryName: "ACCA", // 证书名称
+            subjectId: "ff808081473905e701476254ba24007a", //必须，科目id  ff808081473905e7014762542d940078
+            subjectName: "P2", // 科目名称
+            courseId: "ff8080814dc1dc4e014dff874a2029e9", //必须，课程id    ff808081486933e6014889882d9c0590
+            courseName: "复习串讲-ACCA P2 Corporate Reporting", //必须，课程名称    courseName
+            chapterId: "ff8080814dc1dc4e014dff874a2529ea", //必须，章节id   chapterId
+            chapterName: "串讲内容", //必须，章节名称   chapterName
+            taskId: "ff8080814dc1dc4e014dff874a2d29ec", //必须，任务id    1
+            taskName: "串讲-1", //任务名称
+            progress: 1111, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+            total: 4157, //必须，任务总长度   48
+            state: "init" //必须，进度状态默认init，完成：complate   complate       
+        };
+
+        ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+            if(err){
+                api.toast({
+                    msg : err.msg,
+                    location : 'middle'
+                });
+            }
+            //if (ret && ret.state == 'success') {
+            //$api.setStorage(user_nickname + 'self' + courseId, '');
+            //清除整个课程结构的课程进度
+            //}
+        });
+
+
+
+
         saveTasksProgress.init();
-        
+
     }
+
     function to_login() { //去登陆
         var jsfun = "cancel_login();";
         api.execScript({
@@ -1005,41 +1045,46 @@
     }
     var is_resume;
     apiready = function() {
-				var tasksProgress = {
-					categoryId : 'ff808081473905e701475cd3c2080001', // 证书id
-					categoryName : 'testTasksProgress',
-					subjectId : 'ff808081473905e701476204cb6c006f', // 科目id
-					subjectName : 'testTasksProgress',
-					courseId : 'ff8080814dad5062014db32051b801a2', // 课程id
-					courseName : 'testTasksProgress', // 课程名称
-					chapterId : 'ff8080814dad5062014db320524e01c0', // 章节id
-					chapterName : 'testTasksProgress', //章节名称
-					taskId : 'ff8080814dad5062014db320525401c1', // 任务id
-					taskName : 'testTasksProgress', //任务名称
-					progress : "1111", // 最后1次学习进度
-					total : "2493", // 任务总长度
-					state : 'init', // 是否播放结束
-					downloadProgress : '', // 下载进度
-					downloadState : '', // 下载状态（ing，stop，end）
-					downloadDate : '', // 下载日期
-					expiredDate : '' // 过期日期
-				}
 
-	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
-	    	// 	DB.showTasksProgress();
-	    	// });
-				// DB.delTasksProgress();
-	    	// DB.clearTasksProgress();
-	    	// DB.showTasksProgress();
-	    	// DB.getCourseIdAll(function(data){
-	    	// 	alert(JSON.stringify(data));
-	    	// })
-	    	// DB.getTaskProgress('2',function(data){
-	    	// 	alert(data);
-	    	// })
-	    	// DB.getTaskProgressNoSend(function(data){
-	    	// 	alert('nosend:::'+JSON.stringify(data));
-	    	// })
+
+
+
+
+        var tasksProgress = {
+            categoryId: 'ff808081473905e701475cd3c2080001', // 证书id
+            categoryName: 'testTasksProgress',
+            subjectId: 'ff808081473905e701476204cb6c006f', // 科目id
+            subjectName: 'testTasksProgress',
+            courseId: 'ff8080814dad5062014db32051b801a2', // 课程id
+            courseName: 'testTasksProgress', // 课程名称
+            chapterId: 'ff8080814dad5062014db320524e01c0', // 章节id
+            chapterName: 'testTasksProgress', //章节名称
+            taskId: 'ff8080814dad5062014db320525401c1', // 任务id
+            taskName: 'testTasksProgress', //任务名称
+            progress: "1111", // 最后1次学习进度
+            total: "2493", // 任务总长度
+            state: 'init', // 是否播放结束
+            downloadProgress: '', // 下载进度
+            downloadState: '', // 下载状态（ing，stop，end）
+            downloadDate: '', // 下载日期
+            expiredDate: '' // 过期日期
+        }
+
+        // DB.saveTasksProgress(tasksProgress,function(ret, err){
+        // 	DB.showTasksProgress();
+        // });
+        // DB.delTasksProgress();
+        // DB.clearTasksProgress();
+        // DB.showTasksProgress();
+        // DB.getCourseIdAll(function(data){
+        // 	alert(JSON.stringify(data));
+        // })
+        // DB.getTaskProgress('2',function(data){
+        // 	alert(data);
+        // })
+        // DB.getTaskProgressNoSend(function(data){
+        // 	alert('nosend:::'+JSON.stringify(data));
+        // })
 
 
         is_resume = false;
@@ -1058,7 +1103,7 @@
         api.addEventListener({
             name: 'pause'
         }, function(ret, err) {
-        	saveTasksProgress.init();
+            saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbpause"
             });
@@ -1094,7 +1139,7 @@
         api.addEventListener({
             name: 'resume'
         }, function(ret, err) {
-        	saveTasksProgress.init();
+            saveTasksProgress.init();
             api.sendEvent({
                 name: "lbbresume"
             });
@@ -1199,8 +1244,8 @@
         api.addEventListener({
             name: 'online'
         }, function(ret, err) {
-        	saveTasksProgress.init();
-        	//保存进度
+            saveTasksProgress.init();
+            //保存进度
             window.shut_network = false;
             var connectionType = ret.connectionType;
             if (connectionType == 'wifi') {

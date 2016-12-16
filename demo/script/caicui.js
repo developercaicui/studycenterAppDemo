@@ -666,9 +666,12 @@ function DosaveTaskProgress() {
     var user_token = $api.getStorage('token');
     var user_memberId = get_loc_val('mine', 'memberId');
     var post_param = {
+            token : user_token,
+            memberId : user_memberId,
+            memberName : user_nickname,
 	        categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-	        subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
 	        categoryName : course_detail.categoryName, // 证书名称
+            subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
 	        subjectName : course_detail.subjectName, // 科目名称
 	        courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
 	        courseName : course_detail.courseName, //必须，课程名称    courseName
@@ -679,11 +682,11 @@ function DosaveTaskProgress() {
 	        progress : now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
 	        total : total, //必须，任务总长度   48
 	        state : state,//必须，进度状态默认init，完成：complate   complate       
-	        downLoadProgress :  '',    //下载进度
-	        downLoadState :  '',      //下载状态  ing 、stop、end
-	        downLoadDate : '', //下载时间
-	        expiredDate : '',  //过期日期
-	        isSupply : 0  //是否补发  0是实时报文
+	        // downLoadProgress :  '',    //下载进度
+	        // downLoadState :  '',      //下载状态  ing 、stop、end
+	        // downLoadDate : '', //下载时间
+	        // expiredDate : '',  //过期日期
+	        // isSupply : 0  //是否补发  0是实时报文
     };
     ajaxRequest('api/v2.1/chapter/taskProgress/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
         if(err){
@@ -779,10 +782,17 @@ function DosaveDataBase() {
         task_info=data.task_info,
         task_info_detail=data.task_info_detail,
         course_detail=data.course_detail;
-        var post_param = {
+    
+    var user_nickname = get_loc_val('mine', 'nickName');
+    var user_token = $api.getStorage('token');
+    var user_memberId = get_loc_val('mine', 'memberId');
+    var post_param = {
+            token : user_token,
+            memberId : user_memberId,
+            memberName : user_nickname,
                     categoryId : course_detail.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-                    subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
                     categoryName : course_detail.categoryName, // 证书名称
+                    subjectId : course_detail.subjectId, //必须，科目id  ff808081473905e7014762542d940078
                     subjectName : course_detail.subjectName, // 科目名称
                     courseId : course_detail.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
                     courseName : course_detail.courseName, //必须，课程名称    courseName
@@ -797,7 +807,6 @@ function DosaveDataBase() {
                     downloadState :  '',      //下载状态  ing 、stop、end
                     downloadDate : '', //下载时间
                     expiredDate : '',  //过期日期
-                    isSupply : 0  //是否补发  0是实时报文
     };
     DB.saveTasksProgress(post_param,function(ret, err){
 
