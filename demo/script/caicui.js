@@ -685,7 +685,7 @@ function DosaveTaskProgress() {
 	        expiredDate : '',  //过期日期
 	        isSupply : 0  //是否补发  0是实时报文
     };
-    ajaxRequest('api/userAction/course/taskProgress/v1.0/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+    ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
         if(err){
             api.toast({
                 msg : err.msg,
