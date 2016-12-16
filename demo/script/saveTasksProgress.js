@@ -68,14 +68,14 @@
 	            'memberId' : getstor('memberId'),
 	            'courseId': courseId //课程ID,必须
 	        };
-	        ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
-	        // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+	        //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
+	        ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
 	            if (err) {
 	                return false;
 	            } else if (ret && ret.state == 'success') {
 	                tasksProgressServer = ret.data;
 	                tasksProgressServerLength = ret.data.length;
-	                
+	                alert(JSON.stringify(ret.data))
 	                	// for(var i=0;i<tasksProgressDBLength;i++){
 	                	//     var different = 0;
 	                	//     for(var j=0;j<tasksProgressServerLength;j++){
@@ -147,13 +147,13 @@
 			    taskId : taskProgressData.taskId, //必须，任务id    1
 			    taskName : taskProgressData.title, //必须，任务名称   taskName
 
-			    progress : parseInt(taskProgressData.progress), //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-			    total : parseInt(taskProgressData.total), //必须，任务总长度   48
+			    progress : taskProgressData.progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+			    total : taskProgressData.total, //必须，任务总长度   48
 			    state : taskProgressData.state,//必须，进度状态默认init，完成：complate    complate
-			    createDate : taskProgressData.createDate,
-			    isSupply : 1
+			    // createDate : taskProgressData.createDate,
+			    // isSupply : 1
 			};
-			ajaxRequest('api/v2.1/chapter/taskProgress/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+			ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
 			    if(err){
 			        api.toast({
 			            msg : err.msg,
