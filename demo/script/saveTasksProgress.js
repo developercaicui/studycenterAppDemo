@@ -83,7 +83,6 @@
 	                tasksProgressServer = ret.data;
 	                tasksProgressServerLength = ret.data.length;
 
-	                alert(JSON.stringify(ret.data))
 
 	                	// for(var i=0;i<tasksProgressDBLength;i++){
 	                	//     var different = 0;

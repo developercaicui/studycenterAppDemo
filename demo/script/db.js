@@ -178,18 +178,21 @@
           var openDBRet = db.openDatabaseSync({
               name: DB.taskNameDB
           });
-          // alert(JSON.stringify(openDBRet))
+          alert(JSON.stringify(openDBRet))
           if(openDBRet.status){
             var tableName = 'Task' + getstor('memberId')
             var isEmptyRet = db.selectSqlSync({
                 name: DB.taskNameDB,
                 sql: 'SELECT * FROM ' + tableName
             });
+            alert(JSON.stringify(isEmptyRet))
+
             if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
                 var getTaskProgressRet = db.selectSqlSync({
                   name: DB.taskNameDB,
                   sql: 'SELECT progress FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
+                alert(JSON.stringify(getTaskProgressRet))
                 return getTaskProgressRet.data[0].progress;
             }else{
               return 0;

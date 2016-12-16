@@ -292,8 +292,9 @@ function play_video() {
                 });
                 return false;
             }
-            alert(JSON.stringify(param))
+    
             demo.open(param, function(ret, err) {
+
                 $api.rmStorage('saveTaskProgress');
 
 
