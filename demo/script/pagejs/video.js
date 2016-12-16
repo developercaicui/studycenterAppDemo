@@ -13,10 +13,12 @@ var task_arr;//所有的任务信息
 var task_info_detail;
 var last_progress = 0;
 var saveTime = null;
+
 function  closeVideo() {
     demo.close();
 }
 apiready = function() {
+    
     //应用进入后台事件
     api.addEventListener({
         name: 'pause'
@@ -26,7 +28,6 @@ apiready = function() {
         //在线 保存进度-服务器/数据库
 
         //离线 保存进度-数据库
-
     });
     //应用从后台回到前台事件
     api.addEventListener({
@@ -290,7 +291,6 @@ function play_video() {
                 return false;
             }
             demo.open(param, function(ret, err) {
-                alert(JSON.stringify(ret.ctime))
                 $api.rmStorage('saveTaskProgress');
                 
 
@@ -329,6 +329,7 @@ function play_video() {
                   }
                     return false;
                 }
+
                 if (ret.btnType == 1) {//对应返回按钮
                     //demo.close();
                     //关闭页面
@@ -831,7 +832,7 @@ function closeThisWin(playtime) {
 }
 //保存任务进度
 function saveTaskProgress(now_progress, total, state){
-    var data={
+    videoData={
         now_progress:now_progress,
         total:total,
         state:state,
@@ -840,7 +841,7 @@ function saveTaskProgress(now_progress, total, state){
         course_detail:course_detail
     };
   	saveVideoProgress(videoid,now_progress);
-    $api.setStorage('saveTaskProgress',data);
+    $api.setStorage('saveTaskProgress',videoData);
     var jsfun = "DosaveDataBase();";
     api.execScript({
         name: 'root',

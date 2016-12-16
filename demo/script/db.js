@@ -65,6 +65,7 @@
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
                         alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                         if (ret.status && ret.data && ret.data.length) {
+                             alert('showTasksProgress:::' + JSON.stringify(ret));
                             if (callback) { callback() };
                         } else {
                             // alert('查询进度失败');

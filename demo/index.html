@@ -112,7 +112,7 @@
     var clickCount = 1;
     var timePicker;
     var y, h;
-    
+    CAICUI.a=1;
 
     function to_set() { //打开设置
         api.setStatusBarStyle({
@@ -1025,9 +1025,9 @@
 					expiredDate : '' // 过期日期
 				}
 
-	    	DB.saveTasksProgress(tasksProgress,function(ret, err){
-	    		DB.showTasksProgress();
-	    	});
+	    	// DB.saveTasksProgress(tasksProgress,function(ret, err){
+	    	// 	DB.showTasksProgress();
+	    	// });
 				// DB.delTasksProgress();
 	    	// DB.clearTasksProgress();
 	    	// DB.showTasksProgress();
