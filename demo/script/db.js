@@ -159,6 +159,7 @@
                         if (isEmpty) {
                             var selectSql = 'SELECT progress FROM ' + DB.taskNameTable + ' where taskId="' + taskId + '"';
                             DB.selectSql(DB.taskNameDB, selectSql, function(ret, err) {
+                              // alert('progress'+JSON.stringify(ret.data[0].progress)+JSON.stringify(err))
                                 if (ret.status) {
                                     if (callback) { callback(ret.data[0].progress) }
                                 } else { //
@@ -171,6 +172,33 @@
                     })
                 }
             });
+        },
+        getTaskProgressSync : function(taskId){
+          var db = api.require('db');
+          var openDBRet = db.openDatabaseSync({
+              name: DB.taskNameDB
+          });
+          // alert(JSON.stringify(openDBRet))
+          if(openDBRet.status){
+            var tableName = 'Task' + getstor('memberId')
+            var isEmptyRet = db.selectSqlSync({
+                name: DB.taskNameDB,
+                sql: 'SELECT * FROM ' + tableName
+            });
+            if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
+                var getTaskProgressRet = db.selectSqlSync({
+                  name: DB.taskNameDB,
+                  sql: 'SELECT progress FROM ' + tableName + ' where taskId="' + taskId + '"'
+                });
+                return getTaskProgressRet.data[0].progress;
+            }else{
+              return 0;
+            }
+
+          }else{
+            return 0;
+          }
+
         },
         getCourseTaskProgress: function(courseId, callback) {
             DB.create(DB.taskNameDB, function(ret, err) {
@@ -212,13 +240,14 @@
                 }
             });
         },
-        getTasksProgressSupplyAll: function() {
+        getTasksProgressSupplyAll: function(callback) {
             DB.create(DB.taskNameDB, function(ret, err) {
                 if (ret.status) {
                     DB.isEmptyTasksProgress(function(isEmpty) {
                         if (isEmpty) {
                             var selectSql = 'SELECT progress FROM ' + DB.taskNameTable + ' where isSupply="1"';
                             DB.selectSql(DB.taskNameDB, selectSql, function(ret, err) {
+                              // alert('DBTasksProgressSupplyAll'+JSON.stringify(ret)+JSON.stringify(err))
                                 if (ret.status) {
                                     if (callback) { callback(ret.data) }
                                 } else { //
@@ -266,15 +295,15 @@
             })
         },
         addTaskDB: function(data, callback, log) { // 添加一条记录 数据库-任务
-            var createDate = Date.parse(new Date()); //当前时间戳
+            var createDate = new Date().getTime(); //当前时间戳
             data.token = getstor('token');
             data.memberId = getstor('memberId');
             data.memberName = getstor('nickName');
             if (log) {
-                data.islog = 1;
+                data.isLog = 1;
                 data.isSupply = 1;
             } else {
-                data.islog = 0;
+                data.isLog = 0;
                 data.isSupply = 0;
             }
             DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSupply, isLog, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
@@ -298,7 +327,7 @@
                 "'" + data.state + "'," +
                 "'" + data.isSupply + "'," +
                 "'" + data.isLog + "'," +
-                "'" + createDate + "'," +
+                "'" + (new Date().getTime()) + "'," +
                 "'" + data.downloadProgress + "'," +
                 "'" + data.downloadState + "'," +
                 "'" + data.downloadDate + "'," +
@@ -363,6 +392,7 @@
         delTasksProgress: DB.delTasksProgress,
         getCourseIdAll: DB.getCourseIdAll,
         getTaskProgress: DB.getTaskProgress,
+        getTaskProgressSync : DB.getTaskProgressSync,
         getCourseTaskProgress: DB.getCourseTaskProgress,
         getTasksProgressSupplyAll: DB.getTasksProgressSupplyAll
     }

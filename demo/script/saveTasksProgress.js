@@ -5,8 +5,12 @@
 		user_memberId : '',
 		saveServerNum : 0,
 		saveDBNum : 0,
+		courseIdNum : 0,
 		init : function(){
 			if(saveTasksProgress.online()){
+				saveTasksProgress.saveServerNum = 0;
+				saveTasksProgress.saveDBNum = 0;
+				saveTasksProgress.courseIdNum = 0;
 				saveTasksProgress.save();
 			}else{
 
@@ -23,18 +27,18 @@
 			DB.getCourseIdAll(function(ret, err){
   			// alert(JSON.stringify(ret)+';'+JSON.stringify(err))
   			if(ret && ret.length){
-  				for(var i=0;i<ret.length;i++){
-  					saveTasksProgress.getCourseTaskProgress(ret[i]);
-  				}
+  				saveTasksProgress.getCourseTaskProgress(ret);
   			}
   		})
 		},
-		getCourseTaskProgress : function(courseId){
-			DB.getCourseTaskProgress(courseId,function(data){
-				// alert('nosend:::'+JSON.stringify(data));
+		getCourseTaskProgress : function(courseIdArr){
+			if(saveTasksProgress.courseIdNum>=(courseIdArr.length)){
+				return false;
+			}
+			DB.getCourseTaskProgress(courseIdArr[saveTasksProgress.courseIdNum],function(data){
+				// alert('getCourseTaskProgress'+JSON.stringify(data))
 				if(data && data.length){
-
-					saveTasksProgress.getUpdateDBData(courseId, data, function(updateDBData, updateServerData){
+					saveTasksProgress.getUpdateDBData(courseIdArr[saveTasksProgress.courseIdNum], data, function(updateDBData, updateServerData){
 						// alert('updateDBData::'+JSON.stringify(updateDBData))
 						// alert('updateServerData::'+JSON.stringify(updateServerData))
 						
@@ -47,7 +51,10 @@
 
 					});
 					DB.getTasksProgressSupplyAll(function(data){
-						saveTasksProgress.saveServer(data);
+						saveTasksProgress.saveServer(data,function(){
+							saveTasksProgress.courseIdNum++;
+							saveTasksProgress.getCourseTaskProgress(courseIdArr);
+						});
 					})
 					
 				}
@@ -75,7 +82,7 @@
 	            } else if (ret && ret.state == 'success') {
 	                tasksProgressServer = ret.data;
 	                tasksProgressServerLength = ret.data.length;
-	                
+	                // alert('/v2/study/getTasksProgre'+JSON.stringify(tasksProgressDB)+JSON.stringify(tasksProgressServer))
 	                	// for(var i=0;i<tasksProgressDBLength;i++){
 	                	//     var different = 0;
 	                	//     for(var j=0;j<tasksProgressServerLength;j++){
@@ -126,8 +133,9 @@
 				saveTasksProgress.saveDB(data);
 			});
 		},
-		saveServer : function(data){
+		saveServer : function(data,callback){
 			if(saveTasksProgress.saveServerNum>=(data.length)){
+				if(callback){callback()};
 				return false;
 			}
 			var taskProgressData = data[saveTasksProgress.saveServerNum];
