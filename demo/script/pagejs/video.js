@@ -290,6 +290,7 @@ function play_video() {
                 });
                 return false;
             }
+            //alert(JSON.stringify(param))
             demo.open(param, function(ret, err) {
                 $api.rmStorage('saveTaskProgress');
                 
@@ -847,7 +848,7 @@ function saveTaskProgress(now_progress, total, state){
         name: 'root',
         script: jsfun
     });
-    
+    //alert(now_progress)
     //离线状态下将进度保存到本地数据库不保存到服务器
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {      
         return false;
