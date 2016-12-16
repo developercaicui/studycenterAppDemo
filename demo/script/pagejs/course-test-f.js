@@ -770,7 +770,7 @@ function createQuestion() {
 //		memberName : user_nickname, //必须，用户昵称	zhangxiaoyu01
 //		state : state//必须，进度状态默认init，完成：complate	complate
 //	};
-//	ajaxRequest('api/userAction/course/taskProgress/v1.0/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+//	ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
 //		if (ret && ret.state == 'success') {
 //
 //		}
