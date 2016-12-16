@@ -7,7 +7,7 @@
 		saveDBNum : 0,
 		init : function(){
 			if(saveTasksProgress.online()){
-				// saveTasksProgress.save();
+				saveTasksProgress.save();
 			}else{
 
 			}
@@ -153,7 +153,8 @@
 			    createDate : taskProgressData.createDate,
 			    isSupply : 1
 			};
-			ajaxRequest('api/v2.1/chapter/taskProgress', 'get', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+			// ajaxRequest('api/v2.1/chapter/taskProgress', 'get', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
+			ajaxRequest('api/userAction/course/taskProgress/v1.0/', 'post', post_param, function(ret, err) {//008.024保存任务进度日志（new）tested
 			    if(err){
 			        api.toast({
 			            msg : err.msg,

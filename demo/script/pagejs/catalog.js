@@ -322,7 +322,6 @@ function set_down_status(str){
 }
 
 apiready = function() {
-
 //     var memberId= getstor('memberId');
 //         var key = memberId+"progressE5A74B901F5675EF9C33DC5901307461";
 //         var progress = $api.getStorage(key);

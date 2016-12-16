@@ -13,10 +13,12 @@ var task_arr;//所有的任务信息
 var task_info_detail;
 var last_progress = 0;
 var saveTime = null;
+
 function  closeVideo() {
     demo.close();
 }
 apiready = function() {
+    
     //应用进入后台事件
     api.addEventListener({
         name: 'pause'
@@ -26,7 +28,6 @@ apiready = function() {
         //在线 保存进度-服务器/数据库
 
         //离线 保存进度-数据库
-
     });
     //应用从后台回到前台事件
     api.addEventListener({
@@ -289,11 +290,9 @@ function play_video() {
                 });
                 return false;
             }
-            //alert(JSON.stringify(param))
             demo.open(param, function(ret, err) {
-                
                 $api.rmStorage('saveTaskProgress');
-         
+                
 
  
                 if(ret.status=='filedel'){
@@ -330,10 +329,12 @@ function play_video() {
                   }
                     return false;
                 }
+
                 if (ret.btnType == 1) {//对应返回按钮
                     //demo.close();
                     //关闭页面
                     //api.closeWin();
+
                     if (ret.ctime == 'nan') {
                         //视频未加载完毕,视频进度为0
                         var tmp_progress = 0;
@@ -626,7 +627,7 @@ function play_video() {
             totime : jumptime
         }, function(res) {
           var ctime=res.ctime;
-        //alert(ctime);
+        // alert(ctime);
             if (api.systemType == 'android') {
                 var tmp_progress = parseInt(ctime / 1000);
             } else {
@@ -660,7 +661,6 @@ function play_video() {
                         // });
                     // }
                 } else if(ret.btnType == '-1' || ret.btnType== -1 || ret.btnType=='play') {
-                   
                     //暂停视频
                     var ctime=ret.ctime;
                     if (api.systemType == 'android') {
@@ -832,7 +832,7 @@ function closeThisWin(playtime) {
 }
 //保存任务进度
 function saveTaskProgress(now_progress, total, state){
-    var data={
+    videoData={
         now_progress:now_progress,
         total:total,
         state:state,
@@ -841,13 +841,13 @@ function saveTaskProgress(now_progress, total, state){
         course_detail:course_detail
     };
   	saveVideoProgress(videoid,now_progress);
-    $api.setStorage('saveTaskProgress',data);
+    $api.setStorage('saveTaskProgress',videoData);
     var jsfun = "DosaveDataBase();";
     api.execScript({
         name: 'root',
         script: jsfun
     });
-    //alert(now_progress)
+    
     //离线状态下将进度保存到本地数据库不保存到服务器
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {      
         return false;
@@ -861,16 +861,15 @@ function saveTaskProgress(now_progress, total, state){
         script: jsfun
     });
     
+    //数据库与服务器之间的同步
     
 }
 function saveVideoProgress(videoid,progress){
-
         var memberId= getstor('memberId');
         var key = memberId+"progress"+videoid;
         $api.setStorage(key,progress);
 }
-function getVideoProgress(videoid){                  
-
+function getVideoProgress(videoid){
         var memberId= getstor('memberId');
         var key = memberId+"progress"+videoid;
         var progress = $api.getStorage(key);

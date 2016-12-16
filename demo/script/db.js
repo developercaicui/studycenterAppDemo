@@ -63,6 +63,7 @@
             DB.create(DB.taskNameDB, function(ret, err) {
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
+                        alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                         if (ret.status && ret.data && ret.data.length) {
                              alert('showTasksProgress:::' + JSON.stringify(ret));
                             if (callback) { callback() };
@@ -322,10 +323,11 @@
 
         create: function(dbname, callback) { // 打开数据库，若数据库不存在则创建数据库。
             DB.db = api.require('db');
-            DB.taskNameTable = 'Task' + getstor('memberId');
+            
             DB.db.openDatabase({
                 name: dbname
             }, function(ret, err) {
+                DB.taskNameTable = 'Task' + getstor('memberId');
                 if (callback) { callback(ret, err) };
             });
         },
