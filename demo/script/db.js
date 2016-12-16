@@ -188,7 +188,7 @@
             if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
                 var getTaskProgressRet = db.selectSqlSync({
                   name: DB.taskNameDB,
-                  sql: 'SELECT progress FROM ' + tableName + ' where taskId="' + taskId + '"'
+                  sql: 'SELECT progress FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
                 return getTaskProgressRet.data[0].progress;
             }else{
