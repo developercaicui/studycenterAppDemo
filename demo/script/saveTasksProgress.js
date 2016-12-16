@@ -33,6 +33,7 @@
 		},
 		getCourseTaskProgress : function(courseIdArr){
 			if(saveTasksProgress.courseIdNum>=(courseIdArr.length)){
+				saveTasksProgress.courseIdNum = 0;
 				return false;
 			}
 			DB.getCourseTaskProgress(courseIdArr[saveTasksProgress.courseIdNum],function(data){
@@ -127,6 +128,7 @@
 		},
 		saveDB : function(data){
 			if(saveTasksProgress.saveDBNum>=data.length){
+				saveTasksProgress.saveDBNum = 0;
 				return false;
 			}
 			DB.saveTasksProgress(data[saveTasksProgress.saveDBNum],function(ret, err){
@@ -136,6 +138,7 @@
 		},
 		saveServer : function(data,callback){
 			if(saveTasksProgress.saveServerNum>=(data.length)){
+				saveTasksProgress.saveServerNum = 0;
 				if(callback){callback()};
 				return false;
 			}
