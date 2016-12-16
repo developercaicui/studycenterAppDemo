@@ -68,8 +68,8 @@
 	            'memberId' : getstor('memberId'),
 	            'courseId': courseId //课程ID,必须
 	        };
-	        ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
-	        // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+	        //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
+	        ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
 	            if (err) {
 	                return false;
 	            } else if (ret && ret.state == 'success') {
