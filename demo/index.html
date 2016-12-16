@@ -443,6 +443,7 @@
         //				}, 1500);
         var obj = api.require('qq');
         obj.login(function(ret, err) {
+        	alert('qq'+JSON.stringify(ret)+JSON.stringify(err))
             if (ret.openId) {
                 set_token(function(res, error) {
                     if (error) {
