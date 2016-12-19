@@ -34,6 +34,7 @@
 	*	delTasksProgress(); 删除任务进度数据库表
 	*	getCourseIdAll(callback); 获取所有的courseId 
 	*	getTaskProgress(taskId, callback);  获取任务进度
+  * getTaskProgressSync(taskId, callback);  获取任务进度
 	*	getCourseTaskProgress(courseId, callback);  获取课程下面所有的任务进度
 	*	getTasksProgressSupplyAll(); 获取所有未发送的进度
 */
@@ -157,11 +158,11 @@
                 if (ret.status) {
                     DB.isEmptyTasksProgress(function(isEmpty) {
                         if (isEmpty) {
-                            var selectSql = 'SELECT progress FROM ' + DB.taskNameTable + ' where taskId="' + taskId + '"';
+                            var selectSql = 'SELECT * FROM ' + DB.taskNameTable + ' where taskId="' + taskId + '"';
                             DB.selectSql(DB.taskNameDB, selectSql, function(ret, err) {
                               // alert('progress'+JSON.stringify(ret.data[0].progress)+JSON.stringify(err))
                                 if (ret.status) {
-                                    if (callback) { callback(ret.data[0].progress) }
+                                    if (callback) { callback(ret.data[0]) }
                                 } else { //
                                     // alert('获取失败');
                                 }
@@ -188,9 +189,9 @@
             if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
                 var getTaskProgressRet = db.selectSqlSync({
                   name: DB.taskNameDB,
-                  sql: 'SELECT progress FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
+                  sql: 'SELECT * FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
-                return getTaskProgressRet.data[0].progress;
+                return getTaskProgressRet.data[0];
             }else{
               return 0;
             }
