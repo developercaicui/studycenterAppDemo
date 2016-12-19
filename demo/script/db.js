@@ -191,7 +191,10 @@
                   name: DB.taskNameDB,
                   sql: 'SELECT * FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
-                return getTaskProgressRet.data[0];
+                if(getTaskProgressRet.status && getTaskProgressRet.data && getTaskProgressRet.data.length){
+                  return getTaskProgressRet.data[0];
+                }
+                
             }else{
               return 0;
             }

@@ -313,8 +313,17 @@ function myajaxRequest(url, method, params, callBack) {
     });
 }
 
-function ajaxRequest(url, method, params, callBack) {
-    var src = url;
+function ajaxRequest(url, method, params, callBack, hostName) {
+    var src = '';
+    var origin = '';
+    var href = '';
+    if(typeof url == 'string'){
+      src = url;
+    }else if(typeof url == 'object'){
+      origin = url.origin;
+      src = url.pathname;
+    }
+    
     var headers = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     };
@@ -334,8 +343,13 @@ function ajaxRequest(url, method, params, callBack) {
     } else {
         data.values = params;
     }
+    if(origin){
+      href = origin + src;
+    }else{
+      href = common_url + '/' + url
+    }
     api.ajax({
-        url: common_url + '/' + url,
+        url: href,
         method: method,
         cache: false,
         timeout: 1200,
