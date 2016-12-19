@@ -63,10 +63,10 @@
             DB.create(DB.taskNameDB, function(ret, err) {
                 if (ret.status) {
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
-                        alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
+                       // alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                         if (ret.status && ret.data && ret.data.length) {
-                             alert('showTasksProgress:::' + JSON.stringify(ret));
-                            if (callback) { callback() };
+                            alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
+                            if (callback) { callback(ret) };
                         } else {
                             // alert('查询进度失败');
                         }
@@ -173,26 +173,27 @@
                 }
             });
         },
-        getTaskProgressSync : function(taskId){
+        getTaskProgressSync : function(taskId,callback){
           var db = api.require('db');
           var openDBRet = db.openDatabaseSync({
               name: DB.taskNameDB
           });
-          alert(JSON.stringify(openDBRet))
+          //alert(JSON.stringify(openDBRet))
           if(openDBRet.status){
             var tableName = 'Task' + getstor('memberId')
             var isEmptyRet = db.selectSqlSync({
                 name: DB.taskNameDB,
                 sql: 'SELECT * FROM ' + tableName
             });
-            alert(JSON.stringify(isEmptyRet))
+            //alert(JSON.stringify(isEmptyRet))
 
             if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
                 var getTaskProgressRet = db.selectSqlSync({
                   name: DB.taskNameDB,
-                  sql: 'SELECT progress FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
+                  sql: 'SELECT * FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
-                alert(JSON.stringify(getTaskProgressRet))
+                //alert(JSON.stringify(getTaskProgressRet))
+                if(callback){callback(getTaskProgressRet)}
                 return getTaskProgressRet.data[0].progress;
             }else{
               return 0;
