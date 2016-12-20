@@ -34,6 +34,7 @@
 	*	delTasksProgress(); 删除任务进度数据库表
 	*	getCourseIdAll(callback); 获取所有的courseId 
 	*	getTaskProgress(taskId, callback);  获取任务进度
+  * getTaskProgressSync(taskId, callback);  获取任务进度
 	*	getCourseTaskProgress(courseId, callback);  获取课程下面所有的任务进度
 	*	getTasksProgressSupplyAll(); 获取所有未发送的进度
 */
@@ -65,7 +66,7 @@
                     DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
                        // alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                         if (ret.status && ret.data && ret.data.length) {
-                            alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
+                            //alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                             if (callback) { callback(ret) };
                         } else {
                             // alert('查询进度失败');
@@ -157,11 +158,11 @@
                 if (ret.status) {
                     DB.isEmptyTasksProgress(function(isEmpty) {
                         if (isEmpty) {
-                            var selectSql = 'SELECT progress FROM ' + DB.taskNameTable + ' where taskId="' + taskId + '"';
+                            var selectSql = 'SELECT * FROM ' + DB.taskNameTable + ' where taskId="' + taskId + '"';
                             DB.selectSql(DB.taskNameDB, selectSql, function(ret, err) {
                               // alert('progress'+JSON.stringify(ret.data[0].progress)+JSON.stringify(err))
                                 if (ret.status) {
-                                    if (callback) { callback(ret.data[0].progress) }
+                                    if (callback) { callback(ret.data[0]) }
                                 } else { //
                                     // alert('获取失败');
                                 }
@@ -173,7 +174,7 @@
                 }
             });
         },
-        getTaskProgressSync : function(taskId,callback){
+        getTaskProgressSync : function(taskId){
           var db = api.require('db');
           var openDBRet = db.openDatabaseSync({
               name: DB.taskNameDB
@@ -192,9 +193,8 @@
                   name: DB.taskNameDB,
                   sql: 'SELECT * FROM ' + tableName + ' where isLog="0" and  taskId="' + taskId + '"'
                 });
-                //alert(JSON.stringify(getTaskProgressRet))
-                if(callback){callback(getTaskProgressRet)}
-                return getTaskProgressRet.data[0].progress;
+
+                return getTaskProgressRet.data[0];
             }else{
               return 0;
             }

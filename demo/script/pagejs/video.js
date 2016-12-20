@@ -172,7 +172,11 @@ apiready = function() {
     api.addEventListener({
         name: 'keyback'
     }, function(ret, err) {
-        closeThisWin(0);
+        
+                //last_progress = getVideoProgress(videoid);
+                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
+            
+        closeThisWin(last_progress);
         //关闭页面
     });
     //监听关闭视频
@@ -255,7 +259,7 @@ function play_video() {
             }
             if (last_progress == 0) {
                 //last_progress = getVideoProgress(videoid);
-                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId);
+                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
             }
             //alert(task_info.apiKey+'===='+UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
@@ -586,6 +590,7 @@ function play_video() {
                         })
                     }
                 } else if (ret.btnType == 10) {
+                    alert(1)
                     var ctime = ret.ctime;
                     if (api.systemType == 'android') {
                         var tmp_progress = parseInt(ctime / 1000);
@@ -624,43 +629,64 @@ function play_video() {
                         } else {
                             jumptime = last_progress;
                         }
-                        demo.seekTo({
-                            totime: jumptime
-                        }, function(res) {
-                            var ctime = res.ctime;
-                            // alert(ctime);
-                            if (api.systemType == 'android') {
-                                var tmp_progress = parseInt(ctime / 1000);
-                            } else {
-                                var tmp_progress = parseInt(ctime);
-                            }
-                            var total = videoTimes;
-                            if (total * 0.9 <= tmp_progress) {
-                                var state = 'complate';
-                            } else {
-                                var state = 'init';
-                            }
-                            saveTaskProgress(tmp_progress, total, state);
-                        });
+                        if(api.systemType == 'android'){
+                            
+                           // demo.seekTo({
+                           //      totime: jumptime
+                           //  }, function(res) {
+                           //      var ctime = res.ctime;
+                           //      // alert(ctime);
+                           //      if (api.systemType == 'android') {
+                           //          var tmp_progress = parseInt(ctime / 1000);
+                           //      } else {
+                           //          var tmp_progress = parseInt(ctime);
+                           //      }
+                           //      var total = videoTimes;
+                           //      if (total * 0.9 <= tmp_progress) {
+                           //          var state = 'complate';
+                           //      } else {
+                           //           var state = 'init';
+                           //      }
+                           //      saveTaskProgress(tmp_progress, total, state);
+                           //  }); 
+                        }else{
+                             demo.iosGetStudyProgress({
+                                totime: jumptime
+                            }, function(res) {
+                                var ctime = res.ctime;
+                                // alert(ctime);
+                                if (api.systemType == 'android') {
+                                    var tmp_progress = parseInt(ctime / 1000);
+                                } else {
+                                    var tmp_progress = parseInt(ctime);
+                                }
+                                var total = videoTimes;
+                                if (total * 0.9 <= tmp_progress) {
+                                    var state = 'complate';
+                                } else {
+                                    var state = 'init';
+                                }
+                                saveTaskProgress(tmp_progress, total, state);
+                            });
+                        }
+                       
 
                     }, 1000 * 10)
 
-
-
                     is_check = false;
-                    // if(last_progress>0){
-                    //     var jumptime;
-                    //     if (api.systemType == 'android') {
-                    //         jumptime =last_progress * 1000;
-                    //     }else{
-                    //         jumptime =last_progress;
-                    //     }
-                    // demo.seekTo({
-                    //     totime : jumptime
-                    // }, function() {
+                    if(last_progress>0){
+                        var jumptime;
+                        if (api.systemType == 'android') {
+                            jumptime =last_progress * 1000;
+                        }else{
+                            jumptime =last_progress;
+                        }
+                        demo.seekTo({
+                            totime : jumptime
+                        }, function() {
 
-                    // });
-                    // }
+                        });
+                    }
                 } else if (ret.btnType == '-1' || ret.btnType == -1 || ret.btnType == 'play') {
                     //暂停视频
                     var ctime = ret.ctime;
@@ -841,6 +867,7 @@ function saveTaskProgress(now_progress, total, state) {
         task_info_detail: task_info_detail,
         course_detail: course_detail
     };
+    //alert(now_progress)
     saveVideoProgress(videoid, now_progress);
     $api.setStorage('saveTaskProgress', videoData);
     var jsfun = "DosaveDataBase();";

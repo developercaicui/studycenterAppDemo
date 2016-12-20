@@ -14,34 +14,51 @@
     <script type="text/javascript" src="../script/zepto.js"></script>
     <link rel="stylesheet" href="../css/Sstyle.css">
     <style type="text/css">
-      .user-center-font{
-        overflow: hidden; 
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 20em;
-      }
+        body{
+          width: 100%;
+        }
+        #content{
+          width: 100%;
+        }
+        .baseMsg{
+          font-size: 0.25rem;
+          width: 100px;
+          overflow: hidden;
+        }
+        .baseMsg tr{
+          width: 100%;
+        }
+        .baseMsg tr:nth-child(1){
+          background-color:#e6e6e6; 
+          color:green;
+        }
+        .baseMsg tr td{
+          padding: 0.2rem 0.15rem;
+          border-bottom:  1px solid #ccc;
+          width: 50%;
+        }
+        .baseMsg tr td:nth-child(1){
+          border-right:  1px solid #ccc;
+        }
+        
     </style>
   </head>
   <body>
-    <div class="user-center-content">
-      <ul tapmode onclick="clearBase()" style="border-bottom: 1px solid #e6e6e6">
-          <li><i class="icon-trash"></i>
-            <div class="user-center-font">清空数据库</div><i class="icon-arrow-right"></i>
-          </li>
-        </ul>
-    <div id="content">
-      
-    </div>
-     </div>
+    <div id="content">safsfs</div>
     <script id="tpl" type="text/x-dot-template">
         
-          <ul>
+        <table  class="baseMsg" >
+            <tr>
+              <td>字段</td>
+              <td>值</td>
+            </tr>
             {{for(var p in it) { }}
-            <li tapmode onclick="taskDetail('{{=it[p].taskId}}')"><i class="icon-star"></i>
-              <div class="user-center-font">{{=it[p].taskName}}</div><span class="user-center-account nodeNum"></span><i class="icon-arrow-right"></i>
-            </li>
+              <tr>
+                <td>{{=p}}</td>
+                <td>{{=it[p]}}</td>
+              </tr> 
             {{ } }}
-          </ul>
+        </table>
        
     </script>
     <script type="text/javascript" src="../script/comm.js"></script>
@@ -50,35 +67,17 @@
     <script type="text/javascript" src="../script/db.js"></script>
     <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <script type="text/javascript">
-      function showList(){
-          DB.showTasksProgress(function(data){
-            var tpl = $('#tpl').html();
-            var content = doT.template(tpl);
-            //alert(data.data)
-            if (data && data.status) {
-                $('#content').append(content(data.data));
-                api.parseTapmode();
-              }
-          });
-      }
 
-      function taskDetail(taskId){
-        var data =  DB.getTaskProgressSync(taskId)
-        api.openWin({
-          name : 'basePage',
-          url : 'basePage.html',
-          delay : 200,
-          reload : true,
-          pageParam : data
-        });
-      }
-      function clearBase(){
-        DB.clearTasksProgress();
-        $('#content').html("");
+      function showDatile(){
+
+        var data = api.pageParam;
+        var tpl = $('#tpl').html();
+        var content = doT.template(tpl);
+         $('#content').html(content(data));
+          
       }
       apiready = function(){
-          showList();
-          
+        showDatile()          
       }
           
     </script>
