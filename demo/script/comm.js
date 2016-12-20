@@ -334,10 +334,10 @@ function ajaxRequest(url, method, params, callBack, hostName) {
             urlquery += key + "=" + params[key] + "&";
         }
         if (urlquery != "") {
-            if (url.indexOf("?") > 0) {
-                url += "&" + urlquery;
+            if (src.indexOf("?") > 0) {
+                src += "&" + urlquery;
             } else {
-                url += "?" + urlquery;
+                src += "?" + urlquery;
             }
         }
     } else {
@@ -346,7 +346,7 @@ function ajaxRequest(url, method, params, callBack, hostName) {
     if(origin){
       href = origin + src;
     }else{
-      href = common_url + '/' + url
+      href = common_url + '/' + src
     }
     api.ajax({
         url: href,

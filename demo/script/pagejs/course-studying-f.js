@@ -966,23 +966,48 @@ function getData(page) {
 		var tpl = $('#tpl').html();
 		var content = doT.template(tpl);
 		if (ret && ret.state == 'success') {
-			total = ret.data.total;
-			if (page == 1) {
-				if (isEmpty(ret.data.courselist)) {
-					$('body').addClass('null');
-					return false;
-				}
-				$('#content').html(content(ret.data.courselist));
-			} else {
-				if (isEmpty(ret.data.courselist)) {
-					return false;
-				}
-				$('#content').append(content(ret.data.courselist));
+			var learningcourseData = ret;
+			var learningcourse = ret.data.courselist;
+    	var courseArr = [];
+			for(var i=0;i<learningcourse.length;i++){
+				courseArr.push(learningcourse[i].courseId);
 			}
-			saveExpire(ret.data.courselist);
+    	ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':courseArr.toString()}, function(ret, err) {
+    			if (err) {
+    					api.toast({
+    							msg: err.msg,
+    							location: 'middle'
+    					});
+    					return false;
+    			}
+    			for(var i=0;i<learningcourse.length;i++){
+    				for(var j=0;j<ret.data.length;j++){
+    					if(learningcourse[i].chapterId == ret.data[j].chapterId){
+    						learningcourse[i].showProgress = ret.data[j].courseProgress;
+    					}
+    				}
+    			}
+    			var ret = learningcourseData;
+    			total = ret.data.total;
+    			if (page == 1) {
+    				if (isEmpty(ret.data.courselist)) {
+    					$('body').addClass('null');
+    					return false;
+    				}
+    				$('#content').html(content(ret.data.courselist));
+    			} else {
+    				if (isEmpty(ret.data.courselist)) {
+    					return false;
+    				}
+    				$('#content').append(content(ret.data.courselist));
+    			}
+    			saveExpire(ret.data.courselist);
 
-			progressBar();
-			api.parseTapmode();
+    			progressBar();
+    			api.parseTapmode();
+    	})
+
+			
 		} else {
 			//api.toast({
 			//	msg : ret.msg,
