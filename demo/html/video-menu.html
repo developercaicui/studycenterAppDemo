@@ -370,14 +370,6 @@
       //function judge_task(res_process) {
       function judge_task(task_info, lastProgress) {
       
-      
-      
-      
-      
-      
-      
-      
-      
           if (isEmpty(course_detail) || isEmpty(course_detail.chapters) || isEmpty(task_info)) {
               api.toast({
                   msg: '获取课程信息失败',
@@ -524,14 +516,17 @@
                       //获取课程任务进度列表（new）tested
                       var param = {
                           'token': $api.getStorage('token'), //必须
+                          'memberId' : getstor('memberId'),
                           'courseId': courseId, //课程ID,必须
                           'charpterId': '', //章节ID,非必须
                           'taskId': ''//任务ID,非必须
                       };
-                      ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+                      ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+                      //ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                           if (err) {
                               return false;
                           } else if (ret && ret.state == 'success') {
+                              var chaptersNum = 0;
                               //课程进度
                               for (var i in ret.data) {
                                   var tmpdata = ret.data[i];
@@ -567,6 +562,7 @@
       
                                               if (num > 0) {
                                                   if (num == len * 3) {
+                                                    chaptersNum++;
                                                       $(this).attr('type', '3');
                                                       //实心圈
                                                   } else {
@@ -594,6 +590,7 @@
       
                                               if (num > 0) {
                                                   if (num == len * 3) {
+                                                    chaptersNum++;
                                                       $(this).attr('type', '3');
                                                       //实心圈
                                                   } else {
@@ -614,6 +611,13 @@
                                       $(this).css('width', '100%');
                                   });
                               }
+                              api.sendEvent({
+                                name : 'setChaptersNum',
+                                extra : {
+                                  'chaptersNum' : chaptersNum,
+                                  'chaptersNumTotal' : course_detail.chapterNum
+                                }
+                              })
                           }
                       });
       
@@ -679,14 +683,17 @@
               //获取课程任务进度列表（new）tested
               var param = {
                   'token': $api.getStorage('token'), //必须
+                  'memberId' : getstor('memberId'),
                   'courseId': courseId, //课程ID,必须
                   'charpterId': '', //章节ID,非必须
                   'taskId': ''//任务ID,非必须
               };
-              ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+              ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+              //ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                   if (err) {
                       return false;
                   } else if (ret && ret.state == 'success') {
+                      var chaptersNum = 0;
                       //课程进度
                       for (var i in ret.data) {
                           var tmpdata = ret.data[i];
@@ -721,6 +728,7 @@
       
                                       if (num > 0) {
                                           if (num == len * 3) {
+                                            chaptersNum++;
                                               $(this).attr('type', '3');//实心圈
                                               //api.alert({msg: arr['ff8080814db86d41014dc1a26c4f0539']});
                                           } else {
@@ -747,6 +755,7 @@
       
                                       if (num > 0) {
                                           if (num == len * 3) {
+                                            chaptersNum++;
                                               $(this).attr('type', '3');
                                               //实心圈
                                           } else {
@@ -783,6 +792,13 @@
                               }
                           });
                       }
+                      api.sendEvent({
+                        name : 'setChaptersNum',
+                        extra : {
+                          'chaptersNum' : chaptersNum,
+                          'chaptersNumTotal' : course_detail.chapterNum
+                        }
+                      })
                   }
               });
           }

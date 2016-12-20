@@ -27,11 +27,11 @@
                 <!--li.wodCot 上次学到:{{=it[p].chapterName}}-->
                 <!--|{{ }else { }}-->
                 <!--li.wodCot 开始学习此课程-->
-                <!--| {{ } }}-->{{ if(!isEmpty(it[p].taskprogress) && !isEmpty(it[p].taskTotal)) { }}
+                <!--| {{ } }}-->{{ if(!isEmpty(it[p].showProgress) && !isEmpty(it[p].taskTotal)) { }}
                 <li class="wodPro">
                   <div class="progress-box2">
                     <div class="progress2">
-                      <div role="progressbar" min="{{=it[p].taskprogress}}" max="{{=it[p].taskTotal}}" data class="progress-bar2"></div>
+                      <div role="progressbar" min="{{=it[p].showProgress}}" max="{{=it[p].taskTotal}}" data class="progress-bar2"></div>
                     </div>
                     <div class="progress-val2"></div>
                   </div>

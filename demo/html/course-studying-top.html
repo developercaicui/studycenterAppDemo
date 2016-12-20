@@ -83,7 +83,9 @@
           var param = {};
           param.courseId = api.pageParam.courseId;
           param.token = $api.getStorage('token');
-          ajaxRequest('api/v2.1/study/getFinish', 'get', param, function (ret, err) {//008.021.1
+          param.memberId = $api.getStorage('memberId');
+          ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', param, function(ret, err) {
+          //ajaxRequest('api/v2.1/study/getFinish', 'get', param, function (ret, err) {//008.021.1
               if (err) {
                   api.toast({
                       msg: err.msg,
@@ -149,7 +151,8 @@
               //                m1=data1.charperSum;
               //                m2=data1.progressSum;
               m1 = data1.chapterSum;
-              m2 = data1.progressSum;
+              //m2 = data1.progressSum;
+              m2 = data1.courseProgress;
           }
           if (isEmpty(res2)) {
               n1 = 0;
@@ -237,6 +240,11 @@
                   name: 'flush_study'
               });
               api.closeWin();
+          });
+          api.addEventListener({
+              name: 'setChaptersNum'
+          }, function (ret) {
+            $('.chapters').html(ret.value.chaptersNum+'/'+ret.value.chaptersNumTotal);
           });
           var header = $api.byId('header');
           var header_all = $api.dom('.styHeight');
