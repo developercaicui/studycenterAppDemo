@@ -1,85 +1,78 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" type="text/css" href="../css/api.css">
-    <link rel="stylesheet" type="text/css" href="../css/common.css">
-    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
-    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
-    <link rel="stylesheet" type="text/css" href="../css/reset.css">
-    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
-    <script type="text/javascript" src="../script/api.js"></script>
-    <script type="text/javascript" src="../script/zepto.js"></script>
-    <link rel="stylesheet" href="../css/Sstyle.css">
+    <meta charset="utf-8">    
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">    
+    <meta name="format-detection" content="telephone=no">    
+    <link rel="stylesheet" type="text/css" href="../css/api.css">    
+    <link rel="stylesheet" type="text/css" href="../css/common.css">    
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">    
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">    
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">    
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">    
+    <script type="text/javascript" src="../script/api.js"></script>    
+    <script type="text/javascript" src="../script/zepto.js"></script>    
+    <link rel="stylesheet" href="../css/Sstyle.css">    
     <style type="text/css">
-        body{
-          width: 100%;
-        }
-        #content{
-          width: 100%;
-        }
-        .baseMsg{
-          font-size: 0.25rem;
-          width: 100px;
-          overflow: hidden;
-        }
-        .baseMsg tr{
-          width: 100%;
-        }
-        .baseMsg tr:nth-child(1){
-          background-color:#e6e6e6; 
-          color:green;
-        }
-        .baseMsg tr td{
-          padding: 0.2rem 0.15rem;
-          border-bottom:  1px solid #ccc;
-          width: 50%;
-        }
-        .baseMsg tr td:nth-child(1){
-          border-right:  1px solid #ccc;
-        }
-        
+      body{
+      width: 100%;
+      }
+      #content{
+      width: 100%;
+      }
+      .baseMsg{
+      font-size: 0.25rem;
+      width: 100px;
+      overflow: hidden;
+      }
+      .baseMsg tr{
+      width: 100%;
+      }
+      .baseMsg tr:nth-child(1){
+      background-color:#e6e6e6;
+      color:green;
+      }
+      .baseMsg tr td{
+      padding: 0.2rem 0.15rem;
+      border-bottom:  1px solid #ccc;
+      width: 50%;
+      }
+      .baseMsg tr td:nth-child(1){
+      border-right:  1px solid #ccc;
+      }
     </style>
-  </head>
+  </head>  
   <body>
-    <div id="content">safsfs</div>
+    <div id="content">safsfs</div>    
     <script id="tpl" type="text/x-dot-template">
-        
-        <table  class="baseMsg" >
-            <tr>
-              <td>字段</td>
-              <td>值</td>
-            </tr>
-            {{for(var p in it) { }}
-              <tr>
-                <td>{{=p}}</td>
-                <td>{{=it[p]}}</td>
-              </tr> 
-            {{ } }}
-        </table>
-       
-    </script>
-    <script type="text/javascript" src="../script/comm.js"></script>
-    <script type="text/javascript" src="../script/doT.min.js"></script>
-    <script type="text/javascript" src="../script/caicui.js"></script>
-    <script type="text/javascript" src="../script/db.js"></script>
-    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+      <table  class="baseMsg" >
+      <tr>
+      <td>字段</td>
+      <td>值</td>
+      </tr>
+      {{for(var p in it) { }}
+      <tr>
+      <td>{{=p}}</td>
+      <td>{{=it[p]}}</td>
+      </tr>
+      {{ } }}
+      </table>
+    </script>    
+    <script type="text/javascript" src="../script/comm.js"></script>    
+    <script type="text/javascript" src="../script/doT.min.js"></script>    
+    <script type="text/javascript" src="../script/caicui.js"></script>    
+    <script type="text/javascript" src="../script/db.js"></script>    
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>    
     <script type="text/javascript">
-
       function showDatile(){
-
-        var data = api.pageParam;
-        var tpl = $('#tpl').html();
-        var content = doT.template(tpl);
-         $('#content').html(content(data));
-          
+      var data = api.pageParam;
+      var tpl = $('#tpl').html();
+      var content = doT.template(tpl);
+      $('#content').html(content(data));
       }
       apiready = function(){
-        showDatile()          
+      showDatile()
       }
-          
     </script>
   </body>
 </html>

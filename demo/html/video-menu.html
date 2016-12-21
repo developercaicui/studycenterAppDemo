@@ -526,11 +526,14 @@
                           if (err) {
                               return false;
                           } else if (ret && ret.state == 'success') {
+                              var tasksNum = 0;
                               var chaptersNum = 0;
                               //课程进度
                               for (var i in ret.data) {
                                   var tmpdata = ret.data[i];
-      
+                                  if(tmpdata.state == 1){
+                                    tasksNum++;
+                                  }
                                   if (!isEmpty(arr[tmpdata.chapterId]) && !isEmpty(arr[tmpdata.chapterId][tmpdata.taskId])) {
                                       if (tmpdata.state == 1) {
                                           arr[tmpdata.chapterId][tmpdata.taskId].isok = 3;
@@ -618,6 +621,13 @@
                                   'chaptersNumTotal' : course_detail.chapterNum
                                 }
                               })
+                              api.sendEvent({
+                                name : 'setTasksNum',
+                                extra : {
+                                  'tasksNum' : tasksNum,
+                                  'tasksNumTotal' : course_detail.taskNum
+                                }
+                              })
                           }
                       });
       
@@ -693,10 +703,14 @@
                   if (err) {
                       return false;
                   } else if (ret && ret.state == 'success') {
+                      var tasksNum = 0;
                       var chaptersNum = 0;
                       //课程进度
                       for (var i in ret.data) {
                           var tmpdata = ret.data[i];
+                          if(tmpdata.state == 1){
+                            tasksNum++;
+                          }
                           if (!isEmpty(arr[tmpdata.chapterId]) && !isEmpty(arr[tmpdata.chapterId][tmpdata.taskId])) {
                               if (tmpdata.state == 1) {
                                   arr[tmpdata.chapterId][tmpdata.taskId].isok = 3;
@@ -797,6 +811,13 @@
                         extra : {
                           'chaptersNum' : chaptersNum,
                           'chaptersNumTotal' : course_detail.chapterNum
+                        }
+                      })
+                      api.sendEvent({
+                        name : 'setTasksNum',
+                        extra : {
+                          'tasksNum' : tasksNum,
+                          'tasksNumTotal' : course_detail.taskNum
                         }
                       })
                   }

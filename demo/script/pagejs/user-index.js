@@ -472,6 +472,7 @@ function get_study(flag) {
         					}
         				}
         			}
+
         			var ret = learningcourseData;
         			ret.data['courselist'] = bufferCourese(learningcourse);
         			$('#course_content').html(content(ret.data));
