@@ -590,7 +590,6 @@ function play_video() {
                         })
                     }
                 } else if (ret.btnType == 10) {
-                    alert(1)
                     var ctime = ret.ctime;
                     if (api.systemType == 'android') {
                         var tmp_progress = parseInt(ctime / 1000);

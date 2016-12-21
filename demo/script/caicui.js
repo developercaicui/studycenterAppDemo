@@ -686,7 +686,9 @@ function DosaveTaskProgress() {
 				taskName: task_info.title, //任务名称
 				progress: now_progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
 				total: total, //必须，任务总长度   48
-				state: state, //必须，进度状态默认init，完成：complate   complate       
+				state: state, //必须，进度状态默认init，完成：complate   complate   
+                createDate : new Date().getTime(),
+                isSupply : 0    
 				// downLoadProgress :  '',    //下载进度
 				// downLoadState :  '',      //下载状态  ing 、stop、end
 				// downLoadDate : '', //下载时间
@@ -712,7 +714,8 @@ function DosaveTaskProgress() {
 		post_param.state = stateNum;
 		post_param.isSupply = 0;
 		post_param.createDate = new Date().getTime();
-		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'userAction/course/taskProgress/v1.0/' }, 'post', post_param, function(ret, err) {
+		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgress/v1.0/' }, 'get', post_param, function(ret, err) {
+            alert(JSON.stringify(err)+";;;"+JSON.stringify(ret)+'123')
 				if (err) {
 						api.toast({
 								msg: err.msg,
