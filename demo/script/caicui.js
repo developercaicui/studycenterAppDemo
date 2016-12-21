@@ -714,16 +714,16 @@ function DosaveTaskProgress() {
 		post_param.state = stateNum;
 		post_param.isSupply = 0;
 		post_param.createDate = new Date().getTime();
-		//alert(now_progress)
-		//alert(JSON.stringify({'token':user_token,'message':post_param}))
-		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgress/v1.0/' }, 'get', {'token':user_token,'message':post_param}, function(ret, err) {
-           //alert('api/userAction/course/taskProgress/v1.0/'+JSON.stringify(ret)+JSON.stringify(err))
+
+
+		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgress/v1.0/' }, 'get', {'token':user_token,'message':JSON.stringify(post_param)}, function(ret, err) {
 				if (err) {
 						api.toast({
 								msg: err.msg,
 								location: 'middle'
 						});
-						return;
+
+						return false;
 				}
 				var param = {
 				    'token': getstor('token'), //必须

@@ -40,7 +40,6 @@
                 return false;
             }
             DB.getCourseTaskProgress(courseIdArr[saveTasksProgress.courseIdNum], function(data) {
-                // alert('getCourseTaskProgress'+JSON.stringify(data))
                 if (data && data.length) {
                     saveTasksProgress.getUpdateDBData(courseIdArr[saveTasksProgress.courseIdNum], data, function(updateDBData, updateServerData) {
                         // alert('updateDBData::'+JSON.stringify(updateDBData))
@@ -80,7 +79,10 @@
             };
             //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
             ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5640edfb705838b730c2442d48971fefd52c8294
             // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function(ret, err) { //008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                 if (err) {
                     return false;

@@ -87,7 +87,7 @@
           ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', param, function(ret, err) {
           //ajaxRequest('api/v2.1/study/getFinish', 'get', param, function (ret, err) {//008.021.1
               if (err) {
-                  api.toast({
+                  api.toast({ 
                       msg: err.msg,
                       location: 'middle'
                   });
@@ -245,6 +245,11 @@
               name: 'setChaptersNum'
           }, function (ret) {
             $('.chapters').html(ret.value.chaptersNum+'/'+ret.value.chaptersNumTotal);
+          });
+          api.addEventListener({
+              name: 'setTasksNum'
+          }, function (ret) {
+            $('.tasks').html(ret.value.tasksNum+'/'+ret.value.tasksNumTotal);
           });
           var header = $api.byId('header');
           var header_all = $api.dom('.styHeight');
