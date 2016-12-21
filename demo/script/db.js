@@ -186,7 +186,6 @@
                 name: DB.taskNameDB,
                 sql: 'SELECT * FROM ' + tableName
             });
-            //alert(JSON.stringify(isEmptyRet))
 
             if (isEmptyRet.status && isEmptyRet.data && isEmptyRet.data.length) {
                 var getTaskProgressRet = db.selectSqlSync({
@@ -196,6 +195,8 @@
 
                 if(getTaskProgressRet.status && getTaskProgressRet.data && getTaskProgressRet.data.length){
                   return getTaskProgressRet.data[0];
+                }else{
+                  return 0;
                 }
                 
             }else{
