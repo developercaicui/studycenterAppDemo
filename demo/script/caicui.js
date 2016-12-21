@@ -842,6 +842,11 @@ function DosaveDataBase() {
 				downloadDate: '', //下载时间
 				expiredDate: '', //过期日期
 		};
+		var stateNum = 0;
+		if (post_param.state == "complate") {
+				stateNum = 1;
+		}
+		post_param.state = stateNum;
 		DB.saveTasksProgress(post_param, function(ret, err) {
 
 				if (ret.status) {

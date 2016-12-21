@@ -347,7 +347,7 @@
         },
         updateTaskDB: function(data, callback) { // 更新一条记录 数据库-任务
             // 更新 progress state isSend createDate 
-            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",createDate="' + data.createDate + '" WHERE taskId="' + data.taskId + '"', function(ret, err) {
+            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",createDate="' + (new Date().getTime()) + '" WHERE taskId="' + data.taskId + '"', function(ret, err) {
 
                 if (callback) { callback(ret, err) }
             });
