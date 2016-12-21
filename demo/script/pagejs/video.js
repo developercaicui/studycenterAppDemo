@@ -881,7 +881,7 @@ function saveTaskProgress(now_progress, total, state) {
     }
     //非离线状态下进度保存到本地及服务器
 
-    //alert("有网络连接，同时保存服务器");
+    alert("有网络连接，同时保存服务器");
     var jsfun = "DosaveTaskProgress();";
     api.execScript({
         name: 'root',

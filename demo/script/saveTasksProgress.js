@@ -79,7 +79,7 @@
                 'courseId': courseId //课程ID,必须
             };
             //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
-            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'post', post_param, function(ret, err) {
+            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
 
             // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function(ret, err) { //008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                 if (err) {
@@ -196,7 +196,7 @@
             }
 
             ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'get', {'token':getstor('token'),'messages':param}, function(ret, err) {
-            	if (err) {
+                if (err) {
                     saveTasksProgress.saveServer(data);
                 } else {
                     saveTasksProgress.saveServerNum++;
