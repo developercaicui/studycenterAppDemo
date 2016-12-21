@@ -5,6 +5,8 @@
         user_token: '',
         user_memberId: '',
         saveServerNum: 0,
+        saveServerTimes : 0,
+        saveServerIndex : 50,
         saveDBNum: 0,
         courseIdNum: 0,
         init: function() {
@@ -77,9 +79,9 @@
                 'courseId': courseId //课程ID,必须
             };
             //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
-            // ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'post', post_param, function(ret, err) {
+            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'post', post_param, function(ret, err) {
 
-            ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function(ret, err) { //008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+            // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function(ret, err) { //008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                 if (err) {
                     return false;
                 } else if (ret && ret.state == 'success') {
@@ -137,63 +139,70 @@
                 saveTasksProgress.saveDB(data);
             });
         },
-        saveServer: function(data, callback) {
-            if (saveTasksProgress.saveServerNum >= (data.length)) {
-                saveTasksProgress.saveServerNum = 0;
-                if (callback) { callback() };
-                return false;
+        saveServer: function(data) {
+        		var length = parseInt(saveTasksProgress.index/data.length);
+        		if (saveTasksProgress.saveServerTimes > length) {
+        			DB.clearTasksProgressLog();
+      		    saveTasksProgress.saveServerNum = 0;
+      		    return false;
+        		}
+      			var progressArr = [];
+      			if(length){
+      				var loopJ = (saveTasksProgress.saveServerIndex*i);
+      				var loopL = 0;
+      				if(i==length){
+      					loopL = data.length-loopJ;
+      					for(var j=loopJ;j<loopL;j++){
+      						progressArr.push(data[j]);
+      					}
+      				}else{
+      					loopL = (saveTasksProgress.saveServerIndex*(i+1))
+      					for(var j=loopJ;j<loopL;j++){
+      						progressArr.push(data[j]);
+      					}
+      				}
+      			}else{
+      				progressArr = data;
+      			}
+        		var param = {
+        			record : []
+        		}
+            for(var i=0;i<progressArr.length;i++){
+            	var taskProgressData = progressArr[i];
+
+            	var post_param = {
+            	    token: taskProgressData.token, //必须，用户token    144594636417159iPhoneCourse
+            	    memberId: taskProgressData.memberId, //必须，用户id ff8080815065f95a01506627ad4c0007
+            	    memberName: taskProgressData.memberName, //必须，用户昵称   zhangxiaoyu01
+
+            	    categoryId: taskProgressData.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
+            	    categoryName: taskProgressData.categoryName,
+            	    subjectId: taskProgressData.subjectId, //必须，科目id  ff808081473905e7014762542d940078
+            	    subjectName: taskProgressData.subjectName,
+            	    courseId: taskProgressData.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
+            	    courseName: taskProgressData.courseName, //必须，课程名称    courseName
+            	    chapterId: taskProgressData.chapterId, //必须，章节id   chapterId
+            	    chapterName: taskProgressData.chapterName, //必须，章节名称   chapterName
+            	    taskId: taskProgressData.taskId, //必须，任务id    1
+            	    taskName: taskProgressData.title, //必须，任务名称   taskName
+
+            	    progress: taskProgressData.progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+            	    total: taskProgressData.total, //必须，任务总长度   48
+            	    state: taskProgressData.state, //必须，进度状态默认init，完成：complate    complate
+            	    // createDate : taskProgressData.createDate,
+            	    // isSupply : 1
+            	};
+            	param.record.push(post_param)
             }
-            var taskProgressData = data[saveTasksProgress.saveServerNum];
-            var post_param = {
-                token: taskProgressData.token, //必须，用户token    144594636417159iPhoneCourse
-                memberId: taskProgressData.memberId, //必须，用户id ff8080815065f95a01506627ad4c0007
-                memberName: taskProgressData.memberName, //必须，用户昵称   zhangxiaoyu01
 
-                categoryId: taskProgressData.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-                categoryName: taskProgressData.categoryName,
-                subjectId: taskProgressData.subjectId, //必须，科目id  ff808081473905e7014762542d940078
-                subjectName: taskProgressData.subjectName,
-                courseId: taskProgressData.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
-                courseName: taskProgressData.courseName, //必须，课程名称    courseName
-                chapterId: taskProgressData.chapterId, //必须，章节id   chapterId
-                chapterName: taskProgressData.chapterName, //必须，章节名称   chapterName
-                taskId: taskProgressData.taskId, //必须，任务id    1
-                taskName: taskProgressData.title, //必须，任务名称   taskName
-
-                progress: taskProgressData.progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-                total: taskProgressData.total, //必须，任务总长度   48
-                state: taskProgressData.state, //必须，进度状态默认init，完成：complate    complate
-                // createDate : taskProgressData.createDate,
-                // isSupply : 1
-            };
-            ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) { //008.024保存任务进度日志（new）tested
-                if (err) {
-                    api.toast({
-                        msg: err.msg,
-                        location: 'middle'
-                    });
+            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'get', {'token':getstor('token'),'messages':param}, function(ret, err) {
+            	if (err) {
+                    saveTasksProgress.saveServer(data);
                 } else {
-                    DB.clearTasksProgressLog(taskProgressData.createDate);
                     saveTasksProgress.saveServerNum++;
                     saveTasksProgress.saveServer(data);
                 }
-                //if (ret && ret.state == 'success') {
-                //$api.setStorage(user_nickname + 'self' + courseId, '');
-                //清除整个课程结构的课程进度
-                //}
             });
-            //ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'post', post_param, function(ret, err) {
-            // 	if (err) {
-            //         api.toast({
-            //             msg: err.msg,
-            //             location: 'middle'
-            //         });
-            //     } else {
-            //         DB.clearTasksProgressLog(taskProgressData.createDate);
-            //         saveTasksProgress.saveServerNum++;
-            //         saveTasksProgress.saveServer(data);
-            //     }
-            // });
         }
     }
     window.saveTasksProgress = {

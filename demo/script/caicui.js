@@ -614,7 +614,7 @@ function getCCconfig(callback, is_force) {
 		if ((!CCconfig || is_force) && $api.getStorage('token')) {
 				ajaxRequest('api/v2.1/oauth/getConfig', 'post', {
 						token: $api.getStorage('token'),
-						societyType: 'ccidinfo'
+						societyType: 'ccidinfo' 
 				}, function(ret, err) { //003.303.1  发布讨论
 						if (err) {
 								callback(false);
@@ -695,18 +695,18 @@ function DosaveTaskProgress() {
 				// expiredDate : '',  //过期日期
 				// isSupply : 0  //是否补发  0是实时报文
 		};
-		ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) { //008.024保存任务进度日志（new）tested
-				if (err) {
-						api.toast({
-								msg: err.msg,
-								location: 'middle'
-						});
-				}
-				//if (ret && ret.state == 'success') {
-				//$api.setStorage(user_nickname + 'self' + courseId, '');
-				//清除整个课程结构的课程进度
-				//}
-		});
+		// ajaxRequest('api/v2.1/chapter/taskProgress', 'post', post_param, function(ret, err) { //008.024保存任务进度日志（new）tested
+		// 		if (err) {
+		// 				api.toast({
+		// 						msg: err.msg,
+		// 						location: 'middle'
+		// 				});
+		// 		}
+		// 		//if (ret && ret.state == 'success') {
+		// 		//$api.setStorage(user_nickname + 'self' + courseId, '');
+		// 		//清除整个课程结构的课程进度
+		// 		//}
+		// });
 		var stateNum = 0;
 		if (post_param.state == "complate") {
 				stateNum = 1;
@@ -714,7 +714,8 @@ function DosaveTaskProgress() {
 		post_param.state = stateNum;
 		post_param.isSupply = 0;
 		post_param.createDate = new Date().getTime();
-		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgress/v1.0/' }, 'get', post_param, function(ret, err) {
+
+		ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgress/v1.0/' }, 'get', {'token':user_token,'message':post_param.toString()}, function(ret, err) {
             alert(JSON.stringify(err)+";;;"+JSON.stringify(ret)+'123')
 				if (err) {
 						api.toast({
