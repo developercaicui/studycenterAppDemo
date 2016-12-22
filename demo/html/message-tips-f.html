@@ -17,7 +17,7 @@
   <body>
     <div id="content" class="section-note message-center"></div>
     <script id="tpl" type="text/x-dot-template">{{for(var p in it){}}
-          <div tapmode onclick="lx(this,'{{=it[p].id}}','{{=it[p].sender}}','{{=it[p].content}}','{{=it[p].sentTime}}','{{=it[p].title}}','{{=it[p].headImg}}')" class="section-note-content note-content-Img msg-list">
+          <div tapmode onclick="noteEvent(this)" data-id="{{=it[p].id}}" data-sender="{{=it[p].sender}}" data-content="{{=it[p].content}}" data-sentTime="{{=it[p].sentTime}}" data-title="{{=it[p].title}}" class="section-note-content note-content-Img msg-list">
             <div class="section-note-top">
               <div class="note-img">{{ if(isEmpty(it.headImg)) { }}<img src="{{=default_img}}" alt="">{{ }else { }}<img src="{{=static_url+it.headImg}}" alt="">{{ } }}</div>
               <div class="note-font">
@@ -149,6 +149,17 @@
                   getData(currentPage);
               }
           });
+          noteEvent=function (ele){
+       
+          var id = $(ele).data("id"),
+            sender = $(ele).data("sender"),
+            content = $(ele).data("content"),
+            sentTime = $(ele).data("sentTime"),
+            title = $(ele).data("title"),
+            headImg = $(ele).data("headImg");
+            lx(ele,id,sender,content,sentTime,title,headImg);
+      
+          }
       };
       function lx(obj, id, sender, content, sentTime, title, headImg) {
           var param = {};
