@@ -167,11 +167,7 @@ apiready = function() {
 		param.type = 1;
 		param.token = $api.getStorage('token');
 		ajaxRequest('api/v2/message/list', 'get', param, function(ret, err) {
-<<<<<<< HEAD
-=======
-			var ret = {"totalCount":2,"pageNo":1,"pageSize":20,"state":"success","data":[{"sender":"系统","content":"<p>\r\n\t<p>\r\n\t\t同学们大家好，首先感谢您选择财萃网学习。\r\n\t</p>\r\n\t<p>\r\n\t\t为了可以及时准确解决你们提问的问题，请在学习中心提问时注意以下几点：\r\n\t</p>\r\n第一：提问时记得附带问题照片和题号，避免照片看不清楚；<br />\r\n第二：提问时如果是带有步骤的题目，请大家标注自己哪一部分不会还是整个题不会；<br />\r\n第三：大家尽量不要在助教老师已回答过的问题下继续提问，如果解释还没有听懂，重新提问附带照片和自己的见解，老师回答问题时一般都是点击没有回答的问题，已回答过的不再查看。\r\n</p>","id":"b15ffad1b09b11e6927800163e022e38","sentTime":1478587129,"title":"关于学习中心提问时注意事项","headImg":"","urlId":null,"textId":"013d3cd3a57e11e68a1f00163e022e38","senderId":"ff8080814833c067014843672bc0026a"},{"sender":"系统","content":"新增加&nbsp;1.考试出题形式讲解 2.模考题 3.考官文章讲解","id":"f31d3195690411e6a34f00163e022e38","sentTime":1471938046,"title":"针对2016年考纲F6课程串讲更新啦！小伙伴们重新下载讲义哦~","headImg":"","urlId":null,"textId":"e6fc18f9690411e6a34f00163e022e38","senderId":"ff8080814833c067014843672bc0026a"}],"msg":""}
-			
->>>>>>> d10f40d6f70419e1c1626e3253a8bcada14a5f8b
+
 			if (err) {
 				api.toast({
 					msg : err.msg,
