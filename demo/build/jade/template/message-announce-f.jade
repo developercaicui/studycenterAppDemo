@@ -7,7 +7,7 @@ block body
     div.section-note.mine-question#content
     mixin lst
         | {{for(var p in it){ }}
-        .section-note-content.note-content-Img.msg-list(tapmode,onclick="lx(this,'{{=it[p].id}}','{{=it[p].sender}}','{{=it[p].content}}','{{=it[p].sentTime}}','{{=it[p].title}}','{{=it[p].headImg}}')")
+        .section-note-content.note-content-Img.msg-list(tapmode,onclick="noteEvent(this)",data-id='{{=it[p].id}}',data-sender='{{=it[p].sender}}',data-content='{{=it[p].content}}',data-sentTime='{{=it[p].sentTime}}',data-title='{{=it[p].title}}')
             .course-question-title.mine-question-title
                 p {{=it[p].title}}
             .section-note-top
@@ -153,6 +153,17 @@ block scripts
                     getData(currentPage);
                 }
             });
+            noteEvent=function (ele){
+         
+            var id = $(ele).data("id"),
+              sender = $(ele).data("sender"),
+              content = $(ele).data("content"),
+              sentTime = $(ele).data("sentTime"),
+              title = $(ele).data("title"),
+              headImg = $(ele).data("headImg");
+              lx(ele,id,sender,content,sentTime,title,headImg);
+  
+            }
         };
         function lx(obj, id, sender, content, sentTime, title, headImg) {
             var param = {};
