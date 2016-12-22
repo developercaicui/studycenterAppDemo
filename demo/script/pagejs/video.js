@@ -12,6 +12,7 @@ var demo; //视频模块
 var task_arr; //所有的任务信息
 var task_info_detail;
 var last_progress = 0;
+var newProgress = false;
 var saveTime = null;
 
 function closeVideo() {
@@ -260,6 +261,9 @@ function play_video() {
             if (last_progress == 0) {
                 last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
             }
+            if(newProgress){
+              last_progress = 0;
+            }
             //alert(task_info.apiKey+'===='+UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
             var param = {
@@ -299,7 +303,7 @@ function play_video() {
             demo.open(param, function(ret, err) {
 
                 $api.rmStorage('saveTaskProgress');
-
+                newProgress = false;
 
 
                 if (ret.status == 'filedel') {
@@ -413,6 +417,7 @@ function play_video() {
                                 var state = 'init';
                             }
                             saveTaskProgress(tmp_progress, total, state);
+                            newProgress = true;//重置视频播放进度
                             //播放上一个视频
                             prevVideo();
                         }
@@ -440,6 +445,7 @@ function play_video() {
                                 var state = 'init';
                             }
                             saveTaskProgress(tmp_progress, total, state);
+                            newProgress = true;//重置视频播放进度
                             nextVideo();
                         }
                     });
