@@ -15,7 +15,7 @@
   </head>
   <body>
     <div id="header" class="header">
-      <div tapmode onclick="set_center_num()" class="left back"><i class="icon-back"></i></div>
+      <div tapmode onclick="api.closeWin()" class="left back"><i class="icon-back"></i></div>
       <div class="left-next">消息中心</div>
     </div>
     <ul class="header-nav">
@@ -28,12 +28,6 @@
     <script type="text/javascript" src="../script/db.js"></script>
     <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
     <script>
-      function set_center_num() {
-        api.sendEvent({
-            name: 'center_num'
-        });
-        api.closeWin()
-      }
       function set_tab(i) {
           api.setFrameGroupIndex({
               name: 'msg_tab',

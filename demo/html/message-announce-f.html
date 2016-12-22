@@ -94,7 +94,6 @@
               });
           }
           ajaxRequest('api/v2/message/list', 'get', param, function (ret, err) {//001.002 消息列表（old）type为必填项且error
-      
               is_loding = true;
               api.refreshHeaderLoadDone();
               if (show_pro) {
