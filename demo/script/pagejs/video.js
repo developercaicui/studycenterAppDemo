@@ -809,9 +809,6 @@ function exeNewTask() {
 
 //关闭当前页面，返回课程页面
 function closeThisWin(playtime) {
-    api.sendEvent({
-        name: 'flush_catalog'
-    });
     //保存进度,关闭页面
     if (api.systemType == 'android') {
         api.setFullScreen({
