@@ -79,10 +79,7 @@
             };
             //ajaxRequest('api/userAction/course/getTasksProgress/v1.0/', 'get', param, function (ret, err) {
             ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
-<<<<<<< HEAD
 
-=======
->>>>>>> 5640edfb705838b730c2442d48971fefd52c8294
             // ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function(ret, err) { //008.022 获取课程任务进度列表（new）tested，接口编号：008-022
                 if (err) {
                     return false;
@@ -197,8 +194,9 @@
             	param.record.push(post_param)
             }
 
-            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'get', {'token':getstor('token'),'messages':param}, function(ret, err) {
+            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'get', {'token':getstor('token'),'messages':JSON.stringify(param)}, function(ret, err) {
                 if (err) {
+                    return;
                     saveTasksProgress.saveServer(data);
                 } else {
                     saveTasksProgress.saveServerNum++;
