@@ -357,10 +357,7 @@
             //            $('input[name=password]').focus();
             return false;
         }
-        // api.showProgress({
-        //     title: '登录中',
-        //     model: true
-        // });
+        
         set_token(function(res, error) {
             if (error) {
                 api.toast({

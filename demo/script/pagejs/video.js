@@ -258,11 +258,12 @@ function play_video() {
                     fullScreen: true
                 });
             }
+            
             if (last_progress == 0) {
-                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
+                last_prolgress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
             }
             if(newProgress){
-              last_progress = 0;
+              last_prolgress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
             }
             //alert(task_info.apiKey+'===='+UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
