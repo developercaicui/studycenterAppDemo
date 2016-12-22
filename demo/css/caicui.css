@@ -169,7 +169,7 @@ textarea {
 }
 .hide,
 .none {
-  display: none;
+  display: none !important;
 }
 .cl {
   clear: both;
@@ -2513,4 +2513,3 @@ ul.download .down-progress {
     padding: 0.2rem;
   }
 }
-
