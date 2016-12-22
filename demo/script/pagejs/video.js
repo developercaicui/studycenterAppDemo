@@ -175,7 +175,7 @@ apiready = function() {
     }, function(ret, err) {
         
                 //last_progress = getVideoProgress(videoid);
-                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
+                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             
         closeThisWin(last_progress);
         //关闭页面
@@ -259,10 +259,10 @@ function play_video() {
                 });
             }
             if (last_progress == 0) {
-                last_progress = DB.getTaskProgressSync(api.pageParam.task_info.taskId).progress;
+                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             }
             if(newProgress){
-              last_progress = 0;
+              last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
             }
             //alert(task_info.apiKey+'===='+UserId+'====='+(isEmpty(CCconfig[UserId]) ? 0 : 1));
             //用户学习进度
@@ -417,7 +417,7 @@ function play_video() {
                                 var state = 'init';
                             }
                             saveTaskProgress(tmp_progress, total, state);
-                            newProgress = true;//重置视频播放进度
+                            
                             //播放上一个视频
                             prevVideo();
                         }
@@ -445,7 +445,7 @@ function play_video() {
                                 var state = 'init';
                             }
                             saveTaskProgress(tmp_progress, total, state);
-                            newProgress = true;//重置视频播放进度
+                            
                             nextVideo();
                         }
                     });
@@ -773,6 +773,7 @@ function prevVideo() {
 }
 //执行新任务
 function exeNewTask() {
+    newProgress = true;//重置视频播放进度
     //如果任务类型为视频，则直接播放
     if (task_info.taskType == 'video') {
         videoid = task_info.videoCcid;
