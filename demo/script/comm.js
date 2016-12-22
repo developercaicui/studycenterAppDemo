@@ -1034,7 +1034,6 @@ function mydown(result) {
                         //下载中ui监听
                         data.type = 'ing';
                         set_down(data);
-
                         var lslcallback = function(ret, err) {
                             // api.sendEvent({
                             //     name: 'DOWN',
