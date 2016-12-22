@@ -45,10 +45,10 @@
         taskNameDB: 'taskDB',
         taskNameTable: '',
         online: function() {
-            if (api.connectionType != 'unknown' || api.connectionType != 'none') {
-                return true;
+            if (api.connectionType == 'unknown' || api.connectionType == 'none') {
+              return false;
             } else {
-                return false;
+              return true;
             }
         },
         saveTasksProgress: function(data, callback) { // 异步保存 数据库-任务
@@ -253,7 +253,7 @@
                 if (ret.status) {
                     DB.isEmptyTasksProgress(function(isEmpty) {
                         if (isEmpty) {
-                            var selectSql = 'SELECT progress FROM ' + DB.taskNameTable + ' where isSupply="1"';
+                            var selectSql = 'SELECT * FROM ' + DB.taskNameTable + ' where isSupply="1"';
                             DB.selectSql(DB.taskNameDB, selectSql, function(ret, err) {
                               // alert('DBTasksProgressSupplyAll'+JSON.stringify(ret)+JSON.stringify(err))
                                 if (ret.status) {

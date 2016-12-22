@@ -138,10 +138,10 @@
             });
         },
         saveServer: function(data) {
-        		var length = parseInt(saveTasksProgress.index/data.length);
+        		var length = parseInt(data.length/saveTasksProgress.saveServerIndex);
         		if (saveTasksProgress.saveServerTimes > length) {
-        			DB.clearTasksProgressLog();
-      		    saveTasksProgress.saveServerNum = 0;
+      		    saveTasksProgress.saveServerTimes = 0;
+              DB.clearTasksProgressLog();
       		    return false;
         		}
       			var progressArr = [];
@@ -192,15 +192,17 @@
             	};
             	param.record.push(post_param)
             }
-
-            ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'get', {'token':getstor('token'),'messages':param}, function(ret, err) {
-            	if (err) {
-                    saveTasksProgress.saveServer(data);
-                } else {
-                    saveTasksProgress.saveServerNum++;
-                    saveTasksProgress.saveServer(data);
-                }
-            });
+            if(param.record &&param.record.length){
+              ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/taskProgressPackets/v1.0/' }, 'post', {'token':getstor('token'),'messages':JSON.stringify(param)}, function(ret, err) {
+               if (err) {
+                      return false;
+                  } else {
+                      saveTasksProgress.saveServerTimes++;
+                      saveTasksProgress.saveServer(data);
+                  }
+              });
+            }
+            
         }
     }
     window.saveTasksProgress = {
