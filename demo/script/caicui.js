@@ -118,7 +118,7 @@ function circleProgress() {
 				}
 
 				_ts.find('svg').remove();
-				_ts.prepend('<svg width="' + cirW + '" height="' + cirW + '" viewbox="0 0 ' + cirW + ' ' + cirW + '"><circle cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle><circle id="circle' + cirI + '" cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle></svg>');
+				_ts.prepend('<svg width="' + cirW + '" height="' + cirW + '" viewbox="0 0 ' + cirW + ' ' + cirW + '"><circle cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle><circle  id="circle' + cirI + '" cx="' + cirW / 2 + '" cy="' + cirW / 2 + '" r="' + cirW * 0.45 + '"></circle></svg>');
 				//console.log("#circle" + cirI, cirW, cirVal);
 				circleTrans("#circle" + cirI, cirW, cirVal);
 		});
@@ -129,7 +129,7 @@ function circleProgress() {
 				var cirO = _ts.hasClass('svg-existing');
 				if (!cirO) {
 						_ts.addClass('svg-existing');
-						_ts.prepend('<svg width="' + cirDonW + '" height="' + cirDonW + '" viewbox="0 0 ' + cirDonW + ' ' + cirDonW + '"><circle cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '"></circle><circle id="circle' + cirI + '" cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '"></circle></svg>');
+						_ts.prepend('<svg  width="' + cirDonW + '" height="' + cirDonW + '" viewbox="0 0 ' + cirDonW + ' ' + cirDonW + '"><circle cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '"></circle><circle  id="circle' + cirI + '" cx="' + cirDonW / 2 + '" cy="' + cirDonW / 2 + '" r="' + cirDonW * 0.45 + '" ></circle></svg>');
 				}
 		});
 }
@@ -636,9 +636,10 @@ function getCCconfig(callback, is_force) {
 }
 
 function bufferCourese(arrays) {
+		// lastTaskdate
 		var array = [];
 		for (var p in arrays) {
-				if (!isEmpty(arrays[p]['lastTaskdate'])) {
+				if (!isEmpty(arrays[p]['createDate'])) {
 						array.push(arrays[p]);
 				}
 		}
@@ -647,7 +648,7 @@ function bufferCourese(arrays) {
 				j, d;
 		for (; i < len; i++) {
 				for (j = 0; j < len; j++) {
-						if (array[i].lastTaskdate > array[j].lastTaskdate) {
+						if (parseInt(array[i].createDate) > parseInt(array[j].createDate)) {
 								d = array[j];
 								array[j] = array[i];
 								array[i] = d;

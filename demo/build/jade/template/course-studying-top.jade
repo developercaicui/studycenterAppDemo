@@ -157,7 +157,7 @@ block scripts
             }
         }
         var h, y;
-        function init() {
+        function init(name) {
             //设置课程名称
             $('.left-next').html(api.pageParam.courseName);
             setTimeout(function () {
@@ -165,9 +165,13 @@ block scripts
                     style: 'light'
                 });
             }, 200);
-            if (!isEmpty(api.pageParam.chapterName) && api.pageParam.chapterName != 'undefined') {
-                var chapterName = api.pageParam.chapterName;
-                $('.styContinue span').html('继续学习   ' + chapterName);
+            if(name){
+              $('.styContinue span').html('继续学习   ' + name);
+            }else if (!isEmpty(api.pageParam.chapterName) && api.pageParam.chapterName != 'undefined') {
+                
+                  var chapterName = api.pageParam.chapterName;
+                  $('.styContinue span').html('继续学习   ' + chapterName);
+                
             } else {
                 $('.styContinue span').html('开始学习此课程');
             }
@@ -217,6 +221,11 @@ block scripts
         });
         apiready = function () {
             get_tasks();
+            api.addEventListener({
+              name : 'flush_catalog'
+            }, function(ret) {
+              init(ret.value.chapterName);
+            });
             api.addEventListener({
                 name: 'keyback'
             }, function (ret) {
@@ -541,37 +550,61 @@ block scripts
             var nickName = get_loc_val('mine', 'nickName');
             var courseId = course_detail.courseId;
             //如果没有缓存，重新请求接口
-            var tmpParam = {
-                'token': $api.getStorage('token'),//必须
-                'memberId': get_loc_val('mine', 'memberId'),
-                'categoryId': course_detail.categoryId,//非必须
-                'subjectId': course_detail.subjectId,//非必须
-                'courseId': courseId,//非必须
-                'chapterId': '',//非必须
-                'taskId': ''//非必须
-            };
-            //(实时)最后一次任务状态（new）tested,编号:008.026,GET - /api/v2.1/chapter/tasklastProgress
-            ajaxRequest('api/v2.1/chapter/tasklastProgress', 'get', tmpParam, function (ret, err) {//008.026 最后一次任务状态（new）tested，接口编号：008-026
-                if (err) {
-                    api.hideProgress();
-                    api.toast({
-                        msg: err.msg,
-                        location: 'middle'
-                    });
-                    return false;
+          // var tmpParam = {
+          //     'token': $api.getStorage('token'),//必须
+          //     'memberId': get_loc_val('mine', 'memberId'),
+          //     'categoryId': course_detail.categoryId,//非必须
+          //     'subjectId': course_detail.subjectId,//非必须
+          //     'courseId': courseId,//非必须
+          //     'chapterId': '',//非必须
+          //     'taskId': ''//非必须
+          // };
+          // //(实时)最后一次任务状态（new）tested,编号:008.026,GET - /api/v2.1/chapter/tasklastProgress
+          // ajaxRequest('api/v2.1/chapter/tasklastProgress', 'get', tmpParam, function (ret, err) {//008.026 最后一次任务状态（new）tested，接口编号：008-026
+
+          //获取课程任务进度列表（new）tested
+          var param = {
+              'token': $api.getStorage('token'), //必须
+              'memberId' : getstor('memberId'),
+              'courseId': courseId, //课程ID,必须
+          };
+          ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+            
+              if (err) {
+                  api.hideProgress();
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+
+                
+                var lastProgressData = ret.data;
+                var i = 0,
+                    len = lastProgressData.length,
+                    j, d;
+                for (; i < len; i++) {
+                    for (j = 0; j < len; j++) {
+                        if (parseInt(lastProgressData[i].createDate) > parseInt(lastProgressData[j].createDate)) {
+                            d = lastProgressData[j];
+                            lastProgressData[j] = lastProgressData[i];
+                            lastProgressData[i] = d;
+                        }
+                    }
                 }
-                if (ret && ret.state == 'success') {
-                    //$api.setStorage(nickName + courseId, ret.data);
-                    var study_progress = ret.data;
-                    //var res_process = findTask(study_progress, course_detail, '', '', false);//根据进度和课程信息，找到要学习的任务
-                    findTask(study_progress, course_detail);//根据进度和课程信息，找到要学习的任务
-                    /*
-                     if (isEmpty(res_process)) {
-                     return false;
-                     } else {
-                     judge_task(res_process, course_detail);
-                     }
-                     */
-                }
-            });
+                  //$api.setStorage(nickName + courseId, ret.data);
+                  var study_progress = ret.data;
+                  //var res_process = findTask(study_progress, course_detail, '', '', false);//根据进度和课程信息，找到要学习的任务
+                  findTask(lastProgressData[0], course_detail);//根据进度和课程信息，找到要学习的任务
+                  /*
+                   if (isEmpty(res_process)) {
+                   return false;
+                   } else {
+                   judge_task(res_process, course_detail);
+                   }
+                   */
+              }
+          });
         }

@@ -469,32 +469,69 @@ function get_study(flag) {
         				for(var j=0;j<ret.data.length;j++){
         					if(learningcourse[i].chapterId == ret.data[j].chapterId){
         						learningcourse[i].showProgress = ret.data[j].courseProgress;
+                    learningcourse[i].createDate = ret.data[j].createDate;
         					}
         				}
         			}
+              var filterLastProgress = ret.data;
+              var i = 0,
+                  len = filterLastProgress.length,
+                  j, d;
+              for (; i < len; i++) {
+                  for (j = 0; j < len; j++) {
+                      if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
+                          d = filterLastProgress[j];
+                          filterLastProgress[j] = filterLastProgress[i];
+                          filterLastProgress[i] = d;
+                      }
+                  }
+              }
+              var forList = learningcourseData.data.courselist;
+              for(var i=0;i<forList.length;i++){
+                if(forList[i].courseId == filterLastProgress[0].courseId){
+                  var array = [];
+                  var ret = learningcourseData;
 
-        			var ret = learningcourseData;
-        			ret.data['courselist'] = bufferCourese(learningcourse);
-        			$('#course_content').html(content(ret.data));
-        			for (var p in ret.data.courselist[0]) {
-        			    if (p == 'courseBkImage') {
-        			        var img = ret.data.courselist[0][p];
-        			        api.imageCache({
-        			            url: static_url + img,
-        			            policy: 'cache_else_network',
-        			            thumbnail: 'false'
-        			        }, function(res, err) {
-        			            if (res && res.url) {
-        			                ret.data.courselist[0][p] = res.url;
-        			                $api.setStorage(memberId + 'learningcourse', ret.data);
-        			            }
-        			        });
-        			        break;
-        			    }
-        			}
-        			saveExpire(ret.data.courselist);
+                  forList[i].chapterId = filterLastProgress[0].chapterId;
+                  forList[i].chapterName = filterLastProgress[0].chapterName;
+                  forList[i].courseProgress = filterLastProgress[0].courseProgress;
+                  forList[i].createDate = filterLastProgress[0].createDate;
+                  forList[i].progress = filterLastProgress[0].progress;
+                  forList[i].taskId = filterLastProgress[0].taskId;
+                  forList[i].taskName = filterLastProgress[0].taskName;
 
-        			api.parseTapmode();
+
+                  array.push(forList[i]); 
+                  ret.data['courselist'] = array;
+                  $('#course_content').html(content(ret.data));
+
+                  for (var p in ret.data.courselist[0]) {
+                      if (p == 'courseBkImage') {
+                          var img = ret.data.courselist[0][p];
+                          api.imageCache({
+                              url: static_url + img,
+                              policy: 'cache_else_network',
+                              thumbnail: 'false'
+                          }, function(res, err) {
+                              if (res && res.url) {
+                                  ret.data.courselist[0][p] = res.url;
+                                  $api.setStorage(memberId + 'learningcourse', ret.data);
+                              }
+                          });
+                          break;
+                      }
+                  }
+                  saveExpire(ret.data.courselist);
+
+                  api.parseTapmode();
+
+                }else{
+
+                }
+              }
+        			
+        			
+        			
         	});
 
             

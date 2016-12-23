@@ -635,7 +635,7 @@ function play_video() {
                         }
                         if(api.systemType == 'android'){
                             
-                           // demo.seekTo({
+                           // demo.seekTo({ 
                            //      totime: jumptime
                            //  }, function(res) {
                            //      var ctime = res.ctime;
@@ -817,7 +817,10 @@ function exeNewTask() {
 //关闭当前页面，返回课程页面
 function closeThisWin(playtime) {
     api.sendEvent({
-        name: 'flush_catalog'
+        name: 'flush_catalog',
+        extra: {
+            chapterName: task_info_detail.chapterName
+        }
     });
     //保存进度,关闭页面
     if (api.systemType == 'android') {

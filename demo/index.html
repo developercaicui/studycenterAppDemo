@@ -1437,18 +1437,18 @@
                 // $api.rmStorage('token');
                 // $api.rmStorage('password');
             }
-            // $api.rmStorage('mine');
-            // $api.rmStorage('outh');
+            $api.rmStorage('mine');
+            $api.rmStorage('outh');
 
-            // $api.rmStorage('notice_time');
-            // $api.rmStorage('open_notice');
-            // $api.rmStorage('center_num');
-            // var memberId = getstor('memberId');
-            // $api.rmStorage(memberId + 'scale/browsers');
-            // $api.rmStorage(memberId + 'learning/lines');
-            // $api.rmStorage(memberId + 'learningcourse');
-            // $api.rmStorage(memberId + 'capabilityAssessment');
-            $api.clearStorage();
+            $api.rmStorage('notice_time');
+            $api.rmStorage('open_notice');
+            $api.rmStorage('center_num');
+            var memberId = getstor('memberId');
+            $api.rmStorage(memberId + 'scale/browsers');
+            $api.rmStorage(memberId + 'learning/lines');
+            $api.rmStorage(memberId + 'learningcourse');
+            $api.rmStorage(memberId + 'capabilityAssessment');
+            // $api.clearStorage();
             to_login();
 
         });

@@ -169,6 +169,9 @@ textarea {
 }
 .hide,
 .none {
+  display: none;
+}
+.msg-mark.none {
   display: none !important;
 }
 .cl {

@@ -175,7 +175,7 @@ function set_down_status(str){
             api.alert({
                 msg : '缓存文件被清理,请重新下载',
                 location : 'middle'
-            });
+            }); 
             break;
         case 'no_video':
             api.toast({
@@ -345,6 +345,7 @@ apiready = function() {
   	api.addEventListener({
   		name : 'flush_catalog'
   	}, function(ret) {
+
   		getData();
   	});
     api.addEventListener({
