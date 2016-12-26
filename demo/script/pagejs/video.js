@@ -137,6 +137,7 @@ apiready = function() {
             task_info_detail = task_arr[task_id];
             videoid = task_info.videoCcid;
             videoTimes = task_info.videoTime;
+            newProgress = true;
             if (api.systemType == 'android') {
                 demo.close();
             }
