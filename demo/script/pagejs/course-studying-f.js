@@ -980,14 +980,42 @@ function getData(page) {
     					});
     					return false;
     			}
-    			for(var i=0;i<learningcourse.length;i++){
-    				for(var j=0;j<ret.data.length;j++){
-    					if(learningcourse[i].chapterId == ret.data[j].chapterId){
-    						learningcourse[i].showProgress = ret.data[j].courseProgress;
-    					}
-    				}
-    			}
-    			var ret = learningcourseData;
+					for(var i=0;i<learningcourse.length;i++){
+						for(var j=0;j<ret.data.length;j++){ 
+							if(learningcourse[i].courseId == ret.data[j].courseId){
+								learningcourse[i].showProgress = ret.data[j].courseProgress;
+		            learningcourse[i].createDate = ret.data[j].createDate;
+
+		            learningcourse[i].chapterId = ret.data[j].chapterId;
+		            learningcourse[i].chapterName = ret.data[j].chapterName;
+		            learningcourse[i].progress = ret.data[j].progress;
+		            learningcourse[i].taskId = ret.data[j].taskId;
+		            learningcourse[i].taskName = ret.data[j].taskName;
+
+							}
+						}
+					}
+		      
+		      // var filterLastProgress = learningcourse;
+		      // var i = 0,
+		      //     len = filterLastProgress.length,
+		      //     j, d;
+		      // for (; i < len; i++) {
+		      //     for (j = 0; j < len; j++) {
+		      //         if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
+		      //             d = filterLastProgress[j];
+		      //             filterLastProgress[j] = filterLastProgress[i];
+		      //             filterLastProgress[i] = d;
+		      //         }
+		      //     }
+		      // }
+
+    			var ret={
+            data : {
+              total : learningcourseData.data.total,
+              courselist : learningcourse
+            }
+          }
     			total = ret.data.total;
     			if (page == 1) {
     				if (isEmpty(ret.data.courselist)) {

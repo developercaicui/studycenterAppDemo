@@ -84,7 +84,7 @@
           param.courseId = api.pageParam.courseId;
           param.token = $api.getStorage('token');
           param.memberId = $api.getStorage('memberId');
-          ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', param, function(ret, err) {
+          ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':api.pageParam.courseId}, function(ret, err) {
           //ajaxRequest('api/v2.1/study/getFinish', 'get', param, function (ret, err) {//008.021.1
               if (err) {
                   api.toast({ 
@@ -141,7 +141,7 @@
           });
       }
       function top_task(res1, res2) {
-          var m1, m2, n1, n2;
+          var m1, m2, n1, n2, progress;
           if (isEmpty(res1)) {
               m1 = 0;
               m2 = 0;
@@ -153,6 +153,7 @@
               m1 = data1.chapterSum;
               //m2 = data1.progressSum;
               m2 = data1.courseProgress;
+              progress = data1.progress;
           }
           if (isEmpty(res2)) {
               n1 = 0;
@@ -165,11 +166,17 @@
           }
           var htm1 = m1 + '/' + n1;
           var htm2 = m2 + '/' + n2;
-          $('.chapters').html(htm1);
+          //- $('.chapters').html(htm1);
+          $('.chapters').html('0/'+n1);
           $('.tasks').html(htm2);
           //$('.pro').html((m2 / n2) * 100);
           if (!isEmpty(res1) && !isEmpty(res2)) {
-              $('#progressVal').html(Math.round(m2 / n2 * 100));
+              //- $('#progressVal').html(parseInt(m2 / n2 * 100));
+              if(m2 && n2){
+                $('#progressVal').html(parseInt(m2 / n2 * 100));
+              }else if(progress){
+                $('#progressVal').html(1);
+              }
           }
       }
       var h, y;

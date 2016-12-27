@@ -51,6 +51,11 @@
               return true;
             }
         },
+        offLine : function(callback){
+          if (api.connectionType == 'unknown' || api.connectionType == 'none') {
+            if(callback){callback()};
+          }
+        },
         saveTasksProgress: function(data, callback) { // 异步保存 数据库-任务
             if (data) {
                 DB.taskDB(function(ret, err) {
@@ -289,16 +294,14 @@
                 // alert('insetTaskDB:::'+JSON.stringify(ret)+JSON.stringify(err))
                 if (ret.status && ret.data && ret.data.length) { //更新
                     DB.updateTaskDB(data, callback);
-                    var online = DB.online();
-                    if (!online) {
-                        DB.addTaskDB(data, callback, true);
-                    }
+                    DB.offLine(function(){
+                      DB.addTaskDB(data, callback, true);
+                    })
                 } else { //添加
                     DB.addTaskDB(data, callback);
-                    var online = DB.online();
-                    if (!online) {
-                        DB.addTaskDB(data, callback, true);
-                    }
+                    DB.offLine(function(){
+                      DB.addTaskDB(data, callback, true);
+                    })
                 }
             })
         },

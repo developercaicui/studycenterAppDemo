@@ -1399,7 +1399,8 @@ function accAdd(num1, num2) {
     }
     m = Math.pow(10, Math.max(r1, r2));
     // return (num1*m+num2*m)/m;
-    return Math.round(num1 * m + num2 * m) / m;
+    // return Math.round(num1 * m + num2 * m) / m;
+    return parseInt(num1 * m + num2 * m) / m;
 }
 
 function get_dowm(chapterIdA, chapterIdB, chapterIdC) {

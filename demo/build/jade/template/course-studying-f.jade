@@ -23,7 +23,7 @@ block body
                     li.wodPro
                         .progress-box2
                             .progress2
-                                .progress-bar2(role="progressbar",min="{{=it[p].showProgress}}",max="{{=it[p].taskTotal}}",data)
+                                .progress-bar2(role="progressbar",progress="{{=it[p].progress}}",min="{{=it[p].showProgress}}",max="{{=it[p].taskTotal}}",data)
                             .progress-val2
                     | {{ }else{ }}
                     li.wodPro

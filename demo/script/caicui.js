@@ -304,19 +304,27 @@ function num_99() {
 function progressBar() {
 		setTimeout(function() {
 				$('.progress-bar2').each(function() {
-						var _t = $(this);
-						var _num = Math.round(_t.attr('min') / _t.attr('max') * 100);
-						if (_num > 90) {
-								_num = 100
+					var _t = $(this);
+					var min = parseInt(_t.attr('min'));
+					var max = parseInt(_t.attr('max'));
+					var progress = parseInt(_t.attr('progress'));
+					var showProgress = 0;
+					if(min && max){
+						showProgress = parseInt(min / max * 100);
+						if(showProgress > 90){
+							showProgress = 100;
 						}
-						var $val = _t.parent().next('.progress-val2');
-						if ($val) {
-								$val.text(_num + '%');
-						}
-						if (_t.attr('data') != '1') {
-								_t.width(_num + '%');
-								_t.attr('data', '1');
-						}
+					}else if(progress){
+						showProgress = 1;
+					}
+					var $val = _t.parent().next('.progress-val2');
+					if ($val) {
+							$val.text(showProgress + '%');
+					}
+					if (_t.attr('data') != '1') {
+							_t.width(showProgress + '%');
+							_t.attr('data', '1');
+					}
 				});
 		}, 500);
 }

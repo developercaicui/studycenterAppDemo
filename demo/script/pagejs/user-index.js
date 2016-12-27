@@ -467,13 +467,21 @@ function get_study(flag) {
         			}
         			for(var i=0;i<learningcourse.length;i++){
         				for(var j=0;j<ret.data.length;j++){
-        					if(learningcourse[i].chapterId == ret.data[j].chapterId){
+        					if(learningcourse[i].courseId == ret.data[j].courseId){
         						learningcourse[i].showProgress = ret.data[j].courseProgress;
                     learningcourse[i].createDate = ret.data[j].createDate;
+
+                    learningcourse[i].chapterId = ret.data[j].chapterId;
+                    learningcourse[i].chapterName = ret.data[j].chapterName;
+                    learningcourse[i].progress = ret.data[j].progress;
+                    learningcourse[i].taskId = ret.data[j].taskId;
+                    learningcourse[i].taskName = ret.data[j].taskName;
+
         					}
         				}
         			}
-              var filterLastProgress = ret.data;
+              
+              var filterLastProgress = learningcourse;
               var i = 0,
                   len = filterLastProgress.length,
                   j, d;
@@ -486,51 +494,31 @@ function get_study(flag) {
                       }
                   }
               }
-              var forList = learningcourseData.data.courselist;
-              for(var i=0;i<forList.length;i++){
-                if(forList[i].courseId == filterLastProgress[0].courseId){
-                  var array = [];
-                  var ret = learningcourseData;
-
-                  forList[i].chapterId = filterLastProgress[0].chapterId;
-                  forList[i].chapterName = filterLastProgress[0].chapterName;
-                  forList[i].courseProgress = filterLastProgress[0].courseProgress;
-                  forList[i].createDate = filterLastProgress[0].createDate;
-                  forList[i].progress = filterLastProgress[0].progress;
-                  forList[i].taskId = filterLastProgress[0].taskId;
-                  forList[i].taskName = filterLastProgress[0].taskName;
-
-
-                  array.push(forList[i]); 
-                  ret.data['courselist'] = array;
-                  $('#course_content').html(content(ret.data));
-
-                  for (var p in ret.data.courselist[0]) {
-                      if (p == 'courseBkImage') {
-                          var img = ret.data.courselist[0][p];
-                          api.imageCache({
-                              url: static_url + img,
-                              policy: 'cache_else_network',
-                              thumbnail: 'false'
-                          }, function(res, err) {
-                              if (res && res.url) {
-                                  ret.data.courselist[0][p] = res.url;
-                                  $api.setStorage(memberId + 'learningcourse', ret.data);
-                              }
-                          });
-                          break;
-                      }
-                  }
-                  saveExpire(ret.data.courselist);
-
-                  api.parseTapmode();
-
-                }else{
-
+              var ret={
+                data : {
+                  total : learningcourseData.data.total,
+                  courselist : filterLastProgress
                 }
               }
-        			
-        			
+              $('#course_content').html(content(ret.data));
+              for (var p in ret.data.courselist[0]) {
+                  if (p == 'courseBkImage') {
+                      var img = ret.data.courselist[0][p];
+                      api.imageCache({
+                          url: static_url + img,
+                          policy: 'cache_else_network',
+                          thumbnail: 'false'
+                      }, function(res, err) {
+                          if (res && res.url) {
+                              ret.data.courselist[0][p] = res.url;
+                              $api.setStorage(memberId + 'learningcourse', ret.data);
+                          }
+                      });
+                      break;
+                  }
+              }
+              saveExpire(ret.data.courselist);
+              api.parseTapmode();
         			
         	});
 

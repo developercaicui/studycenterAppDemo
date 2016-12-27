@@ -1075,7 +1075,7 @@
         // });
         // DB.delTasksProgress();
          //DB.clearTasksProgress();
-       //DB.showTasksProgress();
+        DB.showTasksProgress();
         // DB.getTaskProgressSync('ff8080814dc1dc4e014e00cca76a2e0b');
         // DB.getCourseIdAll(function(data){
         // 	alert(JSON.stringify(data));
@@ -1434,8 +1434,8 @@
                 }, function(ret, err) { //007.010 会员退出
                 });
 
-                // $api.rmStorage('token');
-                // $api.rmStorage('password');
+                $api.rmStorage('token');
+                $api.rmStorage('password');
             }
             $api.rmStorage('mine');
             $api.rmStorage('outh');

@@ -14,6 +14,7 @@ var task_info_detail;
 var last_progress = 0;
 var newProgress = false;
 var saveTime = null;
+var isLoading = false;
 
 function closeVideo() {
     demo.close();
@@ -138,6 +139,7 @@ apiready = function() {
             videoid = task_info.videoCcid;
             videoTimes = task_info.videoTime;
             newProgress = true;
+            isLoading = false;
             if (api.systemType == 'android') {
                 demo.close();
             }
@@ -347,6 +349,7 @@ function play_video() {
                     //api.closeWin();
 
                     if (ret.ctime == 'nan') {
+                      isLoading = true;
                         //视频未加载完毕,视频进度为0
                         var tmp_progress = 0;
                     } else {
@@ -775,6 +778,7 @@ function prevVideo() {
 //执行新任务
 function exeNewTask() {
     newProgress = true;//重置视频播放进度
+    isLoading = false;
     //如果任务类型为视频，则直接播放
     if (task_info.taskType == 'video') {
         videoid = task_info.videoCcid;
@@ -871,6 +875,9 @@ function closeThisWin(playtime) {
 }
 //保存任务进度
 function saveTaskProgress(now_progress, total, state) {
+  if(isLoading){
+    return false;
+  }
     var videoData = {
         now_progress: now_progress,
         total: total,
