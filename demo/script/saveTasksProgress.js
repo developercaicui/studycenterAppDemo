@@ -184,9 +184,9 @@
             	    taskId: taskProgressData.taskId, //必须，任务id    1
             	    taskName: taskProgressData.title, //必须，任务名称   taskName
 
-            	    progress: taskProgressData.progress, //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
-            	    total: taskProgressData.total, //必须，任务总长度   48
-            	    state: taskProgressData.state, //必须，进度状态默认init，完成：complate    complate
+            	    progress: parseInt(taskProgressData.progress), //必须，当前进度值，视频为秒，试卷为题数量，文档为页码   5
+            	    total: parseInt(taskProgressData.total), //必须，任务总长度   48
+            	    state: parseInt(taskProgressData.state), //必须，进度状态默认init，完成：complate    complate
             	    // createDate : taskProgressData.createDate,
             	    // isSupply : 1
             	};

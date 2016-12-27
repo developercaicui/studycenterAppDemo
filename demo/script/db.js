@@ -65,10 +65,16 @@
                 });
             }
         },
-        showTasksProgress: function(callback) {
+        showTasksProgress: function(callback, showLog) {
             DB.create(DB.taskNameDB, function(ret, err) {
                 if (ret.status) {
-                    DB.selectSql(DB.taskNameDB, 'SELECT * FROM ' + DB.taskNameTable, function(ret, err) {
+                  var showTasksProgressSql = '';
+                  if(showLog){
+                    showTasksProgressSql = 'SELECT * FROM ' + DB.taskNameTable+ ' where isLog="1"';
+                  }else{
+                    showTasksProgressSql = 'SELECT * FROM ' + DB.taskNameTable+ ' where isLog="0"';
+                  }
+                    DB.selectSql(DB.taskNameDB, showTasksProgressSql, function(ret, err) {
                        // alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
                         if (ret.status && ret.data && ret.data.length) {
                             //alert('showTasksProgress:::' + JSON.stringify(ret)+JSON.stringify(err));
@@ -314,7 +320,7 @@
                 data.isLog = 1;
                 data.isSupply = 1;
             } else {
-                data.isLog = 0;
+                data.isLog = 0; 
                 data.isSupply = 0;
             }
             DB.executeSql(DB.taskNameDB, "INSERT INTO " + DB.taskNameTable + " (nid, token, memberId, memberName,  categoryId, categoryName, subjectId, subjectName, courseId, courseName, chapterId, chapterName, taskId, taskName, progress, total, state, isSupply, isLog, createDate, downloadProgress, downloadState, downloadDate, expiredDate) " +
@@ -350,7 +356,7 @@
         },
         updateTaskDB: function(data, callback) { // 更新一条记录 数据库-任务
             // 更新 progress state isSend createDate 
-            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",createDate="' + (new Date().getTime()) + '" WHERE taskId="' + data.taskId + '"', function(ret, err) {
+            DB.executeSql(DB.taskNameDB, 'UPDATE ' + DB.taskNameTable + ' SET progress="' + data.progress + '",state="' + data.state + '",createDate="' + (new Date().getTime()) + '" WHERE taskId="' + data.taskId + '" and isLog="0"', function(ret, err) {
 
                 if (callback) { callback(ret, err) }
             });
