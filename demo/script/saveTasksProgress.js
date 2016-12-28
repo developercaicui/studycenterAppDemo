@@ -174,7 +174,7 @@
             	    memberName: taskProgressData.memberName, //必须，用户昵称   zhangxiaoyu01
 
             	    categoryId: taskProgressData.categoryId, //必须，证书id    ff808081473905e701475cd3c2080001
-            	    categoryName: taskProgressData.categoryName,
+            	    categoryName: taskProgressData.categoryName, 
             	    subjectId: taskProgressData.subjectId, //必须，科目id  ff808081473905e7014762542d940078
             	    subjectName: taskProgressData.subjectName,
             	    courseId: taskProgressData.courseId, //必须，课程id    ff808081486933e6014889882d9c0590
