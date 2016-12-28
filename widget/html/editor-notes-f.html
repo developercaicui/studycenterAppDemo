@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div class="editor">
+      <div class="editit">
+        <div class="play-time"><i class="icon-play-o"></i><span></span></div>
+        <p></p>
+      </div>
+      <textarea onblur="upperCase()" onchange="upperCase()" oninput="upperCase()" class="lx_content"></textarea>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      function upperCase() {
+          var content = $('.lx_content').val();
+          if ($api.getStorage('content') != '') {
+              $api.rmStorage('content');
+          }
+          $api.setStorage('content', content);
+      }
+      //后台处理逻辑
+      var noteId;//笔记id
+      var token; //token
+      //获取笔记详情信息
+      function getNoteDetail() {
+          var param = {};
+          param.token = token; //必须
+          param.id = noteId;//笔记id,必须
+          param.pageNo = 1;//当前页码，必须
+          param.pageSize = 10;//每页记录数，必须
+      
+          /*api.showProgress({
+           title: '加载中',
+           modal: false
+           });*/
+          ajaxRequest('api/studytools/nodedetail/v2.1', 'get', param, function (ret, err) {//003.114 笔记详情和回复列表
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  /*api.alert({msg:ret.data});*/
+              }
+              /*else {
+               api.toast({
+               msg: ret.msg,
+               location: 'middle'
+               });
+               }*/
+          });
+      }
+      
+      //保存笔记
+      function saveNote() {
+          var title = $.trim($('#note_title').val());
+          var content = $.trim($('#note_content').val());
+          if (title != '' && content != '') {
+              var param = {};
+              param.token = $api.getStorage('token'); //必须
+              param.content = content; //笔记内容，必须
+              param.imgPath = '';//图片数组，图片路径（以’，’分隔）,非必须
+              param.soundPath = '';//声音文件单一,非必须
+              param.courseId = '';//课程id，必须
+              param.taskId = '';//任务id,非必须
+              param.taskProgress = 0;//任务进度,非必须,int,非必须
+              param.taskType = '';//非必须，任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+              param.clientType = api.systemType;//客户端类型：iphone,必须
+              param.id = noteId;//笔记id，如果为空，则为添加，否则为修改
+              param.title = title;//必须，笔记标题
+              param.isPublic = false;//必须，bool: true笔记公开，false不公开
+              param.subjectId = '';//必须，科目id
+              param.categoryId = '';//必须，string:证书id
+              param.chapterId = '';//必须，string:章节id
+              param.soundLen = '';//string:声音文件的时长，如果有声音文件，此字段必传
+              api.showProgress({
+                  title: '处理中',
+                  modal: true
+              });
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116.1 发布或修改笔记
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      /*api.alert({msg: ret.data.id});*/
+                  }
+                  /*else {
+                   api.toast({
+                   msg: ret.msg,
+                   location: 'middle'
+                   });
+                   }*/
+              });
+          }
+      }
+      apiready = function () {
+          if (isEmpty(api.pageParam.chapterName)) {
+              $('.editit').addClass('none');
+          } else {
+              $('.editit p').html(api.pageParam.chapterName);
+          }
+          noteId = api.pageParam.noteId;//笔记id
+          //
+          token = $api.getStorage('token'); //token
+          if (isEmpty(noteId) && isEmpty(token)) {
+              api.alert({
+                  title: '温馨提示',
+                  msg: '请返回重试',
+                  buttons: ['返回']
+              }, function (ret, err) {
+                  if (ret.buttonIndex == 1) {
+                      api.closeWin();
+                  }
+              });
+          } else {
+              //getNoteDetail();//获取页面的内容，笔记详情
+          }
+          getData();
+          //图片回调
+          api.addEventListener({
+              name: 'select_photo_change'
+          }, function (ret, err) {
+              var imgs = ret.value;
+              var url = static_url + imgs.path;
+              //var url = common_url + imgs.path;
+              var str = '<div class="checkimg"><img class="uploadimg_s" src="' + url + '"><div><p></p></div></div>';
+              $('.addimg').before(str);
+              $('.checkimg').attr('data-id', url);
+          });
+          api.addEventListener({
+              name: 'get_info'
+          }, function (ret) {
+              if (ret) {
+                  //笔记编辑
+                  var value = ret.value;
+                  var content = $('.textarea').val();
+                  var notes_info = $api.getStorage('notes_info');
+                  var param = {
+                      content: content,
+                      imgPath: $api.getStorage('img'),
+                      token: $api.getStorage('token'),
+                      subjectId: '', //科目id
+                      categoryId: '',//讨论证书
+                      soundlen: $api.getStorage('lx_duration'),
+                      courseId: notes_info.courseId,//课程id，必须
+                      taskId: notes_info.taskId,//任务id,非必须
+                      taskProgress: notes_info.taskProgress,//任务进度,非必须,int,非必须
+                      taskType: notes_info.taskType,//非必须，任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+                      clientType: notes_info.clientType,//客户端类型：iphone,必须
+                      id: notes_info.id,//笔记id，如果为空，则为添加，否则为修改
+                      title: '',//必须，笔记标题
+                      isPublic: true,//必须，bool: true笔记公开，false不公开
+                      chapterId: notes_info.chapterId,//必须，string:章节id
+                      soundPath: ''//string:声音文件的时长，如果有声音文件，此字段必传
+                  };
+                  ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.303.1  发布或者修改笔记
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          api.toast({
+                              msg: '编辑成功！',
+                              location: 'middle'
+                          });
+                          $api.rmStorage('img');
+                          $api.rmStorage('lx_duration');
+                      } else {
+                          /*/api.toast({
+                           msg: ret.msg,
+                           location: 'middle'
+                           });*/
+                      }
+                  });
+              }
+          });
+      };
+      var imgPath = '';
+      function getData() {
+          var param = {
+              token: $api.getStorage('token'),
+              id: api.pageParam.bj_id,
+              pageNo: 1,
+              pageSize: 10
+          };
+          ajaxRequest('api/studytools/nodedetail/v2.1', 'get', param, function (ret, err) {//003.114 笔记详情和回复列表
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  //                    imgPath = ret.data.imgPath.split(',');
+                  //                    var str = '';
+                  //                    $.each(imgPath,function(i,item){
+                  //                        var url = static_url + item;
+                  //                        str += '<div class="checkimg" data-id="' + item + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+                  //                    });
+                  $('textarea').val(ret.data.content);
+                  $api.setStorage('content', ret.data.content);
+                  api.sendEvent({
+                      name: 'notes_bj_lx',
+                      extra: {
+                          key1: ret.data.imgPath,
+                          soundPath: ret.data.soundPath,
+                          soundlen: ret.data.soundlen,
+                          isPublic: ret.data.isPublic
+                      }
+                  });
+              } else {
+                  /*api.toast({
+                   msg: ret.msg,
+                   location: 'middle'
+                   });*/
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

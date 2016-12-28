@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/Sstyle.css">
+    <title>找回密码</title>
+  </head>
+  <body>
+    <div class="ndy">
+      <div class="indexFom">
+        <p class="tishi1">亲：常来学习，就不会忘记密码啦。</p>
+        <div class="hasright">
+          <input type="password" placeholder="新密码" name="password" class="input-txt"><img src="../image/S05.png" alt="" tapmode onclick="change(this)" class="look inputbug">
+        </div>
+        <div class="hasright">
+          <input type="password" placeholder="再输入一次" name="repassword" class="input-txt"><img src="../image/S05.png" alt="" tapmode onclick="change(this)" class="look inputbug">
+        </div>
+        <p class="tishi2">8-16位，不能有空格，纯数字最少要9位</p>
+        <input type="button" value="完成" tapmode onclick="do_sub()" class="land">
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      //表单问题bug
+      $('.inputbug').click(function () {
+          $(".input-txt").unbind();
+      });
+      var phone, code;
+      function do_sub() {//找回密码提交动作
+          var param = {};
+          var password = $.trim($('input[name=password]').val());
+          var repassword = $.trim($('input[name=repassword]').val());
+          if (password == '') {
+              api.toast({
+                  msg: '请输入新密码',
+                  location: 'middle'
+              });
+              return false;
+          }
+          if (repassword == '') {
+              api.toast({
+                  msg: '请再次输入新密码',
+                  location: 'middle'
+              });
+              return false;
+          }
+          var regex = /^\d{9,16}$|^(?!\d+$)\w{8,16}$/;
+          if (!regex.test(password)) {
+              api.toast({
+                  msg: '密码8-16位,不能有空格,纯数字最少要9位',
+                  location: 'middle'
+              });
+              return false;
+          }
+          if (password != repassword) {
+              api.toast({
+                  msg: '两次密码不一致',
+                  location: 'middle'
+              });
+              return false;
+          }
+      
+          set_token(function (res, error) {
+              if (error) {
+                  api.toast({
+                      msg: error.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (res.state == 'success') {
+                  var param = {};
+                  param.token = res.data.token;
+                  param.mobile = phone;
+                  param.code = code;
+                  param.password = password;
+                  api.showProgress({
+                      title: '处理中',
+                      modal: true
+                  });
+                  ajaxRequest('api/v2.1/changePwdByPhone', 'post', param, function (ret, err) {//007.011 手机找回密码（new）
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          api.toast({
+                              msg: '请用新密码登录',
+                              location: 'middle'
+                          });
+                          setTimeout(function () {
+                              api.setStatusBarStyle({
+                                  style: 'dark'
+                              });
+                              api.closeToWin({
+                                  name: 'root'
+                              });
+                          }, 600);
+                      } else {
+                          var msg = '';
+                          if (err_conf_007[ret.msg]) {
+                              msg = err_conf_007[ret.msg];
+                              api.toast({
+                                  msg: msg,
+                                  location: 'middle'
+                              });
+                          }
+      
+                      }
+                  });
+              } else {
+                  var err = '';
+                  if (!isEmpty(err_conf_007[res.msg])) {
+                      err = err_conf_007[res.msg];
+                      api.toast({
+                          msg: err,
+                          location: 'middle'
+                      });
+                  }
+      
+              }
+          });
+      }
+      function change(obj) {//密码显示或隐藏
+          var iSrc = obj.src;
+          var pos = iSrc.search(/image/g);
+          var lsatSrc = iSrc.substring(pos, iSrc.length);
+          if (lsatSrc == "image/S05.png") {
+              obj.src = "../image/S05-can.png";
+              $(obj).siblings('input').attr('type', 'text');
+          }
+          else {
+              obj.src = "../image/S05.png";
+              $(obj).siblings('input').attr('type', 'password');
+          }
+      }
+      apiready = function () {
+          phone = api.pageParam.phone;
+          code = api.pageParam.code;
+          commonFun.adjustHeight(0.077);
+      };
+    </script>
+  </body>
+</html>

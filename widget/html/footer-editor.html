@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html class="transparent editor-page">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div class="backdrop1"></div>
+    <div onclick="toggleEditor('mini')" class="backdrop opacity"></div>
+    <ul class="set-photo">
+      <li>上传图片</li>
+      <li tapmode="" onclick="getPic('camera',1024,768)">拍照</li>
+      <li tapmode="" onclick="getPic('album',1024,768)">选择本地图片</li>
+    </ul>
+    <div class="editor-bar">
+      <div class="editor-tool"><i onclick="open_edit(this)" class="icon-picture2"></i><i onclick="open_edit(this)" class="icon-cut"></i><i onclick="open_edit(this)" class="icon-recording-o"></i><i onclick="open_edit(this)" class="icon-picture"></i>
+        <textarea onfocus="my_focus()" class="textarea"></textarea>
+        <div tapmode onclick="sub(this)" class="btn btn-success">发布</div>
+        <div class="switch">
+          <p></p><span>私人</span>
+        </div>
+      </div>
+      <div class="newaudio">
+        <div id="audio" class="audio audio-progress"><i class="icon-recording"></i>
+          <div class="val">0</div><i tapmode url="" onclick="playAudioMe(this)" bg="" time="34" class="icon-play"></i>
+        </div>
+        <p class="newaut">按住开始录音</p>
+        <p class="newtip">0.0</p>
+        <button ,tapmode onclick="resetAudio()">重录</button>
+      </div>
+      <div class="newimg">
+        <p>最多可添加五张图片</p>
+        <div class="adchimg">
+          <div tapmode onclick="open_img()" class="addimg"><i class="icon-plus"></i></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/pagejs/footer-editor.js" type="text/javascript"></script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html class="transparent">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div class="backdrop opacity"></div>
+    <ul class="dropdown-menu">
+      <li>最新回复</li>
+      <li>发帖时间</li>
+      <li>精华讨论</li>
+      <li>回复数量</li>
+    </ul>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script>
+      //下拉样式
+      $('.dropdown-menu li').click(function () {
+          var val = $(this).text();
+          api.sendEvent({
+              name: 'sort',
+              extra: {key: val}
+          });
+          api.closeFrame();
+      });
+      $('.backdrop').on('click', function () {
+          api.closeFrame();
+      
+      });
+    </script>
+  </body>
+</html>

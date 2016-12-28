@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div class="new">
+      <div class="newtit">
+        <p tapmode onclick="get_note()" class="cc">请选择课程</p><span></span>
+      </div>
+      <div class="newentry">
+        <input type="text" maxlength="100" placeholder="问答标题" onchange="upperCase()" oninput="upperCase()" onblur="upperCase()" class="lx_title">
+        <textarea placeholder="问题内容" onblur="upperCase()" onchange="upperCase()" oninput="upperCase()" class="lx_content"></textarea>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      function upperCase() {
+          var title = $('.lx_title').val();
+          if (title.length > 100) {
+              api.toast({msg: '标题字数最多可写100个字'});
+          } else {
+              var content = $('.lx_content').val();
+              $api.setStorage('title', title);
+              $api.setStorage('content', content);
+          }
+      }
+      var _abc = null;
+      function newblock(need, newai) {
+          $(need).on('click', function (e) {
+              e.stopPropagation();
+              _abc = $(this);
+              $(this).parent().css({'-webkit-transition': 'bottom .5s', bottom: $(newai).height()});
+          });
+          var dd = $("body *").filter(".new *");
+          dd.on('tap', function (e) {
+              e.stopPropagation();
+              if (_abc == null) {
+                  return false;
+              }
+              _abc.parent().css({bottom: 0});
+              $('body').removeClass('homebody');
+          });
+      }
+      function get_note() {
+          var jsfun = "question_mine();";
+          api.execScript({
+              frameName: 'footer-editor',
+              script: jsfun
+          });
+          /*
+           $api.setStorage('new_question','1');
+           api.openWin({
+           name: 'question-mine',
+           url: 'question-mine.html',
+           pageParam: api.pageParam,
+           delay:200
+           });
+           */
+      }
+      newblock('.needaideo', '.newaudio');
+      newblock('.needimg', '.newimg');
+      apiready = function () {
+          if (!isEmpty(api.pageParam.title)) {
+              $('.lx_title').val(api.pageParam.title);
+              $api.setStorage('title', api.pageParam.title);
+          }
+          if (!isEmpty(api.pageParam.content)) {
+              $('.lx_content').val(api.pageParam.content);
+              $api.setStorage('content', api.pageParam.content);
+          }
+          if ($api.getStorage('new_question') && $api.getStorage('new_question') == 1) {
+              $('.lx_title').html($api.getStorage('title'));
+              $('.lx_content').html($api.getStorage('content'));
+          }
+          if (!isEmpty(api.pageParam.courseName)) {
+              $('.cc').html(api.pageParam.courseName);
+          }
+          if (api.pageParam.name != 'question') {
+              $('.newtit').removeClass('none');
+          }
+      };
+    </script>
+  </body>
+</html>

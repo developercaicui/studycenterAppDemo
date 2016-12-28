@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+    <link rel="stylesheet" type="text/css" href="../css/Sstyle.css">
+  </head>
+  <body>
+    <div id="content" class="catalog"></div>
+    <script id="tpl" type="text/x-dot-template">
+      {{~it.chapters:val:key}}
+      {{ if(val.isLeaf=='false'){ }}
+      <ul class="cache-list">
+        <li class="list">
+          <dl>
+            <dt tapmode onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+              <p>{{=val.chapterTitle}}</p>
+            </dt>
+          </dl>{{~val.children:val2:key2}}
+          {{ if(val2.isLeaf=='false'){ }}
+          <ul class="list">
+            <dl class="haschild">
+              <dt tapmode onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                <p>{{=val2.chapterTitle}}</p>
+              </dt>
+            </dl>{{~val2.children:val3:key3}}
+            <li class="list">
+              <dl class="haschild">
+                <dt tapmode onclick="next('{{=val3.chapterId}}','{{=val3.chapterTitle}}')">
+                  <p>{{=val3.chapterTitle}}</p>
+                </dt>
+              </dl>
+            </li>{{~}}
+          </ul>{{ }else{ }}
+          <ul class="list">
+            <dl>
+              <dt tapmode onclick="next('{{=val2.chapterId}}','{{=val2.chapterTitle}}')">
+                <p>{{=val2.chapterTitle}}</p>
+              </dt>
+            </dl>
+          </ul>{{ } }}
+          {{~}}
+        </li>
+      </ul>{{ }else{ }}
+      <ul class="cache-list">
+        <li class="list">
+          <dl>
+            <dt tapmode onclick="next('{{=val.chapterId}}','{{=val.chapterTitle}}')">
+              <p> {{=val.chapterTitle}}</p>
+            </dt>
+          </dl>
+        </li>
+      </ul>{{ } }}
+      {{~}}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      var courseId = '';
+      function get_data() {
+          var uid = getstor('memberId');
+          var cid = api.pageParam.courseId;
+          var time1 = Date.now();
+          var data = isEmpty($api.getStorage(cid + '-' + uid)) ? '' : $api.getStorage(cid + '-' + uid);
+          if (data && time1 - data['time'] < course_detail_expire) {
+              api.refreshHeaderLoadDone();
+              var course_data = data.data;
+              if (isEmpty(course_data)) {
+                  $('body').addClass('null');
+                  return false;
+              }
+              $('body').removeClass('null');
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              $('#content').html('');
+              $('#content').html(content(course_data[0]));
+              $api.setStorage(cid, course_data[0]);
+              api.parseTapmode();
+          } else {
+              api.showProgress({
+                  title: '加载中',
+                  modal: false
+              });
+              var param = {};
+              param.courseId = api.pageParam.courseId;
+              ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (ret, err) {
+                  api.refreshHeaderLoadDone();
+                  if (err) {
+                     /* api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      })*/
+                      return false;
+                  }
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl);
+                  if (ret && ret.state == 'success') {
+                      if (isEmpty(ret.data)) {
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      courseId = ret.data[0].courseId;
+                      $('body').removeClass('null');
+                      $('#content').html('');
+                      $('#content').html(content(ret.data[0]));
+                      $api.setStorage(cid, ret.data[0]);
+                      var time_now = Date.now();
+                      var data = {
+                          'time': time_now,
+                          'data': ret.data
+                      };
+                      $api.setStorage(cid + '-' + uid, data);
+                      api.parseTapmode();
+                  } else {
+                      /*api.toast({
+                       msg: ret.msg,
+                       location: 'middle'
+                       });*/
+                  }
+              });
+          }
+      }
+      function next(chapterId, title) {
+          if (api.pageParam.type == 'notes') {
+              var param = api.pageParam;
+              param.id = chapterId;
+              param.courseId = api.pageParam.courseId;
+              param.title = title;
+              api.openWin({
+                  name: 'new-notes',
+                  url: 'new-notes.html',
+                  pageParam: param,
+                  delay: 200
+              });
+          }
+          if (api.pageParam.test == 'notes') {
+              api.sendEvent({
+                  name: 'select_chapter',
+                  extra: {chapterId: chapterId, courseId: api.pageParam.courseId, title: title}
+              });
+              api.closeWin();
+          } else if (api.pageParam.test == 'question') {
+              api.sendEvent({
+                  name: 'select_chapter_question',
+                  extra: {chapterId: chapterId, title: title}
+              });
+              api.closeWin();
+          }
+      }
+      apiready = function () {
+          get_data();
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              //getData(1);
+              get_data();
+              //currentPage = 1;
+          });
+      };
+    </script>
+  </body>
+</html>

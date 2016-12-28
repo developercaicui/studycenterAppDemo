@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="api.closeWin()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">新建笔记</div>
+      <div tapmode onclick="newNote()" class="right"><i class="icon-check"></i></div>
+    </div>
+    <div id="editor" style="opacity:.001" class="editor-bar">
+      <div class="editor-tool"><i class="icon-recording-o needaideo"></i><i class="icon-picture needimg"></i>
+        <div class="textarea"></div>
+        <div class="btn btn-success">发布</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      $('.back').live('click', function () {
+          $api.rmStorage('title');
+          $api.rmStorage('content');
+      });
+      var is_define = true;
+      function newNote() {
+          if (is_define == true) {
+              /*api.sendEvent({
+               name: 'new-no'
+               });*/
+              //var res = JSON.stringify({id:id,courseId:courseId,title:api.pageParam.title});
+              var jsfun = "new_note();";
+              api.execScript({
+                  frameName: 'footer-editor',
+                  script: jsfun
+              });
+          } else {
+              api.toast({msg: '内容不可以重复提交', location: 'middle'});
+              return false;
+          }
+      }
+      var courseId, id;//id ->chapterId
+      apiready = function () {
+          courseId = isEmpty(api.pageParam.courseId) ? '' : api.pageParam.courseId;
+          id = isEmpty(api.pageParam.id) ? '' : api.pageParam.id;
+          editorFrame('new-notes-f', 'bar2');
+          api.addEventListener({
+              name: 'select_chapter'
+          }, function (ret, err) {
+              courseId = ret.value.courseId;
+              id = ret.value.chapterId;
+          });
+          $api.rmStorage('content');
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="detail">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="api.closeWin()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">发起讨论</div>
+      <div tapmode onclick="newQuestion()" class="right"><i class="icon-check"></i></div>
+    </div>
+    <div id="editor" style="opacity:.001" class="editor-bar">
+      <div class="editor-tool"><i class="icon-recording-o needaideo"></i><i class="icon-picture needimg"></i>
+        <div class="textarea"></div>
+        <div class="btn btn-success">发布</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      var is_define = true;
+      function newQuestion() {
+          var jsfun = "new_talk();";
+          api.execScript({
+              name: 'new-talk',
+              frameName: 'footer-editor',
+              script: jsfun
+          });
+          /*
+           if(is_define == true){
+           api.sendEvent({
+           name: 'new-talk'
+           });
+           }else{
+           api.toast({msg:'内容不能重复提交',location:'middle'});
+           return false;
+           }
+           */
+      
+      }
+      apiready = function () {
+          $api.rmStorage('content');
+          $api.rmStorage('title');
+          editorFrame('new-talk-f', 'bar4');
+          //新建讨论
+          api.addEventListener({
+              name: 'new-talk-hq'
+          }, function (ret) {
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'iphone';
+              } else if (systype == 'android') {
+                  appType = 'aphone';
+              }
+              /*if(isEmpty($api.getStorage('title'))){
+               api.toast({msg: '标题不能为空',location: 'middle'});
+               return false;
+               }
+               if(isEmpty($api.getStorage('content'))){
+               api.toast({msg: '内容不能为空',location: 'middle'});
+               return false;
+               }*/
+              if ($api.getStorage('title') == '') {
+                  api.toast({msg: '标题不能为空', location: 'middle'});
+                  return false;
+              }
+              if ($api.getStorage('content') == '') {
+                  api.toast({msg: '内容不能为空', location: 'middle'});
+                  return false;
+              }
+              if ($api.getStorage('content').length < 10) {
+                  is_define = true;
+                  api.toast({msg: '内容不能少于10个字', location: 'middle'});
+                  return false;
+              }
+              if (api.pageParam.id == '') {
+                  api.toast({msg: '章节id不能为空', location: 'middle'});
+                  return false;
+              }
+              var param = {};
+              param.token = $api.getStorage('token');
+              param.title = $.trim($.trim($api.getStorage('title')));
+              param.content = $.trim(($api.getStorage('content')));
+              param.imgPath = isEmpty(ret.value.img) ? '' : ret.value.img;
+              param.soundPath = isEmpty(ret.value.soundPath) ? '' : ret.value.soundPath;
+              param.subjectId = api.pageParam.subjectId;//(yes)
+              param.clientType = appType;
+              param.courseId = api.pageParam.course_id; //(yes)
+              param.id = '';
+              param.categoryId = api.pageParam.categoryId; //(yes)
+              param.soundLen = isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration;
+              param.chapterId = api.pageParam.chapterId; //(yes)
+              param.taskId = '';
+              param.taskProgress = 0;
+              param.taskType = '';
+              api.showProgress({
+                  title: '处理中',
+                  modal: true
+              });
+              is_define = false;
+              ajaxRequest('api/studytools/discusssave/v2.1', 'post', param, function (ret, err) {//003.303.1  发布讨论
+                  api.hideProgress();
+                  if (err) {
+                      is_define = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.sendEvent({
+                          name: 'talk_detail_lx'
+                      });
+                      $api.rmStorage('content');
+                      $api.rmStorage('title');
+                      setTimeout(function () {
+                          api.closeWin();
+                      }, 800);
+                  } else {
+                      is_define = true;
+                      /* api.toast({
+                       msg: '接口异常',
+                       location: 'middle'
+                       });*/
+                  }
+              });
+          });
+      };
+    </script>
+  </body>
+</html>

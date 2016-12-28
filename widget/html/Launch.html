@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/z_style.css">
+  </head>
+  <body>
+    <div class="new">
+      <div class="header">
+        <p class="left"><span><img src="../image/nav-arrow.png"></span><span>新建笔记</span></p><span class="delete"><img src="../image/c_icon5.png"></span>
+      </div>
+      <div class="newtit">
+        <p>capter 4 function of main departments in  the business organisation</p><span></span>
+      </div>
+      <div class="newentry">
+        <input type="text" autofocus="autofocus" placeholder="问答标题">
+        <textarea placeholder="笔记内容"></textarea>
+      </div>
+      <div class="editbt">
+        <input type="text" readonly="" unselectable="on" class="needaideo">
+        <input type="text" readonly="" unselectable="on">
+        <div class="newaudio">
+          <div class="audio"><img src="../image/newaudio.png"></div>
+          <p>按住开始录音</p><span>34"</span>
+          <button>重录</button>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/fx.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      window.onresize = function () {
+          document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 720) + 'px';
+          if (100 * (document.documentElement.clientWidth / 720) >= 100) {
+              document.documentElement.style.fontSize = '100px';
+          }
+      };
+      document.documentElement.style.fontSize = 100 * (document.documentElement.clientWidth / 720) + 'px';
+      if (100 * (document.documentElement.clientWidth / 720) >= 100) {
+          document.documentElement.style.fontSize = '100px';
+      }
+      $('.switch').on('tap', function () {
+          if ($('.switch').attr('class') == 'switch switch2') {
+              $('.switch').removeClass('switch2');
+              $('.switch p').removeClass('switchp1');
+              $('.switch span').removeClass('switchpsp');
+              $('.switch span').html('私人');
+          } else {
+              $('.switch').addClass('switch2');
+              $('.switch p').addClass('switchp1');
+              $('.switch span').addClass('switchpsp');
+              $('.switch span').html('公开');
+          }
+      });
+      $('.needaideo').on('tap', function () {
+          //	alert($(this).parent().css('bottom'))
+          if ($(this).parent().css('bottom') == $('.newaudio').height() + 'px') {
+              $(this).parent().animate({bottom: 0}, 500)
+          } else {
+              $(this).parent().animate({bottom: $('.newaudio').height()}, 500)
+          }
+      });
+      $('.left span').on('tap', function (e) {
+          e.preventDefault();
+          api.closeWin({
+              name: 'Launch',
+              url: 'Launch.html'
+          });
+      }, false);
+    </script>
+  </body>
+</html>

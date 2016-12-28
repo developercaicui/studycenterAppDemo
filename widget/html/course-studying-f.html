@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <link rel="stylesheet" href="../css/Sstyle.css">
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{for(var p in it){ }}
+          <div class="course-stydy">
+            <div tapmode data-chaptername="{{=it[p].chapterName}}" data-coursename="{{=it[p].courseName}}" onclick="course_det(this,'course-studying-top','{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].categoryId}}','{{=it[p].subjectID}}')" class="courseStyTp clearfix"><img src="{{=static_url+it[p].courseBkImage}}" class="pic">
+              <ul class="wod">
+                <li class="wodTit">{{=it[p].courseName}}</li>{{ if(!isEmpty(it[p].expirationTime)){ }}
+                <!--li.hasTime 有效期至:{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}} {{=formatDate(it[p].expirationTime,'h')+':'+formatDate(it[p].expirationTime,'m')}}-->
+                <li class="hasTime">有效期至:{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}}</li>{{ } }}
+                <!--|{{ if(!isEmpty(it[p].chapterName)){ }}-->
+                <!--li.wodCot 上次学到:{{=it[p].chapterName}}-->
+                <!--|{{ }else { }}-->
+                <!--li.wodCot 开始学习此课程-->
+                <!--| {{ } }}-->{{ if(!isEmpty(it[p].showProgress) && !isEmpty(it[p].taskTotal)) { }}
+                <li class="wodPro">
+                  <div class="progress-box2">
+                    <div class="progress2">
+                      <div role="progressbar" progress="{{=it[p].progress}}" min="{{=it[p].showProgress}}" max="{{=it[p].taskTotal}}" data class="progress-bar2"></div>
+                    </div>
+                    <div class="progress-val2"></div>
+                  </div>
+                </li>{{ }else{ }}
+                <li class="wodPro">
+                  <div class="progress-box2">
+                    <div class="progress2">
+                      <div role="progressbar" min="0" max="100" data class="progress-bar2"></div>
+                    </div>
+                    <div class="progress-val2"></div>
+                  </div>
+                </li>{{ } }}
+              </ul>
+            </div>
+            <div class="courseStyBm clearfix">
+              <div class="user-center"><img src="{{=static_url+it[p].teacherImage}}" class="toux avatar">
+                <p class="pname">{{=it[p].teacherName}}</p>
+                <p class="phoner">{{=it[p].teacherHonor}}</p>
+              </div>
+            </div>
+          </div>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript" src="../script/pagejs/course-studying-f.js"></script>
+  </body>
+</html>

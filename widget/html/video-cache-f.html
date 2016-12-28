@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <script src="../script/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div style="opacity:.0001; position: absolute; top: 50%;z-index:-1">
+      <div id="svgDown" class="down-progress">
+        <div class="val">2</div>
+      </div>
+    </div>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{~it:value:k }}
+      <div class="cache-course">
+        <div class="cache-list">
+          <dl class="cache-list-title">
+            <dt>
+              <p>{{=it[k].data[0].courseName}}</p>
+              <div class="progress-box2">
+                <div class="progress2">
+                  <div role="progressbar" min="0" max="0" class="progress-bar2"></div>
+                </div>
+                <div class="progress-val2">0%</div>
+              </div>
+            </dt>
+            <dd><i dataid="{{=it[k].data[0].courseId}}" class="icon-check courseid"></i></dd>
+          </dl>
+        </div>{{~it[k].data[0].chapters:val:key}}
+        {{ if(val.isLeaf=='false'){ }}
+        <ul class="cache-list">
+          <li class="list mycaptA {{=is_loadA(val.chapterId)}}">
+            <dl>
+              <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                <p>{{=val.chapterTitle}}</p>
+              </dt>
+              <dd><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i></dd>
+            </dl>{{~val.children:val2:key2}}
+            {{ if(val2.isLeaf=='false'){ }}
+            <ul class="list mycaptB {{=is_loadB(val2.chapterId)}}">
+              <dl class="haschild">
+                <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                  <p>{{=val2.chapterTitle}}</p>
+                </dt>
+                <dd><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i></dd>
+              </dl>{{~val2.children:val3:key3}}
+              {{ var is_show=is_loadC(val3.chapterId);}}
+              <li class="list mycaptC {{=is_show}}">
+                <dl class="haschild">
+                  {{var state=3;}}
+                  {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','{{=val3.chapterId}}');}}
+                  <dt tapmode="tapcolor" onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}','{{=it[k].data[0].courseId}}',this)">
+                    <p>{{=val3.chapterTitle}}</p>
+                  </dt>
+                  <dd><i dataid="{{=val3.chapterId}}" class="icon-check chapterc"></i>{{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+                    <div id="{{=val3.chapterId}}" courseid="{{=it[k].data[0].courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                      <div class="val {{=is_show}}">{{=progress}}</div>
+                    </div>
+                    <div class="down_data none">{{=JSON.stringify(val3.tasks)}}</div>
+                  </dd>
+                </dl>
+              </li>{{~}}
+            </ul>{{ }else{ }}
+            {{ var is_show=is_loadB(val2.chapterId);}}
+            <ul class="list mycaptB {{=is_show}}">
+              {{var state=3;}}
+              {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','');}}
+              <dl>
+                <dt tapmode="tapcolor" onclick="next(2,'{{=key}}','{{=key2}}',-1,'{{=it[k].data[0].courseId}}',this)">
+                  <p>{{=val2.chapterTitle}}</p>
+                </dt>
+                <dd><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i>{{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+                  <div id="{{=val2.chapterId}}" courseid="{{=it[k].data[0].courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                    <div class="val {{=is_show}}">{{=progress}}</div>
+                  </div>
+                  <div class="down_data none">{{=JSON.stringify(val2.tasks)}}</div>
+                </dd>
+              </dl>
+            </ul>{{ } }}
+            {{~}}
+          </li>
+        </ul>{{ }else{ }}
+        <ul class="cache-list">
+          {{var state=3;}}
+          {{var progress=get_dowm('{{=val.chapterId}}','','');}}
+          {{var is_show=is_loadA(val.chapterId);}}
+          <li class="list mycaptA {{=is_show}}">
+            <dl>
+              <dt tapmode="tapcolor" onclick="next(1,'{{=key}}',-1,-1,'{{=it[k].data[0].courseId}}',this)">
+                <p> {{=val.chapterTitle}}</p>
+              </dt>
+              <dd><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i>{{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+                <div id="{{=val.chapterId}}" courseid="{{=it[k].data[0].courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                  <div class="val {{=is_show}}">{{=progress}}</div>
+                </div>
+                <div class="down_data none">{{=JSON.stringify(val.tasks)}}</div>
+              </dd>
+            </dl>
+          </li>
+        </ul>{{ } }}
+        {{~}}
+      </div>{{~}}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/pagejs/video-cache-f.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>

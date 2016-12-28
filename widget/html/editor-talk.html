@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="../css/common-component.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+  </head>
+  <body>
+    <div id="header" class="header">
+      <div tapmode onclick="api.closeWin()" class="left back"><i class="icon-back"></i></div>
+      <div class="left-next">编辑讨论</div>
+      <div onclick="sub();" tapmode class="right"><span class="icon-check editcheck"></span></div>
+    </div>
+    <!--include ../modules/editor-bar-->
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      $('.back').live('click', function () {
+          $api.rmStorage('content');
+      });
+      function sub() {
+          var jsfun = "editor_talk();";
+          api.execScript({
+              name: 'editor-talk',
+              frameName: 'editor-talk-f',
+              script: jsfun
+          });
+          /*api.sendEvent({
+           name: 'editor-talk'
+           });*/
+      
+      
+      }
+      apiready = function () {
+          //editorFrame('editor-talk-f', 'bar4');
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          var hea_h = $('#header').height();
+          api.openFrame({
+              name: 'editor-talk-f',
+              url: 'editor-talk-f.html',
+              bgColor: '#fff',
+              bounces: false,
+              opaque: true,
+              reload: true,
+              vScrollBarEnabled: false,
+              rect: {
+                  x: 0,
+                  y: hea_h,
+                  w: api.winWidth,
+                  h: api.winHeight - hea_h
+              },
+              pageParam: api.pageParam
+          });
+          /*
+           api.addEventListener({
+           name : 'editor-talk-hq'
+           }, function(ret) {
+           var systype = api.systemType;
+           var appType;
+           if (systype == 'ios') {
+           appType = 'iphone';
+           } else if (systype == 'android') {
+           appType = 'aphone';
+           }
+           if($api.getStorage('title') == ''){
+           api.toast({msg:'标题不能为空',location:'moddle'});
+           return false;
+           }
+           if( $api.getStorage('content')== ''){
+           api.toast({msg:'内容不能为空',location:'middle'});
+           return false;
+           }
+           if(api.pageParam.id == ''){
+           api.toast({msg:'id不能为空',location:'middle'});
+           return false;
+           }
+           if(api.pageParam.subjectId == ''){
+           api.toast({msg:'科目id不能为空',location:'middle'});
+           return false;
+           }
+           if(api.pageParam.categoryId == ''){
+           api.toast({msg:'证书id不能为空',location:'middle'});
+           return false;
+           }
+           if(api.pageParam.chapterId == ''){
+           api.toast({msg:'章节id不能为空',location:'middle'});
+           return false;
+           }
+           var param = {
+           token: $api.getStorage('token'),
+           content: $api.getStorage('content'),//(必)
+           title : $api.getStorage('title'),
+           imgPath: isEmpty(ret.value.img) ? '' : ret.value.img,//(必)
+           subjectId: api.pageParam.subjectId, //科目id(必)
+           clientType: appType,// 客户端类型(必)
+           id: api.pageParam.id,//笔记id，如果为空，则为添加，否则为修改
+           categoryId: api.pageParam.categoryId,//讨论证书(必)
+           soundLen: isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration,//(必)
+           chapterId: api.pageParam.chapterId,//章节id
+           taskId:api.pageParam.taskId,
+           taskProgress:api.pageParam.taskProgress,
+           taskType:api.pageParam.taskType,
+           soundPath:isEmpty(ret.value.soundPath) ? '' : ret.value.soundPath
+           };
+           api.showProgress({
+           title : '处理中',
+           modal : false
+           });
+           is_define = false;
+           ajaxRequest('api/studytools/discusssave/v2.1', 'post', param, function (ret, err) {//003.303.1  修改讨论
+           api.hideProgress();
+           if (err) {
+           api.toast({
+           msg: err.msg,
+           location: 'middle'
+           });
+           return false;
+           }
+           if (ret && ret.state == 'success') {
+           api.sendEvent({
+           name: 'talk_detail_f_lx'
+           });
+           is_define = true;
+           $api.rmStorage('content');
+           $api.rmStorage('title');
+           api.closeWin();
+           }
+           });
+           });*/
+      
+      
+      };
+    </script>
+  </body>
+</html>
