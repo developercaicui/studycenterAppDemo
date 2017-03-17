@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="transparent set-info">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>设置</title>
+    <link rel="stylesheet" type="text/css" href="../css/col-lg.css">
+  </head>
+  <body>
+    <div tapmode onclick="closeMe()" class="backdrop"></div>
+    <div type="1" class="tc_box">
+      <div class="noactivate_box">
+        <div class="acca_box cl">
+          <div style="background-image:url(../image/course-slider.jpg)" class="left_box courseImg"></div>
+          <div class="right_box">
+            <h2 id="courseName">您正在激活的课程</h2>
+            <dl class="avatar-dl"><img src="../image/touxiang.png" class="avatar">
+              <dt>佟云云</dt>
+              <dd>哈佛认证资深讲师</dd>
+            </dl>
+            <ul class="cotime">
+              <li>购买时间： 2014年10月22日</li>
+              <li>有效时间： 180天</li>
+            </ul>
+            <div tapmode onclick="closeMe()" class="btn btn-o btn-back"><i class="icon-back"></i><span>暂不激活</span></div>
+            <div tapmode onclick="nextActive()" class="btn btn-o btn-go"><span>激活课程</span><i class="icon-back"></i></div>
+          </div>
+        </div>
+        <div class="course_tab">
+          <div class="btn-group btn-success">
+            <div tapmode onclick="openTab(0)" class="btn active">课程介绍</div>
+            <div tapmode onclick="openTab(1)" class="btn">课程详情</div>
+            <div tapmode onclick="openTab(2)" class="btn">课程动态</div>
+          </div>
+        </div>
+        <div class="course_con">
+          <div id="tb0" class="course_box"></div>
+          <div id="tb1" class="course_box none"></div>
+          <div id="tb2" class="course_box none"></div>
+        </div>
+        <div class="form_box">
+          <select id="setTime" name="setTime">
+            <option selected value="选择考试时间">选择考试时间</option>
+          </select>
+          <script id="tpl" type="text/x-dot-template">
+            <option selected value="选择考试时间">选择考试时间</option>{{ if(!isEmpty(it)) { }}
+            {{ for(var p in it) { }}
+                      <option value="{{=it[p].time/1000}}"> {{=(formatDate(it[p].time/1000,'Y')+'-'+formatDate(it[p].time/1000,'M')+'-'+formatDate(it[p].time/1000,'D'))}}</option>{{ } }}
+            {{ }else { }}
+            <option value="">暂无考试时间</option>{{ } }}
+          </script>
+          <label>
+            <input type="checkbox" name="agree">同意激活
+          </label>
+          <div class="intro">激活课程后即可正常学习，请注意，激活动作无法撤销，此课程一旦激活将在190天后失效，失效后将无法继续学习。请在有效期内合理安排学习进度。</div>
+          <div onclick="sure()" class="btn active_ok">激活</div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript">
+      var data= {
+          "data": [
+              {
+                  "dynamic": "说些什么好呢",
+                  "introduce": "和ACCA其他F阶段课程相比较，F1的课程呈现以下两个特点：第一，纯理论课程，几乎没有计算。第二，ACCA第一门课程，内容较杂，几乎提到之后各科内容。那么，根据F1课程的特点，我请同学们在学习的时候一定要注意：第一，均为客观性试题，均为重点，每个知识点都可以考察，全面复习。第二，课上理解中文讲解，课下去学习对应的英文，并记忆。",
+                  "detailInfo": "<p>< span style =\"color:#337FE5;\">（请各位同学在开始学习前，仔细阅读以下重要指导内容）</span>< / p >< p >< br / >< / p >< p >< b > 授课讲师奚老师寄语：</b >< / p >< p >各位同学：</p >< p >大家好！</p >< p >< br / >< / p >< p >感谢大家选择财萃网ACCA F1 的网课，欢迎大家来到F1的课堂和我一起学习和奋斗，争取顺利通过考试！</p >< p >< br / >< / p >< p >和ACCA其他F阶段课程相比较，F1的课程呈现以下两个特点：</p >< p > 第一，    纯理论课程，几乎没有计算。</p >< p >第二，    ACCA第一门课程，内容较杂，几乎提到之后各科内容。</p >",
+                  "courseId": "ff8080814dad5062014db32051b801a2",
+                  "courseName": "ACCA F1 Accountant in Business"
+                  }
+                  ],
+                  "state": "success",
+                          "msg": ""
+      };
+      function nextActive(){
+          $('.tc_box').attr('type',2);
+      }
+      function closeMe(){
+          api.closeFrame({
+              name: 'set-activate-course'
+          });
+      }
+      function openTab(a){
+          $('#tb'+a).show().siblings().hide();
+          $('.btn-group .btn').removeClass('active').eq(a).addClass('active');
+      }
+      
+      function init(){
+          var courseName=api.pageParam.courseName;
+          var teacherName=api.pageParam.teacherName;
+          var teacherHonor=api.pageParam.teacherHonor;
+          var buyTime='购买时间： '+formatDate(api.pageParam.buyTime,'Y')+'年'+formatDate(api.pageParam.buyTime,'M')+'月'+formatDate(api.pageParam.buyTime,'D')+'日';
+          var effectiveDay='有效时间： '+api.pageParam.effectiveDay+'天';
+          $('.courseImg').css('background-image','url('+static_url+api.pageParam.courseImg+')');
+          $('.avatar-dl dt').html(teacherName);
+          $('.avatar-dl dd').html(teacherHonor);
+          $('.cotime li').eq(0).html(buyTime);
+          $('.cotime li').eq(1).html(effectiveDay);
+          $('.avatar').attr('src',static_url+api.pageParam.teacherImage);
+          $('#courseName').html(courseName);
+          var htm="激活课程后即可正常学习，请注意，激活动作无法撤销，此课程一旦激活将在"+api.pageParam.effectiveDay+"天后失效，失效后将无法继续学习。请在有效期内合理安排学习进度。";//激活此课程同时会激活"+courseName+"串讲课";
+          $('.intro').html(htm);
+          ajaxRequest('api/v2.1/course/courseExtendInfo', 'get', {courseId:api.pageParam.courseId}, function (ret, err) {
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  var dynamic = ret.data[0].dynamic;
+                  var introduce = ret.data[0].introduce;
+                  var detailInfo = ret.data[0].detailInfo;
+                  $('#tb0').html(introduce);
+                  $('#tb1').html(detailInfo);
+                  $('#tb2').html(dynamic);
+              } else {
+                  api.toast({
+                      msg: ret.msg
+                  });
+              }
+          });
+      }
+      function do_active(data){
+      
+          var param = {};
+          param.courseId = api.pageParam.courseId;
+          param.token = $api.getStorage('token');
+          param.isU = api.pageParam.isU;
+          param.orderItemId = data.orderID_item_id;
+          param.examTime = $('select[name=setTime]').val();
+          api.showProgress({
+              style: 'default',
+              title: '激活中',
+              modal: false
+          });
+          ajaxRequest('api/v2/course/active', 'get', param, function (ret, err) {//008.002激活课程
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  api.toast({
+                      msg: '您已成功激活该课程，请前往在学课程查看',
+                      location: 'middle'
+                  });
+                  api.sendEvent({
+                      name: 'fresh_course'
+                  });
+                  api.sendEvent({
+                      name: 'set_learning'
+                  });
+                  api.closeFrame();
+              } else {
+                  api.toast({
+                      msg: '激活失败，请重试！',
+                      lcoation: 'middle'
+                  });
+              }
+          });
+      }
+      //激活
+      function sure(){
+          var data = JSON.parse(api.pageParam.data);
+          if(!$('input[name=agree]').prop('checked')){
+              api.toast({
+                  msg:'请先同意激活',
+                  location:'middle'
+              });
+              return false;
+          }
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.courseId = api.pageParam.courseId;
+          ajaxRequest('api/v2/exam/timeList', 'get', param, function (ret, err) {//004.010 查询课程考试时间
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  if (!isEmpty(ret.data)) {
+                      if ($.trim($('select[name=setTime]').val()) == '选择考试时间'){
+                          api.toast({
+                              msg: '请选择考试时间',
+                              location: 'middle'
+                          });
+                      }else{
+      
+                          do_active(data);
+                      }
+                  }else{
+      
+                      do_active(data);
+                  }
+      
+              }
+          });
+      }
+      function get_exam_time(){
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.courseId =api.pageParam.courseId;
+          ajaxRequest('api/v2/exam/timeList', 'get', param, function (ret, err) {//004.010 查询课程考试时间
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  if(isEmpty(ret.data)){
+      
+                      $('#setTime').unbind();
+                      return false;
+                  }
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl)(ret.data);
+                  $('#setTime').html(content);
+      
+                  api.parseTapmode();
+              }
+          });
+      }
+      
+      apiready=function(){
+          init();
+          get_exam_time();
+      };
+    </script>
+  </body>
+</html>

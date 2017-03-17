@@ -31,7 +31,7 @@ block scripts
                 title: '激活中',
                 modal: true
             });
-            ajaxRequest('/api/business/order/courseActive/v1.0', 'get', param, function (ret, err) {//008.002 课程激活
+            ajaxRequest('api/v2/course/active', 'get', param, function (ret, err) {//008.002 课程激活
                 if (err) {
                     api.toast({
                         msg: err.msg,

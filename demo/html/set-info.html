@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html class="transparent set-info">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>设置</title>
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <div class="set-info-modal">
+      <div id="mask0" class="modal">
+        <div tapmode onclick="api.closeFrame()" class="set_tit">设置<i class="icon-close"></i></div>
+        <ul tapmode onclick="modify()" class="user-info">
+          <li>
+            <div class="left"><img class="avatar"><span class="user_nick"></span></div>
+            <div class="right"><i class="icon-arrow-right"></i></div>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <div class="left">学习提醒</div>
+            <div class="right">
+              <div class="on-off public_box"></div>
+            </div>
+          </li>
+          <li id="setTime" tapmode onclick="setTime()">
+            <div class="left">提醒时间</div>
+            <div id="timeArea" class="right">19:30</div>
+          </li>
+          <li tapmode class="cl chekquality">
+            <div class="left">视频质量</div>
+            <div class="right quality">普通</div>
+          </li>
+          <!--li.cl(tapmode,onclick="clearCache()")
+          //.left 清理杂项缓存
+          //.right.cache
+          -->
+        </ul>
+        <ul>
+          <li tapmode onclick="$('body').attr('show','feedback')">
+            <div class="left">意见反馈</div>
+            <div class="right"><i class="icon-arrow-right"></i></div>
+          </li>
+          <li tapmode onclick="showAbout()">
+            <div class="left">关于财萃</div>
+            <div class="right"><i class="icon-arrow-right"></i></div>
+          </li>
+          <li tapmode onclick="showBase('localBase')" class="none">
+            <div class="left">数据库</div>
+            <div class="right"><i class="icon-arrow-right"></i></div>
+          </li>
+        </ul>
+        <ul class="logout">
+          <li>
+            <div class="left">退出登录</div>
+          </li>
+        </ul>
+        <div class="exit hide">
+          <div class="exit_choice">
+            <div class="exit_cur">你确定要退出吗？</div>
+            <div class="ok_cancel cl">
+              <div class="cancel">取消</div>
+              <div tapmode onclick="out()" class="ok">确定</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="mask" class="modal">
+        <!--头部-->
+        <div class="set_tit">
+          <div tapmode onclick="$('body').attr('show','index')" class="icon-arrow-left"></div><span>意见反馈</span>
+          <div class="right">
+            <div tapmode onclick="sub()" class="send_btn">发送</div>
+          </div>
+        </div>
+        <ul>
+          <textarea id="textarea" name="content" placeholder="请输入反馈，我们将为您不断改进"></textarea>
+        </ul>
+      </div>
+      <div id="mask2" class="modal">
+        <!--头部-->
+        <div class="set_tit">
+          <div id="mask2-back" tapmode onclick="$('body').attr('show','index')" class="icon-arrow-left"></div><span>关于财萃课堂</span>
+        </div>
+        <div class="erweima">
+          <div class="bb"><img src="../image/logocircle.png">
+            <p class="about_title">财萃课堂</p>
+            <p class="about_words">版本号：<span id="vers">3.1.1</span>copyright@caicui.com</p>
+          </div>
+          <div class="wx none"><img src="../image/erweima.jpg">
+            <p class="about_title">财萃课堂</p>
+            <p class="about_words">微信号：caicuiacca</p>
+          </div>
+        </div>
+        <ul class="list">
+          <!--li(tapmode,onclick = 'openurl("http://www.caicui.com/")')-->
+          <!--    span 官方网站-->
+          <li tapmode onclick="togWx()"><span>微信公众号</span></li>
+          <li tapmode onclick="openurl(&quot;http://weibo.com/icaicui&quot;)"><span>官方微博</span></li>
+          <li tapmode onclick="update()" class="update none"><span>在线升级</span></li>
+          <li tapmode onclick="praise()" class="none"><span>给财萃课堂好评</span></li>
+        </ul>
+      </div>
+      <div id="mask3" class="modal">
+        <!--头部-->
+        <div class="set_tit">
+          <div tapmode onclick="$('body').attr('show','index')" class="icon-arrow-left"></div><span>视频质量</span>
+        </div>
+        <ul class="list sel_quality">
+          <li class="active">
+            <div class="left">标清</div>
+            <div class="right"><i class="icon-check"></i></div>
+          </li>
+          <li>
+            <div class="left">高清</div>
+            <div class="right"><i class="icon-check"></i></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      //检查更新
+      function update() {
+          var mam = api.require('mam');
+          mam.checkUpdate(function (ret, err) {
+              if (ret) {
+                  var result = ret.result;
+                  if (!ret.status) {
+                      api.toast({
+                          msg: '版本检测失败！',
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (!result.update) {
+                      api.toast({
+                          msg: '已经是最新版本！',
+                          location: 'middle'
+                      });
+                  } else {
+                      api.openApp({
+                          androidPkg: 'android.intent.action.VIEW',
+                          mimeType: 'text/html',
+                          uri: result.source
+                      }, function (ret, err) {
+                      });
+                  }
+              } else {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+      $(function () {
+          $('body').attr('show', 'index');
+      });
+      function showAbout(){
+          $('body').attr('show','about');
+          $('.erweima').removeClass('xswx');
+      }
+      function togWx () {
+          $('.erweima').toggleClass('xswx');
+      }
+      function showBase(name) {
+          var reload = true;
+          api.openWin({
+            name : name,
+            url : name + '.html',
+            delay : 200,
+            reload : reload
+          });
+      }
+      
+      var is_notice;
+      
+      function modify() {
+          api.openWin({
+              name: 'modify',
+              url: 'modify.html',
+              delay: 200
+          });
+      }
+      function praise() {
+          var systemType = api.systemType;  // 比如: ios
+          if (systemType == 'ios') {
+              api.openApp({
+                  iosUrl: 'http://www.caicui.com/mc/examReport/add?token=' + $api.getStorage('token')
+              });
+          } else {
+              api.openApp({
+                  androidPkg: 'android.intent.action.VIEW',
+                  mimeType: 'text/html',
+                  uri: 'http://www.caicui.com/mc/examReport/add?token=' + $api.getStorage('token')
+              }, function (ret, err) {
+              });
+          }
+      }
+      function out() {//退出登录
+          ajaxRequest('api/v2.1/logout', 'post', {token: $api.getStorage('token')}, function (ret, err) {//007.010 会员退出
+          });
+          $api.rmStorage('token');
+          $api.rmStorage('mine');
+          $api.rmStorage('outh');
+          $api.rmStorage('password');
+          $api.rmStorage('notice_time');
+          $api.rmStorage('open_notice');
+          $api.rmStorage('center_num');
+          api.sendEvent({
+              name: 'closeFrameAll'
+          });
+          api.sendEvent({
+              name: 'to_login'
+          });
+          api.closeFrame();
+      }
+      function clearCache() {//清除缓存
+          api.clearCache(
+                  function (ret, err) {
+                      $('.cache').html('0.00MB');
+                      api.toast({
+                          msg: '清除成功',
+                          location: 'middle'
+                      });
+                  }
+          );
+      }
+      apiready = function () {
+      
+      
+          $('#vers').text(api.appVersion);
+      
+          if (api.systemType == 'android') {
+              $('.update').removeClass('none');
+          }
+          api.getCacheSize(//获取缓存
+                  function (ret, err) {
+                      var size = ret.size;
+                      var M = size / 1000 / 100;
+                      var cache = M.toFixed(2);
+                      $('.cache').html(cache + 'MB');
+                  }
+          );
+          var quality = isEmpty($api.getStorage('quality')) ? '标清' : $api.getStorage('quality');
+          $('.quality').html(quality);
+          $('.sel_quality li').removeClass('active');
+          var n;
+          switch (quality) {
+              /*case '普通':
+                  n = 0;
+                  break;*/
+              case '标清':
+                  n = 1;
+                  break;
+              case '高清':
+                  n = 2;
+                  break;
+              default :
+                  n=1;
+                  $api.getStorage('quality','标清');
+                  break;
+          }
+      
+          $('.sel_quality li').eq(n-1).addClass('active');
+      
+      
+          var nickName = get_loc_val('mine', 'nickName');
+          var avatar = static_url + get_loc_val('mine', 'avatar');
+      
+          $('.user_nick').html(nickName);
+          $('.avatar').attr('src', avatar+'?s='+Math.random());
+      
+          var notice = isEmpty($api.getStorage('open_notice')) ? 0 : $api.getStorage('open_notice');
+         // $(this).addClass('private_box').removeClass('public_box');
+          if (notice == 1) {
+              $('.on-off').addClass('public_box').removeClass('private_box');
+              var newTimer = $api.getStorage('notice_time');
+              var val = isEmpty(newTimer) ? '19:30' : newTimer;
+              clearInterval(push_timer);
+              $('#setTime').removeClass('none');
+              $('#timeArea').html(val);
+              init_push();
+              is_notice = 1;
+          } else {
+              $('#timeArea').html('19:30');
+              $('#setTime').addClass('none');
+              $('.on-off').addClass('private_box').removeClass('public_box');
+              clearInterval(push_timer);
+              is_notice = 0;
+          }
+      
+          api.addEventListener({
+              name: 'modify'
+          }, function (ret, err) {
+              var nickName = get_loc_val('mine', 'nickName');
+              var avatar = static_url + get_loc_val('mine', 'avatar') + '?s=' + Math.random();
+              $('.user_nick').html(nickName);
+              $('.avatar').attr('src', avatar);
+          });
+      };
+      
+      
+      
+      var chekquality;
+      
+      $('#mask3 li').on('click', function () {
+          var quality = $(this).find('.left').html();
+          $api.setStorage('quality', quality);
+          $('.chekquality').find('.quality').html(quality);
+          $('body').attr('show','index');
+          $(this).addClass('active').siblings().removeClass('active');
+      });
+      
+      //学习提醒开
+      // 启和关闭
+      $('.on-off').on('click', function () {
+          if ($(this).hasClass('public_box')) {//关闭
+              $(this).addClass('private_box').removeClass('public_box');
+              clearInterval(push_timer);
+              $('#timeArea').parent().addClass('none');
+              $('#setTime').addClass('none');
+              is_notice = 0;
+              $api.setStorage('open_notice', 0);
+              $api.setStorage('notice_time', '');
+          }
+          else {//开启
+              var newTimer = $api.getStorage('notice_time');
+              var val = isEmpty(newTimer) ? '19:30' : newTimer;
+              $(this).addClass('public_box').removeClass('private_box');
+              clearInterval(push_timer);
+              $('#setTime').removeClass('none');
+              $('#timeArea').html(val).parent().removeClass('none');
+              $api.setStorage('open_notice', 1);
+              init_push();
+              is_notice = 1;
+          }
+          $api.setStorage('is_notice', is_notice);
+      });
+      
+      $('.logout').on('click', function () {
+          $('.exit').removeClass('hide');
+      });
+      
+      $('.cancel').on('click', function () {
+          $('.exit').addClass('hide');
+      });
+      
+      $('.chekquality').on('click', function () {
+          $('body').attr('show', 'video');
+      });
+      
+      var is_ok = true;
+      
+      function sub() {
+          var content = $.trim($('textarea[name=content]').val());
+          if (content == '') {
+              api.toast({
+                  msg: '意见内容不能为空',
+                  location: 'middle'
+              });
+              return false;
+          }
+          //var title=content.substr(0,20);
+          var nickName = get_loc_val('mine', 'nickName');
+          var param = {};
+          var systype = api.systemType;
+          param.contact = "来源:" + systype;
+          param.content = content;
+          param.title = 'ipad手机留言';
+          param.nickName = nickName;
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '发表中',
+              modal: true
+          });
+          if (is_ok) {
+              is_ok = false;
+              ajaxRequest('api/v2/lessonMessage/addLMG', 'post', param, function (ret, err) {//002.003 留言接口
+                  api.hideProgress();
+                  if (err) {
+                      is_ok = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({
+                          msg: '发表成功',
+                          location: 'middle'
+                      });
+                      setTimeout(function () {
+                          api.closeFrame();
+                      }, 600);
+                  } else {
+                      is_ok = true;
+                      api.toast({
+                          msg: '发表失败，请重试！',
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
+      }
+      //时间值不够10的在数字前面补0函数
+      function addZero(value) {
+          return parseInt(value) < 10 ? "0" + value : parseInt(value);
+      }
+      function setTime() {
+          if (is_notice == 0) {
+              return false;
+          }
+          var date = new Date(Date.now());
+          var h = extra(date.getHours());
+          var m = extra(date.getMinutes());
+          var timeArea = document.getElementById('timeArea');
+          api.openPicker({
+              type: 'time',
+              date: h + ':' + m,
+              title: '选择时间'
+          }, function (ret, err) {
+              var hour = ret.hour;
+              var minute = ret.minute;
+              var newTimer = addZero(hour) + ":" + addZero(minute);
+              timeArea.innerHTML = newTimer;
+              var val = isEmpty(newTimer) ? '19:30' : newTimer;
+              $api.setStorage('notice_time', val);
+              var notice = isEmpty($api.getStorage('open_notice')) ? 0 : $api.getStorage('open_notice');
+              clearInterval(push_timer);
+              if (notice == 1) {
+                  is_notice = 1;
+                  $('#timeArea').html(val).removeClass('none');
+                  $('#setTime').removeClass('none');
+                  init_push();
+              } else {
+                  is_notice = 0;
+                  $('#setTime').removeClass('none');
+                  $('#timeArea').addClass('none');
+              }
+          });
+      }
+      
+      function openurl(url) {
+          var systemType = api.systemType;  // 比如: ios
+          if (systemType == 'ios') {
+              api.openApp({
+                  iosUrl: url
+              });
+          } else {
+              api.openApp({
+                  androidPkg: 'android.intent.action.VIEW',
+                  mimeType: 'text/html',
+                  uri: url
+              }, function (ret, err) {
+              });
+          }
+      }
+      
+      
+      
+      var text = document.getElementById("textarea");
+      var autoTextarea = function (elem, extra, maxHeight) {
+          extra = extra || 0;
+          var isFirefox = !!document.getBoxObjectFor || 'mozInnerScreenX' in window,
+                  isOpera = !!window.opera && !!window.opera.toString().indexOf('Opera'),
+                  addEvent = function (type, callback) {
+                      elem.addEventListener ?
+                              elem.addEventListener(type, callback, false) :
+                              elem.attachEvent('on' + type, callback);
+                  },
+                  getStyle = elem.currentStyle ? function (name) {
+                      var val = elem.currentStyle[name];
+                      if (name === 'height' && val.search(/px/i) !== 1) {
+                          var rect = elem.getBoundingClientRect();
+                          return rect.bottom - rect.top -
+                                  parseFloat(getStyle('paddingTop')) -
+                                  parseFloat(getStyle('paddingBottom')) + 'px';
+                      }
+                      return val;
+                  } : function (name) {
+                      return getComputedStyle(elem, null)[name];
+                  },
+                  minHeight = parseFloat(getStyle('height'));
+          elem.style.resize = 'none';
+          var change = function () {
+              var scrollTop, height,
+                      padding = 0,
+                      style = elem.style;
+              if (elem._length === elem.value.length) return;
+              elem._length = elem.value.length;
+              if (!isFirefox && !isOpera) {
+                  padding = parseInt(getStyle('paddingTop')) + parseInt(getStyle('paddingBottom'));
+              }
+              scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+              elem.style.height = minHeight + 'px';
+              if (elem.scrollHeight > minHeight) {
+                  if (maxHeight && elem.scrollHeight > maxHeight) {
+                      height = maxHeight - padding;
+                      style.overflowY = 'auto';
+                  } else {
+                      height = elem.scrollHeight - padding;
+                      style.overflowY = 'hidden';
+                  }
+                  style.height = height + extra + 'px';
+                  scrollTop += parseInt(style.height) - elem.currHeight;
+                  document.body.scrollTop = scrollTop;
+                  document.documentElement.scrollTop = scrollTop;
+                  elem.currHeight = parseInt(style.height);
+              }
+          };
+          addEvent('propertychange', change);
+          addEvent('input', change);
+          addEvent('focus', change);
+          change();
+      };
+      //autoTextarea(text);// 调用
+    </script>
+  </body>
+</html>

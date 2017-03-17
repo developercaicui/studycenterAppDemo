@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的笔记-笔记列表头部</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMyNote()" class="left"><i class="icon-arrow-left"></i><span>章节列表</span></div>
+      <div class="center"><b></b></div>
+      <div tapmode onclick="open_next()" class="right"><span>新建</span><i class="icon-plus"></i></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function open_next(){
+          api.openFrame({
+              delay:200,
+              name: 'my-note-edit',
+              url:  'my-note-edit.html',
+              bgColor: '#fff',
+              rect: {
+                  x: leftLw,
+                  y: 0,
+                  w: api.winWidth - leftLw,
+                  h: headLh
+              },
+              pageParam:api.pageParam,
+              bounces:false
+          });
+      }
+      function closeMyNote(){
+          api.setFrameGroupAttr({
+              name : 'homeFrameGroup',
+              hidden : false
+          });
+          var jsfun = 'getData(1);';
+          api.execScript({
+              name: 'root',
+              frameName: 'my-note',
+              script: jsfun
+          });
+          api.sendEvent({
+              name: 'closeFrameAll'
+          });
+          api.closeFrame({
+              name: 'my-note-list-f'
+          });
+          api.closeFrame();
+      }
+      apiready = function(){
+          $api.rmStorage('content');
+          $api.rmStorage('img');
+          $api.rmStorage('lx_duration');
+          $api.rmStorage('soundPath');
+          $api.rmStorage('isPublic');
+          $api.rmStorage('lx_lens');
+          $api.rmStorage('lx_soundPath');
+          $('.center b').html(api.pageParam.title);
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+              api.openFrame({
+                  delay:200,
+                  name: 'my-note-list-f',
+                  url:  'my-note-list-f.html',
+                  bgColor: '#fff',
+                  rect: {
+                      x: leftLw,
+                      y: headLh,
+                      w: api.winWidth - leftLw,
+                      h: api.winHeight - headLh
+                  },
+                  reload: true,
+                  pageParam:api.pageParam,
+                  bounces:true
+              });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame({
+                  name: 'my-note-list-f'
+               });
+              api.closeFrame();
+          });
+      
+      };
+    </script>
+  </body>
+</html>

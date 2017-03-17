@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>意见反馈</title>
+    <link rel="stylesheet" type="text/css" href="../css/cckt.css">
+  </head>
+  <body>
+    <div id="mask">
+      <div class="setup">
+        <!--头部-->
+        <div class="setup_header clearfix">
+          <div tapmode onclick="lx()" class="header_l icon-arrow-left"></div>
+          <div tapmode onclick="sub()" class="header_r send">发送</div>
+          <div class="header_c">意见反馈</div>
+        </div>
+        <!--内容区-->
+        <div class="input-txt">
+          <textarea name="content" placeholder="请输入反馈，我们将为您不断改进"></textarea>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      var is_ok = true;
+      function sub(){
+          var content= $.trim($('textarea[name=content]').val());
+          if(content==''){
+              api.toast({
+                  msg:'意见内容不能为空',
+                  location:'middle'
+              });
+              return false;
+          }
+          //var title=content.substr(0,20);
+          var nickName=get_loc_val('mine','nickName');
+          var param={};
+          var systype = api.systemType;
+          param.contact="来源:"+systype;
+          param.content=content;
+          param.title='ipad手机留言';
+          param.nickName=nickName;
+          param.token=$api.getStorage('token');
+          api.showProgress({
+              title: '发表中',
+              modal: true
+          });
+      
+          if(is_ok){
+              is_ok=false;
+              ajaxRequest('api/v2/lessonMessage/addLMG', 'post', param, function (ret, err) {//002.003 留言接口
+                  api.hideProgress();
+                  if (err) {
+                      is_ok=true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({
+                          msg: '谢谢您的反馈',
+                          location: 'middle'
+                      });
+                      setTimeout(function(){
+                            api.closeFrame();
+                      },600);
+                  } else {
+                      is_ok = true;
+                      api.toast({
+                          msg: '发表失败，请重试！',
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
+      }
+      function lx(){
+          api.closeFrame();
+      }
+    </script>
+  </body>
+</html>

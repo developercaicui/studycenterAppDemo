@@ -1,0 +1,34 @@
+
+<div class="slider-menu"><img src="../image/touxiang.png" class="avatar"/>
+  <ul>
+    <li tapmode="active" onclick="set_index(0)" class="active"><i class="icon icon-dashboard"></i>
+      <p>学习中心</p>
+    </li>
+    <li tapmode="active" onclick="set_index(1)"><i class="icon icon-course"></i>
+      <p>在线课程</p>
+    </li>
+    <li tapmode="active" onclick="set_index(2)"><i class="icon icon-edit3"></i>
+      <p>我的笔记</p>
+    </li>
+    <li tapmode="active" onclick="set_index(3)"><i class="icon icon-question"></i>
+      <p>我的问答</p>
+    </li>
+    <li tapmode="active" onclick="set_index(4)"><i class="icon icon-comments2"></i>
+      <p>我的讨论</p>
+    </li>
+    <li tapmode="active" onclick="set_index(5)"><i class="icon icon-download2"></i>
+      <p>缓存课程</p>
+    </li>
+    <li tapmode="active" onclick="set_index(6)"><i class="icon icon-cog"></i>
+      <p>设置</p>
+    </li>
+  </ul>
+</div>
+<script type="text/javascript">
+  function set_index(a) {
+     api.sendEvent({
+          name: 'hashomepage',
+          extra: {sethomepage: a}
+     });
+  }
+</script>

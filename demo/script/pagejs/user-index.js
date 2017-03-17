@@ -240,10 +240,30 @@ function get_ability(flag) {
             $('.user-index-tit').removeClass('none');
         }
     });
+    // var able = {
+    //         "ranking" : 3249, //排名
+    //         "total" : 5688, //做过的试题总数
+    //         "error" : 150, //曾经做错的试题总数
+    //         "chapter" : 66, //章节错题百分比10%
+    //         "intelligent" : 10, //智能组卷错题百分比8%
+    //         "knowledgePoint" : 20, //考点联系错题百分比10%
+    //         "real" : 40, //历年真题错题百分比10%
+    //         "simulated" : 20 //模拟错题百分比10%
+    //     };
+    // var tpl = $('#tpl_able').html();
+    // var content = doT.template(tpl);
+    // $('#content_able').html(content(able));
+    // $('.ranking').html(able.ranking);
+    // set_circle(able.chapter, 'rgb(0, 161, 133)');
+    // get_line_process();
+
+    // $('.user-index-pover').removeClass('none');
+    // $('.user-index-tit').removeClass('none');
+    // return false;
 }
 
 function get_used(flag) {
-    if (is_debug) {
+    /*if (is_debug) {
         var used = [{
             "type": "看课",
             "value": 20
@@ -324,7 +344,41 @@ function get_used(flag) {
             //});
             //return false;
         }
-    });
+    });*/
+    var used = [{
+            "type" : "看课",
+            "value" : 40
+        }, {
+            "type" : "笔记",
+            "value" : 10
+        }, {
+            "type" : "问答",
+            "value" : 10
+        }, {
+            "type" : "做题",
+            "value" : 30
+        }, {
+            "type" : "讨论",
+            "value" : 10
+        }];
+        var obj = [];
+        var n = 0;
+        for (var p in used) {
+            obj[p] = {};
+            obj[p].label = used[p].type;
+            n += used[p].value;
+            obj[p].value = used[p].value;
+        }
+        if (!is_loaded) {
+            get_used_circle(obj, n);
+        }
+        var tpl = $('#tpl_used').html();
+        var content = doT.template(tpl);
+        $('#content-used').html(content({
+            data: obj,
+            n: n
+        }));
+        return false;
 }
 
 function get_used_avg(flag) {
@@ -395,6 +449,26 @@ function get_used_avg(flag) {
             //return false;
         }
     });
+    // var res = [{
+    //         "self" : [//个人最近15天每天的学习用时
+    //         1, 3, 7, 3, 5, 7, 5, 8, 1, 5, 7, 4, 2, 3, 4],
+    //         "average" : [//所有人最近15天每天的学习用时
+    //         10, 4, 5, 6, 7, 3, 4, 12, 5, 4, 2, 6, 8, 5, 6],
+    //         "date" : ["2015-09-01", "2015-09-02", "2015-09-03", "2015-09-04", "2015-09-05", "2015-09-06", "2015-09-07", "2015-09-08", "2015-09-09", "2015-09-10", "2015-09-11", "2015-09-12", "2015-09-13", "2015-09-13", "2015-09-13"]
+    //     }];
+    //     var date = res[0]['date'];
+    //     var self = [];
+    //     var average = [];
+    //     var mydate = [];
+    //     for (var p in date) {
+    //         if (p < 7) {
+    //             mydate.push(date[p].split('-')[1] + '.' + date[p].split('-')[2]);
+    //             self.push(res[0]['self'][p]);
+    //             average.push(res[0]['average'][p]);
+    //         }
+    //     }
+    //     get_count(mydate, self, average);
+    //     return false;
 }
 
 function get_study(flag) {

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="bg-hasedit">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>问答详情</title>
+  </head>
+  <body>
+    <div id="content1"></div>
+    <div id="content2" class="reply-list"></div>
+    <script id="tpl_con1" type="text/x-dot-template">
+          <dl class="cont-list">
+            <dt><img src="{{=static_url+it.headImg}}" class="avatar"></dt>
+            <dd>
+              <div class="name"><span>{{=it.nikeName}}</span>{{var memberId = get_loc_val('mine', 'memberId');}}
+                {{ if(it.memberId == memberId){ }}
+                <div tapmode onclick="addAnswer(this)" isadd="yes" class="add-answer"><i>...</i><span>问题补充</span></div>{{ } }}
+              </div>
+              <div class="title">{{=it.title}}</div>
+              <div class="describe">{{=!isEmpty(it.content)?it.content:''}}</div>{{ if(!isEmpty(it.soundPath) && it.soundlen>0 && it.soundlen != null) { }}
+              <div tapmode url="{{=static_url+it.soundPath}}" onclick="playAudio(this)" bg time="{{=it.soundlen}}" class="voice-player"></div>{{ } }}
+              {{ if(!isEmpty(it.imgPath)) { }}
+              <ul class="pic-group">
+                {{ var imgPath=it.imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2) { }}
+                <li style="background-image:url({{=static_url + imgPath[i]}})" tapmode onclick="openImageBrower('{{=it.imgPath}}','{{=i}}')"></li>
+                <!--img(src="{{=static_url + imgPath[i]}}")-->{{ } }}
+                {{ } }}<b>共 {{=it.imgPath.split(',').length}} 张</b>
+              </ul>{{ } }}
+              {{if(!isEmpty(it.supply)){   }}
+              {{for(var p in it.supply){ }}
+              <div class="add_question"><span>问题补充:</span><span>{{=it.supply[p].content}}<span>{{=formatDate(it.supply[p].updateTime,'M')+'-'+formatDate(it.supply[p].updateTime,'D')}} {{=formatDate(it.supply[p].updateTime,'h')+':'+formatDate(it.supply[p].updateTime,'m')}}</span></span></div>{{if(!isEmpty(it.supply[p].soundPath) && it.supply[p].soundlen>0 && it.supply[p].soundlen != null  ){ }}
+              <div tapmode url="{{=static_url+it.supply[p].soundPath}}" onclick="playAudio(this)" bg time="{{=it.supply[p].soundlen}}" class="voice-player"></div>{{ }  }}
+              {{ if(!isEmpty(it.supply[p].imgPath)){ }}
+              <ul class="pic-group">
+                {{ var imgPath=it.supply[p].imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2) { }}
+                <li style="background-image:url({{=static_url + imgPath[i]}})" tapmode onclick="openImageBrower('{{=it.supply[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{ if(imgPath.length>=3) { }}<b>共 {{=it.supply[p].imgPath.split(',').length}}张</b>{{ } }}
+              </ul>{{ } }}
+              {{ } }}
+              {{ } }}
+              <div class="footer">
+                <div class="count"><i class="icon-replys"></i><span>{{=isEmpty(it.replyCount)?'0':it.replyCount }}</span></div>
+                <div class="time"><span>{{ if(!isEmpty(it.updateTime))  { }}{{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it.updateTime))  { }}{{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name">{{if(it.taskprogress && parseInt(it.taskprogress) && !isEmpty(it.taskType)){ }}<span class="tag-video-time"><i class="icon-play-o"></i><span tapmode onclick="jump_task('{{=it.taskprogress}}','{{=it.courseId}}','{{=it.taskId}}')">{{=formatType(it.taskType,it.taskprogress)}}</span></span>{{ } }}
+                  {{ if(it.coursename && it.coursename != null){ }}<span class="course-tit"> {{=it.coursename}}</span>{{ } }}
+                </div>
+              </div>
+            </dd>
+          </dl>
+    </script>
+    <script id="tpl_con2" type="text/x-dot-template">{{for(var t in it){ }}
+          <dl class="cont-list">
+            <dt><img src="{{=static_url+it[t].headImg}}" class="avatar"></dt>
+            <dd>
+              <div class="name"><span>{{=it[t].nikeName}}</span>
+                <div class="time"><span>{{ if(!isEmpty(it[t].updateTime)) { }}{{=formatDate(it[t].updateTime,'Y')+'-'+formatDate(it[t].updateTime,'M')+'-'+formatDate(it[t].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[t].updateTime)) { }}{{=formatDate(it[t].updateTime,'h')+':'+formatDate(it[t].updateTime,'m')}} {{ } }}</span></div>
+              </div>
+              <div class="describe">{{=!isEmpty(it[t].content)?it[t].content:''}}</div>{{ if(!isEmpty(it[t].soundPath) && it[t].soundlen>0 && it[t].soundlen != null){ }}
+              <div tapmode url="{{=static_url+it[t].soundPath}}" onclick="playAudio(this)" bg time="{{=it[t].soundlen}}" class="voice-player"></div>{{ } }}
+              {{if(!isEmpty(it[t].imgPath)){ }}
+              <ul class="pic-group">
+                {{ var imgPath=it[t].imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2){ }}
+                <li style="background-image:url({{=static_url + imgPath[i]}})" tapmode onclick="openImageBrower('{{=it[t].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{ if(imgPath.length>=3) { }}<b>共 {{=it[t].imgPath.split(',').length}} 张</b>{{ } }}
+              </ul>{{ } }}
+            </dd>
+          </dl>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      //补充问题按钮样式
+      function addAnswer(obj){
+          if($(obj).attr('isadd')=='yes'){
+              $(obj).attr('isadd','no');
+              //                var jsfun = "cancel_answer();";
+              //                api.execScript({
+              //                    name: 'root',
+              //                    frameName: 'footer-editor',
+              //                    script: jsfun
+              //                });
+              var _fw = $('body').width();
+              api.openFrame({
+                  delay: 200,
+                  name: 'footer-answer',
+                  url: 'footer-answer.html',
+                  rect: {
+                      x: api.winWidth - _fw,
+                      y: api.winHeight - footSh,
+                      w: _fw,
+                      h: footSh
+                  },
+                  pageParam: api.pageParam,
+                  bounces: false
+              });
+          }else{
+              $(obj).attr('isadd','yes');
+              api.closeFrame({
+                  name: 'footer-answer'
+              });
+          }
+      }
+      var id = '';
+      apiready = function () {
+          var memberId = get_loc_val('mine', 'memberId');
+          if(memberId == api.pageParam.memberId){
+              $('.add-answer').hide();
+          }
+      
+      
+          id = api.pageParam.id;
+          api.addEventListener({
+              name: 'addAnswerStyle'
+          }, function (ret) {
+              $('.qscbtn').removeClass('qscbtnsel');
+              num = 0;
+              api.sendEvent({
+                  name: 'numchange',
+                  extra: {key1: num}
+              });
+          });
+          getData(1,id);
+          var currentPage = 1;
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              getData(1,id);
+              currentPage = 1;
+          });
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+                  currentPage++;
+                  getData(currentPage,id);
+          });
+          api.addEventListener({
+              name: 'answer-detail-lx'
+          }, function (ret) {
+              $('.add-answer').attr('isadd','yes');
+              getData(1,id);
+          });
+      };
+      
+      var pageNum = 10;
+      var total = '';
+      var no_loaded=true;
+      function getData(page, id) {
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.id = id;
+          param.pageNo = page;
+          param.pageSize = pageNum;
+          if(page==1&&show_pro&&no_loaded){
+              api.showProgress({
+                  title:'加载中',
+                  modal:false
+              });
+          }
+          ajaxRequest('api/studytools/questiondetail/v2.1', 'get', param, function (ret, err) {//003.207 问题详情
+              if (show_pro && no_loaded) {
+                  api.hideProgress();
+              }
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  no_loaded=false;
+                  var tpl_con1 = $('#tpl_con1').html();
+                  var content1 = doT.template(tpl_con1);
+                  var tpl_con2 = $('#tpl_con2').html();
+                  var content2;
+                  if (isEmpty(ret.data.id)) {
+                      is_loaded = true;
+                  }
+                  if(!isEmpty(ret.data.replys.length)&&ret.data.replys.length>0) {
+                      api.sendEvent({
+                          name: 'answerChange'
+                      });
+                  }
+                  if(page == 1){
+                      $('#content1').html(content1(ret.data));
+                      if (!isEmpty(ret.data.replys.length)&&ret.data.replys.length > 0) {
+                          content2 = doT.template(tpl_con2);
+                          $('#content2').html(content2(ret.data.replys));
+                      }
+                  }else{
+                      if (!isEmpty(ret.data.replys.length)&&ret.data.replys.length > 0) {
+                          content2 = doT.template(tpl_con2);
+                          $('#content2').append(content2(ret.data.replys));
+                      }
+                  }
+                  audioDom();
+              }
+          });
+      }
+      
+      
+      
+                                                          
+    </script>
+  </body>
+</html>

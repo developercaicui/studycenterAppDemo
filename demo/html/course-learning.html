@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">    
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">    
+    <meta name="format-detection" content="telephone=no">    
+    <link rel="stylesheet" type="text/css" href="../css/api.css">    
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">    
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">    
+    <script type="text/javascript" src="../script/api.js"></script>    
+    <script type="text/javascript" src="../script/zepto.js"></script>    
+    <title>在线课程-在学课程</title>    
+    <link rel="stylesheet" type="text/css" href="../css/col-lg.css">
+  </head>  
+  <body>
+    <ul id="content" class="course-pic-list learning"></ul>    
+    <script id="tpl" type="text/x-dot-template">
+      {{for(var p in it) { }}
+      <li tapmode data-coursename="{{=it[p].courseName}}" data-chapterName="{{=it[p].chapterName}}" onclick="openCourse(this,'{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].subjectID}}','{{=it[p].categoryId}}','{{=it[p].subjectName}}','{{=it[p].categoryName}}')">
+      <div style="background-image:url({{=static_url+it[p].courseBkImage}})" class="cpl-head">
+      <!--h4 {{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}}  {{=formatDate(it[p].expirationTime,'h')+':'+formatDate(it[p].expirationTime,'m')}}-->
+      <h4>{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}} 过期</h4>
+      </div>
+      <div class="cpl-main">
+      <div class="li">
+      <h3>{{=it[p].courseName}}</h3>{{if(!isEmpty(it[p].taskprogress)){ }}
+      <p>上次学习到：{{=it[p].chapterName}}</p>{{ }else{ }}
+      <p>开始学习此课程</p>{{ } }}
+      </div>
+      <div class="li pro-li">
+      <div class="clearfix cla">
+      <div class="left"><i class="icon-play3"></i><span>{{=it[p].taskprogress?it[p].taskprogress:0}} / {{=it[p].taskTotal}}</span></div>
+      <div class="right"><i class="icon-pencil2"></i><span>{{=it[p].taskprogress?it[p].taskprogress:0}} / {{=it[p].taskTotal}}</span></div>
+      </div>
+      <div class="clearfix clb">学习进度：
+      </div>
+      <div class="progress-box">
+      <div class="progress">
+      <div min="{{=!isEmpty(it[p].taskprogress)?it[p].taskprogress:0}}" max="{{=!isEmpty(it[p].taskTotal)?it[p].taskTotal:0}}" class="progress-bar"></div>
+      </div>
+      </div>
+      </div>
+      <div class="li lecturer">
+      <dl><img src="{{=static_url+it[p].teacherImage}}" class="avatar">
+      <dt>{{=it[p].teacherName}}</dt>
+      <dd>{{=it[p].teacherHonor}}</dd>
+      </dl>
+      </div>
+      <div class="li cpl-fool">
+      <div onclick="openActivate('{{=it[p].courseName}}','{{=it[p].teacherName}}','{{=it[p].teacherHonor}}','{{=it[p].buyTime}}','{{=it[p].effectiveDay}}','{{=it[p].teacherImage}}','{{=it[p].isU}}','{{=it[p].courseId}}','{{=it[p].courseBkImage}}',this)" class="btn btn-o"><span>马上激活</span>
+      <div class="none data">{{=JSON.stringify(it[p])}}</div><i class="icon-lock-open"></i>
+      </div>{{ if(!isEmpty(it[p].is_show)) { }}
+      {{ if(it[p].isU==true){ }}
+      <div tapmode onclick="renew()" class="btn btn-o"><span>申请重听</span><i class="icon-redo"></i></div>{{ } else{ }}
+      <div tapmode onclick="api.toast({msg:'只有U+课程可以免费申请重听！',location:'middle'})" class="btn btn-o">申请重听</div>{{ } }}
+      {{ } }}
+      </div>
+      </div>
+      </li>{{ } }}
+    </script>    
+    <script type="text/javascript" src="../script/comm.js"></script>    
+    <script type="text/javascript" src="../script/doT.min.js"></script>    
+    <script type="text/javascript" src="../script/caicui.js"></script>    
+    <script type="text/javascript" src="../script/db.js"></script>    
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>    
+    <script type="text/javascript">
+      // 打开课程列表页面
+      function openCourse(_this,co, ch, su, ca,subjectName,categoryName) {
+      var cn = $(_this).data('coursename');
+      var chapterName = $(_this).data('chaptername');
+      var course_detail = {};
+      course_detail.chapterId = ch;
+      course_detail.chapterName = chapterName;
+      course_detail.courseId = co;
+      course_detail.courseName = cn;
+      course_detail.subjectId = su;
+      course_detail.subjectName = subjectName;
+      course_detail.categoryId = ca;
+      course_detail.categoryName = categoryName;
+      $api.setStorage('Course_info', course_detail);
+      //                detail.course_id = co;//课程id
+      //                detail.charpterid = ch;//章节id
+      //                detail.courseName = cn;//课程名称
+      api.openWin({
+      name: 'course',
+      url: 'course.html',
+      slidBackEnabled: false,
+      pageParam:course_detail,
+      reload: true
+      });
+      }
+      /*
+      $('.icon-message').click(function(){
+      if($('.info_center').hasClass('hide')){
+      $('.info_center').removeClass('hide');
+      $('.info_zhezhao').removeClass('hide');
+      }
+      else{
+      $('.info_center').addClass('hide');
+      $('.info_zhezhao').addClass('hide');
+      }
+      });
+      $('.course_tab li').eq(0).addClass('itlem');
+      $('.course_tab li').click(function(){
+      $('.course_tab li').removeClass('itlem');
+      $(this).addClass('itlem');
+      });*/
+      var pageSize = 1000;
+      function getData(page) {
+      var param = {};
+      param.pageNo = page;
+      param.pageSize=pageSize;
+      param.token=$api.getStorage('token');
+      if(page==1&&show_pro&&no_loaded){
+      api.showProgress({
+      title:'加载中',
+      modal:false
+      });
+      }
+      ajaxRequest('api/v2.1/learning/learningcourse', 'get', param, function (ret, err) {//008.003.2 在学的课程列表（new）
+      if(show_pro&&no_loaded){
+      api.hideProgress();
+      }
+      if(err){
+      api.toast({
+      msg:err.msg,
+      location:'middle'
+      });
+      return false;
+      }
+      var tpl = $('#tpl').html();
+      var content = doT.template(tpl);
+      if(ret && ret.state=='success'){
+      var learningcourseData = ret;
+      var learningcourse = ret.data.courselist;
+      var courseArr = [];
+      for(var i=0;i<learningcourse.length;i++){
+      courseArr.push(learningcourse[i].courseId);
+      }
+      ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getCourseProgress/v1.0/' }, 'get', {'token':getstor('token'),'memberId':getstor('memberId'),'courseId':courseArr.toString()}, function(ret, err) {
+      if (err) {
+      api.toast({
+      msg: err.msg,
+      location: 'middle'
+      });
+      return false;
+      }
+      for(var i=0;i<learningcourse.length;i++){
+      for(var j=0;j<ret.data.length;j++){
+      if(learningcourse[i].courseId == ret.data[j].courseId){
+      learningcourse[i].showProgress = ret.data[j].courseProgress;
+      learningcourse[i].createDate = ret.data[j].createDate;
+      learningcourse[i].chapterId = ret.data[j].chapterId;
+      learningcourse[i].chapterName = ret.data[j].chapterName;
+      learningcourse[i].progress = ret.data[j].progress;
+      learningcourse[i].taskId = ret.data[j].taskId;
+      learningcourse[i].taskName = ret.data[j].taskName;
+      }
+      }
+      }
+      // var filterLastProgress = learningcourse;
+      // var i = 0,
+      //     len = filterLastProgress.length,
+      //     j, d;
+      // for (; i < len; i++) {
+      //     for (j = 0; j < len; j++) {
+      //         if (parseInt(filterLastProgress[i].createDate) > parseInt(filterLastProgress[j].createDate)) {
+      //             d = filterLastProgress[j];
+      //             filterLastProgress[j] = filterLastProgress[i];
+      //             filterLastProgress[i] = d;
+      //         }
+      //     }
+      // }
+      var ret={
+      data : {
+      total : learningcourseData.data.total,
+      courselist : learningcourse
+      }
+      }
+      no_loaded=false;
+      total=ret.data.total;
+      if (page == 1) {
+      if (isEmpty(ret.data)||total==0) {
+      $('body').addClass('null');
+      return false;
+      }
+      $('body').removeClass('null');
+      $('#content').html(content(ret.data.courselist));
+      } else {
+      if (isEmpty(ret.data.courselist)) {
+      return false;
+      }
+      $('#content').append(content(ret.data.courselist));
+      }
+      api.parseTapmode();
+      saveExpire(ret.data.courselist);
+      progressBar();
+      })
+      } else {
+      //api.toast({
+      //  msg : ret.msg,
+      //  location : 'middle'
+      //});
+      }
+      });
+      }
+      var total=0;
+      var no_loaded=true;
+      apiready=function () {
+      getData(1);
+      var currentPage = 1;
+      api.setRefreshHeaderInfo({
+      visible: true,
+      loadingImg: 'widget://image/arrow-down-o.png',
+      bgColor: '#f3f3f3',
+      textColor: '#787b7c',
+      textDown: '下拉更多',
+      textUp: '松开刷新',
+      showTime: false
+      }, function (ret, err) {
+      getData(1);
+      currentPage = 1;
+      });
+      //滚动到底部
+      api.addEventListener({
+      name:'scrolltobottom'
+      },function(ret,err) {
+      if(total == 0 || currentPage < Math.ceil(total / pageSize)){
+      currentPage++;
+      getData(currentPage);
+      }
+      });
+      api.addEventListener({
+      name: 'flush_index'
+      }, function (ret) {
+      getData(1);
+      });
+      //监听横屏事件
+      api.addEventListener({
+      name:'changeScreen'
+      },function(ret,err) {
+      /*api.setScreenOrientation({
+      orientation: 'portrait_up'
+      });*/
+      });
+      api.addEventListener({
+      name: 'fresh_course'
+      }, function (ret, err) {
+      getData(1);
+      });
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的问答详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/cckt.css">
+  </head>
+  <body>
+    <!--头部-->
+    <div id="header" class="s-head">
+      <div tapmode onclick="api.closeWin()" class="left"><i class="icon-back"></i></div>
+      <div class="center">我的问答详情（已回复）</div>
+      <div class="right"><i class="icon-trash"></i></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      apiready=function(){
+          api.openFrame({
+              delay:200,
+              bounces: true,
+              opaque: true,
+              reload: true,
+              vScrollBarEnabled: false,
+              name: 'my_answer_details',
+              url: 'my_answer_details.html',
+              pageParam: {id: api.pageParam.id},
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headSh
+              }
+          });
+          api.addEventListener({
+              name: 'header-detail'
+          }, function (ret) {
+              if (ret && ret.value) {
+                  var value = ret.value;
+                  if(value.key1 == '11111'){
+                      $('span').html('我的问答详情（已回复）');
+                  }else if(value.key1 == '22222'){
+                      $('span').html('我的问答详情（未回复）');
+                  }
+              }
+          });
+      };
+    </script>
+  </body>
+</html>

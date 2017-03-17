@@ -1,0 +1,44 @@
+
+<script id="tpl" type="text/x-dot-template">{{for(var p in it) { }}
+  <li tapmode="tapmode" data-coursename="{{=it[p].courseName}}" data-chapterName="{{=it[p].chapterName}}" onclick="openCourse(this,'{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].subjectID}}','{{=it[p].categoryId}}','{{=it[p].subjectName}}','{{=it[p].categoryName}}')">
+    <div style="background-image:url({{=static_url+it[p].courseBkImage}})" class="cpl-head">
+      <!--h4 {{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}}  {{=formatDate(it[p].expirationTime,'h')+':'+formatDate(it[p].expirationTime,'m')}}-->
+      <h4>{{=formatDate(it[p].expirationTime,'Y')+'-'+formatDate(it[p].expirationTime,'M')+'-'+formatDate(it[p].expirationTime,'D')}} 过期</h4>
+    </div>
+    <div class="cpl-main">
+      <div class="li">
+        <h3>{{=it[p].courseName}}</h3>{{if(!isEmpty(it[p].taskprogress)){ }}
+        <p>上次学习到：{{=it[p].chapterName}}</p>{{ }else{ }}
+        <p>开始学习此课程</p>{{ } }}
+      </div>
+      <div class="li pro-li">
+        <div class="clearfix cla">
+          <div class="left"><i class="icon-play3"></i><span>{{=it[p].taskprogress?it[p].taskprogress:0}} / {{=it[p].taskTotal}}</span></div>
+          <div class="right"><i class="icon-pencil2"></i><span>{{=it[p].taskprogress?it[p].taskprogress:0}} / {{=it[p].taskTotal}}</span></div>
+        </div>
+        <div class="clearfix clb">学习进度：
+        </div>
+        <div class="progress-box">
+          <div class="progress">
+            <div min="{{=!isEmpty(it[p].taskprogress)?it[p].taskprogress:0}}" max="{{=!isEmpty(it[p].taskTotal)?it[p].taskTotal:0}}" class="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="li lecturer">
+        <dl><img src="{{=static_url+it[p].teacherImage}}" class="avatar"/>
+          <dt>{{=it[p].teacherName}}</dt>
+          <dd>{{=it[p].teacherHonor}}</dd>
+        </dl>
+      </div>
+      <div class="li cpl-fool">
+        <div onclick="openActivate('{{=it[p].courseName}}','{{=it[p].teacherName}}','{{=it[p].teacherHonor}}','{{=it[p].buyTime}}','{{=it[p].effectiveDay}}','{{=it[p].teacherImage}}','{{=it[p].isU}}','{{=it[p].courseId}}','{{=it[p].courseBkImage}}',this)" class="btn btn-o"><span>马上激活</span>
+          <div class="none data">{{=JSON.stringify(it[p])}}</div><i class="icon-lock-open"></i>
+        </div>{{ if(!isEmpty(it[p].is_show)) { }}
+        {{ if(it[p].isU==true){ }}
+        <div tapmode="tapmode" onclick="renew()" class="btn btn-o"><span>申请重听</span><i class="icon-redo"></i></div>{{ } else{ }}
+        <div tapmode="tapmode" onclick="api.toast({msg:'只有U+课程可以免费申请重听！',location:'middle'})" class="btn btn-o">申请重听</div>{{ } }}
+        {{ } }}
+      </div>
+    </div>
+  </li>{{ } }}
+</script>

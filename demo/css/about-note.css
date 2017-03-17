@@ -477,7 +477,7 @@
 .current-talk p {
   color: #7c7c7c;
   font-size: 0.24rem;
-  max-height: 1.2rem;
+  /*max-height: 1.2rem;*/
 }
 .current-talk h5,
 .current-talk p {
@@ -489,7 +489,7 @@
 }
 .detail .current-talk h5,
 .detail .current-talk p {
-  max-height: 12rem;
+  /*max-height: 12rem;*/
   overflow: visible;
 }
 .my-talk-wrap .current-talk {

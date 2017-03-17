@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html class="transparent">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>财萃Pad</title>
+  </head>
+  <body>
+    <ul id="topnavf" class="course-topnav">
+      <li class="active">学习课程</li>
+      <li>未激活课程</li>
+      <li>过期课程</li>
+    </ul>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      $('.course-topnav li').on('click', function () {
+          var i = $(this).index();
+          $(this).addClass('active').siblings().removeClass();
+          api.setFrameGroupIndex({
+              name: 'courseFrameGroup',
+              index: i
+          });
+      });
+      apiready = function () {
+          api.addEventListener({
+              name: 'hascoursenav'
+          }, function (ret) {
+              $('#topnavf li').removeClass().eq(ret.value.setnav).addClass('active');
+          });
+      };
+    </script>
+  </body>
+</html>

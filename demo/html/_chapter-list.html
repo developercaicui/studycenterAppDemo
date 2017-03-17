@@ -1,0 +1,804 @@
+
+<div style="opacity:.0001; position: absolute; top: 50%;z-index:-1">
+  <div id="svgDown" class="down-progress"></div>
+</div>
+<script id="tpl" type="text/x-dot-template">
+  {{~it.chapters:val:key}}
+  {{ if(val.isLeaf=='false'){ }}
+  <ul class="cache-list">
+    <li class="list">
+      <dl>
+        <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+          <p>{{=val.chapterTitle}}</p>
+        </dt>
+      </dl>{{~val.children:val2:key2}}
+      {{ if(val2.isLeaf=='false'){ }}
+      <ul class="list">
+        <dl class="haschild">
+          <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+            <p>{{=val2.chapterTitle}}</p>
+          </dt>
+        </dl>{{~val2.children:val3:key3}}
+        {{var is_show=isNowChapter(2, '{{=key}}', '{{=key2}}', '{{=key3}}','{{=val3.chapterId}}');}}
+        <li class="list {{=is_show}}">
+          <dl class="haschild">
+            {{var state=3;}}
+            {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','{{=val3.chapterId}}');}}
+            <dt onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i>
+              <p>{{=val3.chapterTitle}}</p>
+            </dt>
+            <dd>{{ if(progress==0 ){state=3;}else if(progress==100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+              <div id="{{=val3.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                <div class="val">{{=progress}}</div>
+              </div>
+              <div class="down_data none">{{=JSON.stringify(val3.tasks)}}</div>
+            </dd>
+          </dl>
+        </li>{{~}}
+      </ul>{{ }else{ }}
+      {{var is_show=isNowChapter(1, '{{=key}}', '{{=key2}}', -1,'{{=val2.chapterId}}');}}
+      <ul class="list {{=is_show}}">
+        {{var state=3;}}
+        {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','');}}
+        <dl>
+          <dt onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i>
+            <p>{{=val2.chapterTitle}}</p>
+          </dt>
+          <dd>{{ if(progress==0 ){state=3;}else if(progress==100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+            <div id="{{=val2.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+              <div class="val">{{=progress}}</div>
+            </div>
+            <div class="down_data none">{{=JSON.stringify(val2.tasks)}}</div>
+          </dd>
+        </dl>
+      </ul>{{ } }}
+      {{~}}
+    </li>
+  </ul>{{ }else{ }}
+  <ul class="cache-list">
+    {{var state=3;}}
+    {{var progress=get_dowm('{{=val.chapterId}}','','');}}
+    {{var is_show=isNowChapter(0, '{{=key}}', -1, -1,'{{=val.chapterId}}');}}
+    <li class="list {{=is_show}}">
+      <dl>
+        <dt onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i>
+          <p> {{=val.chapterTitle}}</p>
+        </dt>
+        <dd>{{ if(progress==0 ){state=3;}else if(progress==100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
+          <div id="{{=val.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+            <div class="val">{{=progress}}</div>
+          </div>
+          <div class="down_data none">{{=JSON.stringify(val.tasks)}}</div>
+        </dd>
+      </dl>
+    </li>
+  </ul>{{ } }}
+  {{~}}
+</script>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+  function next(leave, num1, num2, num3,obj,cid) {
+      if(pageName == 'course-list') {
+          var courseId = api.pageParam.course_id;
+          //如果没有缓存信息，就从接口获取
+          var tmp_course_detail = $api.getStorage(courseId);
+          if (isEmpty(tmp_course_detail)) {
+              //获取课程的详细信息
+              //api/v2.1/course/courseDetail，接口编号：004-006
+              ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+                  courseId: courseId
+              }, function (ret, err) {//004.006获取课程的详细信息
+                  if (err) {
+                      api.hideProgress();
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      if (!ret.data) {
+                          api.toast({
+                              msg: '暂无任务',
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      course_detail = ret.data[0];
+                      //课程详情数据
+                      $api.setStorage(courseId, course_detail);
+                      var task_arr2 = save_tasks(course_detail);
+                      var task_info_detail2;
+                      for(var i in task_arr2){
+                          if(task_arr2[i].chapterId==cid){
+                              task_info_detail2 = task_arr2[i];
+                              break;
+                          }
+                      }
+                      if(isEmpty(task_info_detail2)){
+                          api.toast({
+                              msg: '获取当前任务信息失败',
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      judge_task(task_info_detail2.taskInfo,0);
+                      /*
+                      var res_process = {
+                          'oneChapterIndex': num1,//一级章节索引
+                          'twoChapterIndex': (num2 == -1) ? 0 : num2,//二级章节索引
+                          'threeChapterIndex': (num3 == -1) ? 0 : num3,//三级章节索引
+                          'taskIndex': 0,//任务索引
+                          'chapterDeep': leave - 1,//章节层级
+                          'progress': 0//任务学习进度
+                      };
+                      judge_task(res_process);
+                      */
+                  }
+              });
+          } else {
+              course_detail = tmp_course_detail;
+              //存储课程详细信息
+              var task_arr2 = save_tasks(course_detail);
+              var task_info_detail2;
+              for(var i in task_arr2){
+                  if(task_arr2[i].chapterId==cid){
+                      task_info_detail2 = task_arr2[i];
+                      break;
+                  }
+              }
+              if(isEmpty(task_info_detail2)){
+                  api.toast({
+                      msg: '暂无任务',
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              judge_task(task_info_detail2.taskInfo,0);
+              //用户上次学习进度数据
+          }
+      }else{
+          //changeCharpter(obj, num1, num2, num3);
+          changeCharpter(obj, cid);
+      }
+  }
+  
+  //统计每个章节的各种任务个数，参数num1表示一级章节，参数num2表示二级章节
+  function countTaskType(num1, num2, num3) {
+      //if(pageName == 'catalog'){
+          //return '';
+      //}
+      if (num2 == -1) {
+          var tmp_chapters = course_detail.chapters[num1].tasks;
+      } else if (num3 == -1) {
+          var tmp_chapters = course_detail.chapters[num1].children[num2].tasks;
+      } else {
+          var tmp_chapters = course_detail.chapters[num1].children[num2].children[num3].tasks;
+      }
+      //得到子章节的任务信息
+      var tmp_num = {
+          'video': 0,
+          'exam': 0,
+          'doc': 0,
+          'entry': 0
+      };
+      for (var i in tmp_chapters) {
+          var tmp_tasks = tmp_chapters[i];
+          if (tmp_tasks.taskType == 'video') {
+              tmp_num.video++;
+          } else if (tmp_tasks.taskType == 'exam') {
+              tmp_num.exam++;
+          } else if (tmp_tasks.taskType == 'pdfread') {
+              tmp_num.doc++;
+          } else if (tmp_tasks.taskType == 'entry') {
+              tmp_num.entry++;
+          }
+      }
+      var tmp_html = '';
+      if (tmp_num.video > 0) {
+          tmp_html += '<li><i class="icon-play"></i> <span class="multiples">' + tmp_num.video + '</span></li>';
+      }
+      if (tmp_num.exam > 0) {
+          tmp_html += '<li><i class="icon-edit2"></i> <span class="multiples">' + tmp_num.exam + '</span></li>';
+      }
+      if (tmp_num.doc > 0) {
+          tmp_html += '<li><i class="icon-word-card"></i> <span class="multiples">' + tmp_num.doc + '</span></li>';
+      }
+      if (tmp_num.entry > 0) {
+          tmp_html += '<li><i class="icon-language"></i> <span class="multiples">' + tmp_num.entry + '</span></li>';
+      }
+      return tmp_html;
+  
+  }
+  
+  //判断是不是当前正在学习的章节
+  function isNowChapter(leave, num1, num2, num3,cid) {
+      if (pageName == 'course-list') {
+          return '';
+      }
+      if(task_info_detail.chapterId == cid){
+          return 'active';
+      }else{
+          return '';
+      }
+      /*
+      if (leave == study_progress.chapterDeep) {
+          if (leave >= 0) {
+              if (num1 == study_progress.oneChapterIndex) {
+                  if (leave >= 1) {
+                      if (num2 == study_progress.twoChapterIndex) {
+                          if (leave == 2) {
+                              if (num3 == study_progress.threeChapterIndex) {
+                                  return 'active';
+                              } else {
+                                  return '';
+                              }
+                          } else {
+                              return 'active';
+                          }
+                      } else {
+                          return '';
+                      }
+                  } else {
+                      return 'active';
+                  }
+              } else {
+                  return '';
+              }
+          } else {
+              return '';
+          }
+      } else {
+          return '';
+      }
+      */
+  }
+  
+  //点击章节列表中的子章节，切换到相应的任务
+  //function changeCharpter(obj, num1, num2, num3) {
+  function changeCharpter(obj, cid) {
+      //如果新的章节不是当前章节
+      /*
+      if (num1 != tmpOne || num2 != tmpTwo || num3 != tmpThree) {
+          //改变背景样式
+          $('.list').removeClass('active');
+          $(obj).parents('dl').parent().addClass('active');
+          if (num2 == -1) {
+              tmpDeep = 0;
+          } else if (num3 == -1) {
+              tmpDeep = 1;
+          } else {
+              tmpDeep = 2;
+          }
+          //改变章节数据
+          tmpOne = num1;//一级章节索引
+          tmpTwo = (num2 == -1) ? 0 : num2;//二级章节索引
+          tmpThree = (num3 == -1) ? 0 : num3;//三级章节索引
+  
+          if (tmpDeep >= 0) {
+              var res = course_detail.chapters[tmpOne];
+          }
+          if (tmpDeep >= 1) {
+              var res = res.children[tmpTwo];
+          }
+          if (tmpDeep >= 2) {
+              var res = res.children[tmpThree];
+          }
+  
+          if (isEmpty(res) || isEmpty(res.tasks)) {
+              api.toast({
+                  msg: '该章节下还没有学习任务',
+                  location: 'middle'
+              });
+              return false;
+          }
+  
+          chapter_data = res;
+  
+          //四个导航的添加、移除样式
+          $('#NavTask').addClass('vList-selected');
+          $('#NavTask').siblings().removeClass('vList-selected');
+          now_nav_type = 1;
+          //改变任务的内容
+          is_over_task = false;
+          is_over_extend = false;
+          is_over_file = false;
+          getChapterTask();
+          return false;
+      }
+      */
+      var arr=[];
+      for(var i in task_arr){
+          if(task_arr[i].chapterId==cid){
+              arr.push(task_arr[i]['taskInfo']);
+          }
+      }
+      var task_tpl = $('#task_tpl').html();
+      var content = doT.template(task_tpl);
+          //$('#chaTask').html(content(chapter_data)).show().siblings().hide();
+      $('#chaTask').html(content(arr)).show().siblings().hide();
+      isSolidcircle('progress', cid, '',courseId,'video-menu');
+          //四个导航的添加、移除样式
+      $('#NavTask').addClass('vList-selected');
+      $('#NavTask').siblings().removeClass('vList-selected');
+      now_nav_type = 1;
+          //改变任务的内容
+      is_over_task = false;
+      is_over_extend = false;
+      is_over_file = false;
+          //'getChapterTask();
+      return false;
+  }
+  
+  //判断任务类型，跳转相应的页面
+  //function judge_task(res_process) {
+  function judge_task(task_info, lastProgress) {
+      if (isEmpty(course_detail) || isEmpty(course_detail.chapters) || isEmpty(task_info)) {
+          api.toast({
+              msg: '获取课程信息失败',
+              location: 'middle'
+          });
+          return false;
+      }
+      /*
+      //获取章节信息
+      if (res_process.chapterDeep >= 0) {
+          var chapters_info = course_detail.chapters[res_process.oneChapterIndex];//一级章节信息
+      }
+      if (res_process.chapterDeep >= 1) {
+          var chapters_info = chapters_info.children[res_process.twoChapterIndex];//二级章节信息
+      }
+      if (res_process.chapterDeep >= 2) {
+          var chapters_info = chapters_info.children[res_process.threeChapterIndex];//三级章节信息
+      }
+  
+      if (isEmpty(chapters_info) || isEmpty(chapters_info.tasks)) {
+          api.toast({
+              msg: '章节学习任务获取失败',
+              location: 'middle'
+          });
+          return false;
+      }
+      var task_info = chapters_info.tasks[res_process.taskIndex];//当前任务信息
+      */
+      if (isEmpty(task_info)) {
+          api.toast({
+              msg: '暂无任务',
+              location: 'middle'
+          });
+          return false;
+      }
+      //判断当前任务类型
+      if (task_info.taskType == 'video') {
+          //视频类型
+          var new_win_name = 'video';
+          var new_win_url = 'video.html';
+      } else if (task_info.taskType == 'entry' || task_info.taskType == 'pdfread' || task_info.taskType == 'exam') {
+          //entry（外链类型）、pdfread（pdf类型）、exam（测试题类型）
+          var new_win_name = 'course-test';
+          var new_win_url = 'course-test.html';
+      } else {
+          api.toast({
+              msg: '暂无任务，请稍后再试或联系客服',
+              location: 'middle'
+          });
+          return false;
+      }
+      //需要传递的参数
+      var pageParams = {
+          from: 'course-studying',
+          courseId: course_detail.courseId,//课程id
+          //study_progress: res_process,//学习进度
+          last_progress: lastProgress,//学习进度
+          course_detail: course_detail,//课程详情
+          task_info: task_info,//当前要学习的任务信息,
+          type:'task'
+      };
+      api.hideProgress();
+  
+  
+  
+      //跳转到播放页面
+      api.openWin({
+          name: new_win_name,
+          url: new_win_url,
+          delay: 200,
+          slidBackEnabled: false,//iOS7.0及以上系统中，禁止通过左右滑动返回上一个页面
+          pageParam: pageParams
+      });
+  }
+  
+  //判断实心圈、半心圈、空心圈，参数type:'circle'、'progress',参数chap_id二级章节id
+  function isSolidcircle(type, chap_id, task_id,course_id,from) {
+      if(isEmpty(course_id)){
+          var courseId = api.pageParam.course_id;
+      }else{
+          var courseId = course_id;
+      }
+      //如果没有缓存信息，就从接口获取
+      var tmp_course_detail = $api.getStorage(courseId);
+      if (isEmpty(tmp_course_detail)) {
+          //获取课程的详细信息
+          //api/v2.1/course/courseDetail，接口编号：004-006
+          ajaxRequest('api/v2.1/course/courseDetail', 'get', {
+              courseId: courseId
+          }, function (ret, err) {//004.006获取课程的详细信息
+              if (err) {
+                  api.hideProgress();
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  if (!ret.data) {
+                      api.toast({
+                          msg: '暂无任务',
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  course_detail = ret.data[0];
+                  //课程详情数据
+                  $api.setStorage(courseId, course_detail);
+                  //处理过的课程进度
+                  var arr = {};
+                  var data_arr = course_detail.chapters;
+                  for (var i in data_arr) {
+                      if (data_arr[i].isLeaf == 'false') {
+                          var child = data_arr[i].children;
+                          for (var j in child) {
+                              if (child[j].isLeaf == 'false') {
+                                  var child2 = child[j].children;
+                                  for (var k in child2) {
+                                      var cId = child2[k].chapterId;
+                                      arr[cId] = {};
+                                      for (var x in child2[k].tasks) {
+                                          if (child[j].isLeaf == 'false') {
+  
+                                          } else {
+                                              var taskid = child2[k].tasks[x].taskId;
+                                              arr[cId][taskid] = {
+                                                  'progress': 0,
+                                                  'isok': 0,
+                                                  'total': 0
+                                              };
+                                          }
+                                      }
+                                  }
+                              } else {
+                                  var cId = child[j].chapterId;
+                                  arr[cId] = {};
+                                  for (var k in child[j].tasks) {
+                                      var taskid = child[j].tasks[k].taskId;
+                                      arr[cId][taskid] = {
+                                          'progress': 0,
+                                          'isok': 0,
+                                          'total': 0
+                                      };
+                                  }
+                              }
+                          }
+                      } else {
+                          var cId = data_arr[i].chapterId;
+                          arr[cId] = {};
+                          for (var k in data_arr[i].tasks) {
+                              var taskid = data_arr[i].tasks[k].taskId;
+                              arr[cId][taskid] = {
+                                  'progress': 0,
+                                  'isok': 0,
+                                  'total': 0
+                              };
+                          }
+                      }
+                  }
+  
+  
+                  //获取课程任务进度列表（new）tested
+                  var param = {
+                      'token': $api.getStorage('token'), //必须
+                      'courseId': courseId, //课程ID,必须
+                      'charpterId': '', //章节ID,非必须
+                      'taskId': ''//任务ID,非必须
+                  };
+                  ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+                  //ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+                      if (err) {
+                          return false;
+                      } else if (ret && ret.state == 'success') {
+                          //课程进度
+                          for (var i in ret.data) {
+                              var tmpdata = ret.data[i];
+                              if (!isEmpty(arr[tmpdata.chapterId]) && !isEmpty(arr[tmpdata.chapterId][tmpdata.taskId])) {
+                                  if (tmpdata.state == 1) {
+                                      arr[tmpdata.chapterId][tmpdata.taskId].isok = 3;
+                                  } else {
+                                      if (tmpdata.progress > 0) {
+                                          arr[tmpdata.chapterId][tmpdata.taskId].isok = 1;
+                                      } else {
+                                          arr[tmpdata.chapterId][tmpdata.taskId].isok = 0;
+                                      }
+                                  }
+  
+  
+                                  arr[tmpdata.chapterId][tmpdata.taskId].progress = tmpdata.progress;
+                                  arr[tmpdata.chapterId][tmpdata.taskId].total = tmpdata.total;
+                              }
+                          }
+                          //处理过的课程进度
+                          if (type == 'circle') {
+                              //获取圈圈样式
+                              if(from == 'video-menu'){
+                                  $('#chaList').find('.dot-status').each(function () {
+                                      var tmp_chapID = $(this).attr('data-chapId');
+                                      if (!isEmpty(tmp_chapID) && !isEmpty(arr[tmp_chapID])) {
+                                          var num = 0;
+                                          var len = 0;
+                                          for (var i in arr[tmp_chapID]) {
+                                              num += parseInt(arr[tmp_chapID][i].isok);
+                                              ++len;
+                                          }
+  
+                                          if (num > 0) {
+                                              if (num == len * 3) {
+                                                  $(this).attr('type', '3');
+                                                  //实心圈
+                                              } else {
+                                                  //半圈
+                                                  $(this).attr('type', '2');
+                                              }
+                                          } else {
+                                              $(this).attr('type', '1');
+                                              //空圈
+                                          }
+  
+                                      }
+                                  });
+                              }else {
+                                  $('#content').find('.dot-status').each(function () {
+                                      var tmp_chapID = $(this).attr('data-chapId');
+                                      if (!isEmpty(tmp_chapID) && !isEmpty(arr[tmp_chapID])) {
+                                          var num = 0;
+                                          var len = 0;
+                                          for (var i in arr[tmp_chapID]) {
+                                              num += parseInt(arr[tmp_chapID][i].isok);
+                                              ++len;
+                                          }
+  
+                                          if (num > 0) {
+                                              if (num == len * 3) {
+                                                  $(this).attr('type', '3');
+                                                  //实心圈
+                                              } else {
+                                                  //半圈
+                                                  $(this).attr('type', '2');
+                                              }
+                                          } else {
+                                              $(this).attr('type', '1');
+                                              //空圈
+                                          }
+  
+                                      }
+                                  });
+                              }
+                          } else if (type == 'progress') {
+                              //如果是获取任务进度条
+                              $('#chaTask').find('.taskProgress').each(function () {
+                                  var tmp_chapID = chap_id;
+                                  var tmp_taskID = $(this).attr('data-taskid');
+                                  if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
+                                      var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
+                                      if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
+                                          $(this).css('width', '0%');
+                                      } else if (tmp_task_progress.isok == 3) {
+                                          $(this).css('width', '100%');
+                                      } else if (tmp_task_progress.isok == 0) {
+                                          $(this).css('width', '0%');
+                                      } else if (tmp_task_progress.isok == 1) {
+                                          var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
+                                          $(this).css('width', tmpwidth);
+                                      }
+                                  } else {
+                                      $(this).css('width', '0%');
+                                  }
+                              });
+                          }
+                      }
+                  });
+  
+  
+              }
+          });
+      } else {
+          course_detail = tmp_course_detail;
+          //存储课程详细信息
+          //处理过的课程进度
+          var arr = {};
+          var data_arr = course_detail.chapters;
+          for (var i in data_arr) {
+              if (data_arr[i].isLeaf == 'false') {
+                  var child = data_arr[i].children;
+                  for (var j in child) {
+                      if (child[j].isLeaf == 'false') {
+                          var child2 = child[j].children;
+                          for (var k in child2) {
+                              var cId = child2[k].chapterId;
+                              arr[cId] = {};
+                              for (var x in child2[k].tasks) {
+                                  if (child[j].isLeaf == 'false') {
+  
+                                  } else {
+                                      var taskid = child2[k].tasks[x].taskId;
+                                      arr[cId][taskid] = {
+                                          'progress': 0,
+                                          'isok': 0,
+                                          'total': 0
+                                      };
+                                  }
+                              }
+                          }
+                      } else {
+                          var cId = child[j].chapterId;
+                          arr[cId] = {};
+                          for (var k in child[j].tasks) {
+                              var taskid = child[j].tasks[k].taskId;
+                              arr[cId][taskid] = {
+                                  'progress': 0,
+                                  'isok': 0,
+                                  'total': 0
+                              };
+                          }
+                      }
+                  }
+              } else {
+                  var cId = data_arr[i].chapterId;
+                  arr[cId] = {};
+                  for (var k in data_arr[i].tasks) {
+                      var taskid = data_arr[i].tasks[k].taskId;
+                      arr[cId][taskid] = {
+                          'progress': 0,
+                          'isok': 0,
+                          'total': 0
+                      };
+                  }
+              }
+          }
+          //获取课程任务进度列表（new）tested
+          var param = {
+              'token': $api.getStorage('token'), //必须
+              'courseId': courseId, //课程ID,必须
+              'charpterId': '', //章节ID,非必须
+              'taskId': ''//任务ID,非必须
+          };
+           ajaxRequest({ 'origin': 'http://action.caicui.com/', 'pathname': 'api/userAction/course/getTasksProgress/v1.0/' }, 'get', param, function(ret, err) {
+          //ajaxRequest('api/v2/study/getTasksProgress', 'get', param, function (ret, err) {//008.022 获取课程任务进度列表（new）tested，接口编号：008-022
+              if (err) {
+                  return false;
+              } else if (ret && ret.state == 'success') {
+                  //课程进度
+                  for (var i in ret.data) {
+                      var tmpdata = ret.data[i];
+                      if (!isEmpty(arr[tmpdata.chapterId]) && !isEmpty(arr[tmpdata.chapterId][tmpdata.taskId])) {
+                          if (tmpdata.state == 1) {
+                              arr[tmpdata.chapterId][tmpdata.taskId].isok = 3;
+                          } else {
+                              if (tmpdata.progress > 0) {
+                                  arr[tmpdata.chapterId][tmpdata.taskId].isok = 1;
+                              } else {
+                                  arr[tmpdata.chapterId][tmpdata.taskId].isok = 0;
+                              }
+                          }
+  
+                          arr[tmpdata.chapterId][tmpdata.taskId].progress = tmpdata.progress;
+                          arr[tmpdata.chapterId][tmpdata.taskId].total = tmpdata.total;
+                      }
+                  }
+                  //处理过的课程进度
+  
+                  if (type == 'circle') {
+                      if (from == 'video-menu') {
+                          $('#chaList').find('.dot-status').each(function () {
+                              var tmp_chapID = $(this).attr('data-chapId');
+                              if (!isEmpty(tmp_chapID) && !isEmpty(arr[tmp_chapID])) {
+                                  var num = 0;
+                                  var len = 0;
+                                  for (var i in arr[tmp_chapID]) {
+                                      num += parseInt(arr[tmp_chapID][i].isok);
+                                      ++len;
+                                  }
+  
+                                  if (num > 0) {
+                                      if (num == len * 3) {
+                                          $(this).attr('type', '3');
+                                          //实心圈
+                                      } else {
+                                          //半圈
+                                          $(this).attr('type', '2');
+                                      }
+                                  } else {
+                                      $(this).attr('type', '1');
+                                      //空圈
+                                  }
+  
+                              }
+                          });
+                      } else {
+                          $('#content').find('.dot-status').each(function () {
+                              var tmp_chapID = $(this).attr('data-chapId');
+                              if (!isEmpty(tmp_chapID) && !isEmpty(arr[tmp_chapID])) {
+                                  var num = 0;
+                                  var len = 0;
+                                  for (var i in arr[tmp_chapID]) {
+                                      num += parseInt(arr[tmp_chapID][i].isok);
+                                      ++len;
+                                  }
+  
+                                  if (num > 0) {
+                                      if (num == len * 3) {
+                                          $(this).attr('type', '3');
+                                          //实心圈
+                                      } else {
+                                          //半圈
+                                          $(this).attr('type', '2');
+                                      }
+                                  } else {
+                                      $(this).attr('type', '1');
+                                      //空圈
+                                  }
+  
+                              }
+                          });
+                      }
+                  } else if (type == 'progress') {
+                      //如果是获取任务进度条
+                      $('#chaTask').find('.taskProgress').each(function () {
+                          var tmp_chapID = chap_id;
+                          var tmp_taskID = $(this).attr('data-taskid');
+                          if (!isEmpty(tmp_chapID) && !isEmpty(tmp_taskID)) {
+                              var tmp_task_progress = arr[tmp_chapID][tmp_taskID];
+                              if (isEmpty(tmp_task_progress) || isEmpty(tmp_task_progress.isok)) {
+                                  $(this).css('width', '0%');
+                              } else if (tmp_task_progress.isok == 3) {
+                                  $(this).css('width', '100%');
+                              } else if (tmp_task_progress.isok == 0) {
+                                  $(this).css('width', '0%');
+                              } else if (tmp_task_progress.isok == 1) {
+                                  var tmpwidth = ((tmp_task_progress.progress * 100) / tmp_task_progress.total).toFixed(2) + '%';
+                                  $(this).css('width', tmpwidth);
+                              }
+                          } else {
+                              $(this).css('width', '0%');
+                          }
+                      });
+                  }
+              }
+          });
+      }
+  }
+  
+  //点击章节列表中的子章节，切换到相应的任务
+  function changeCharpter(obj, cid) {
+      var arr=[];
+      for(var i in task_arr){
+          if(task_arr[i].chapterId==cid){
+              arr.push(task_arr[i]['taskInfo']);
+          }
+      }
+      var task_tpl = $('#task_tpl').html();
+      var content = doT.template(task_tpl);
+          //$('#chaTask').html(content(chapter_data)).show().siblings().hide();
+      $('#chaTask').html(content(arr)).show().siblings().hide();
+      isSolidcircle('progress', cid, '',courseId,'video-menu');
+          //四个导航的添加、移除样式
+      $('#NavTask').addClass('vList-selected');
+      $('#NavTask').siblings().removeClass('vList-selected');
+      now_nav_type = 1;
+          //改变任务的内容
+      is_over_task = false;
+      is_over_extend = false;
+      is_over_file = false;
+          //'getChapterTask();
+      return false;
+  }
+</script>

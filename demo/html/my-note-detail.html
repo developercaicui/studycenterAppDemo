@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的笔记</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeFrame()" class="left"><i class="icon-back"></i></div>
+      <div class="center"> 笔记详情</div>
+      <ul id="isMe" class="right none">
+        <li><i tapmode onclick="del()" class="icon-trash"></i></li>
+        <li tapmode onclick="note_edit_xg()"><i class="icon-edit3"></i></li>
+      </ul>
+      <ul id="isHer" class="right none"> 
+        <li><i tapmode onclick="coll()" class="icon-star"></i></li>
+        <li><i tapmode onclick="love()" class="icon-thumb-up"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeFrame(){
+          var param = api.pageParam;
+          api.closeFrame({
+              name:'my-note-detail-f'
+          });
+          if(window.localStorage.noteChange == '1'){
+              api.closeFrame({
+                  name: 'my-note-list'
+              });
+              api.closeFrame({
+                  name: 'my-note-list-f'
+              });
+              api.openFrame({
+                  delay:200,
+                  name: 'my-note-list',
+                  url: 'my-note-list.html',
+                  bgColor: '#fff',
+                  rect: {
+                      x: leftLw,
+                      y: 0,
+                      w: api.winWidth - leftLw,
+                      h: api.winHeight - headLh
+                  },
+                  pageParam:param,
+                  bounces: false
+              });
+              window.localStorage.noteChange = '';
+          }
+          api.closeFrame();
+      }
+      function note_edit_xg(){
+          var param = api.pageParam;
+          param.editNew = 'edit';
+          //            param.id = $(e).attr('data-id');
+          //            param.courseId = $(e).attr('data-key');
+          //            param.charpterid=isEmpty($(e).attr('charpterId')) || $(e).attr('charpterId') == 'undefined' ? 'charpterId' :$(e).attr('charpterId');
+          //            param.memberId=$(e).attr('data-uid');
+          //            param.taskprogress = $(e).attr('taskprogress');
+          //            param.taskType = $(e).attr('taskType');
+          //            param.taskId = $(e).attr('taskId');
+          api.openFrame({
+              delay:200,
+              name: 'my-note-edit',
+              url:  'my-note-edit.html',
+              rect: {
+                  x: leftLw,
+                  y: 0,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight
+              },
+              pageParam: param,
+              bounces: false
+          });
+      }
+      
+      apiready = function () {
+          var memberId = api.pageParam.memberId;
+          if (memberId!=getstor('memberId')) {
+              $('#isHer').show();
+          } else {
+              $('#isMe').show();
+          }
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          // myFrame('note-detail','large');
+          api.openFrame({
+              delay:200,
+              name: 'my-note-detail-f',
+              url: 'note-detail.html',
+              bgColor: '#fff',
+              rect: {
+                  x: leftLw,
+                  y: headLh,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight - headLh
+              },
+              pageParam: api.pageParam,
+              bounces: true
+          });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              closeFrame();
+      
+          });
+      };
+      //删除
+      function del() {
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token: $api.getStorage('token'),
+                      id: api.pageParam.id,
+                      type: 'note'
+                  };
+                  api.showProgress({
+                      title : '刪除中',
+                      modal : true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          var jsfun = "removeList('" + api.pageParam.id + "')";
+                          api.execScript({
+                              frameName: 'my-note-list-f',
+                              script: jsfun
+                          });
+                          closeFrame();
+                      } else {
+                          api.toast({
+                              msg: '笔记删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      }
+      //点击点赞
+      function love() {
+          var param = {};
+          param.id = api.pageParam.id;
+          param.type = 'note';
+          param.title = '';
+          param.userId = getstor('memberId');
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '处理中',
+              model: true
+          });
+          ajaxRequest('api/studytools/commons/praise/v2.1', 'get', param, function (ret, err) {//003.001 点赞
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  api.toast({
+                      msg: '点赞成功',
+                      location: 'middle'
+                  });
+                  api.parseTapmode();
+              }
+              else {
+                  api.toast({
+                      msg: '点赞失败',
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+                                 //点击收藏
+      function coll() {
+          var param = {};
+          param.noteId =api.pageParam.id;
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '处理中',
+              model: true
+          });
+          ajaxRequest('api/v2/note/favorite', 'get', param, function (ret, err) {//003.117  笔记收藏
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  api.toast({
+                      msg: '收藏成功',
+                      location: 'middle'
+                  });
+                  api.parseTapmode();
+              }
+              else {
+                  api.toast({
+                      msg: '收藏失败',
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

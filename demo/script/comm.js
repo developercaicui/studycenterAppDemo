@@ -256,10 +256,12 @@ var common_url, static_url;
 if (debug) {
     //测试地址
     common_url = 'http://demo.caicui.com';
+    //common_url = 'https://demoapi.caicui.com';
     static_url = 'http://demo.caicui.com';
 } else {
     //正式地址
     common_url = 'http://api.caicui.com';
+    //common_url = 'https://apis.caicui.com';
     static_url = 'http://static.caicui.com';
 }
 
@@ -745,7 +747,7 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
 
 function write_file(filename, data, callback) {
     api.writeFile({
-        path: 'fs://' + filename,
+        path: 'box://' + filename,
         data: data
     }, function(ret, err) {
         callback(ret, err);
@@ -754,7 +756,7 @@ function write_file(filename, data, callback) {
 
 function read_file(filename, callback) {
     api.readFile({
-        path: 'fs://' + filename
+        path: 'box://' + filename
     }, function(ret, err) {
         callback(ret, err);
     });
@@ -923,7 +925,6 @@ function mydown(result) {
             break;
         case '2':
         case 2:
-
             //暂停-》开始下载
             stop_down(function(r) {
                 if (api.systemType == "ios" && parseInt(r.status) == 0) {
@@ -1492,6 +1493,35 @@ function stop_down(callback) { //暂停下载
 
 function my_to_down() {
     var data = $api.getStorage('my_to_down');
+    
+    //已完成
+    if(data.type == 4 || data.type == '4'){
+        return false;
+    }
+    //4G网络是否下载
+   
+    if((api.connectionType == '4g' || api.connectionType == '4G') && (data.type == 2 || data.type == '2' || data.type == 3 || data.type == '3') && api.connectionType != 'wifi'){
+        api.confirm({
+            title: '友情提示',
+            msg: '当前处于4G网络，会消耗您的大量流量，您确定要下载吗？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            if (2 == ret.buttonIndex) {//用户取消
+                return false;
+            }
+            if (1 == ret.buttonIndex) {//确定
+                 mydown(data);
+                return false;
+            }
+        });
+         return false;
+    }
+    
+    if((api.connectionType == '4g' || api.connectionType == '4G') && (data.type == 1 || data.type == '1') && api.connectionType != 'wifi'){
+        mydown(data);
+        return false;
+    }
+    
 
     if (api.connectionType == 'wifi') { //为wifi可以下载
 
@@ -1501,7 +1531,6 @@ function my_to_down() {
     }
 
     if (api.connectionType == 'none' || api.connectionType == 'unknown') {
-
         data.type = 'shut_network';
 
         set_down(data);

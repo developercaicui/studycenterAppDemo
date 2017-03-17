@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="my-list">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的问答</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{ for(var p in it){  }}
+          <dl id="li{{=it[p].id}}" class="cont-list">
+            <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"></dt>
+            <dd>
+              <div tapmode onclick="answerDetail(this)" courseId="{{=it[p].courseId}}" taskId="{{=it[p].taskId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].memberId}}" class="link-box">
+                <div class="name">{{=it[p].nikeName}}</div>
+                <div class="title">{{=it[p].title}}</div>
+                <div class="describe">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>
+              </div>{{ if(!isEmpty(it[p].imgPath)) { }}
+              <ul class="pic-group">
+                {{ var imgPath=it[p].imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2) { }}
+                <li style="background-image:url({{=static_url+imgPath[i]}})" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{if(imgPath.length>=3) { }}<b>共{{=imgPath.length}}张</b>{{ } }}
+              </ul>{{ } }}
+              <div class="footer">
+                <div class="count"><i class="icon-replys"></i><span>{{=isEmpty(it[p].replyCount)?'0':it[p].replyCount }}</span></div>
+                <div class="time"><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) && !isEmpty(it[p].taskType)){ }}
+                  <div class="tag-video-time"><i class="icon-play-o"></i><span>{{=formatType(it[p].taskType,it[p].taskprogress)}}</span></div>{{ } }}
+                  {{if(!isEmpty(it[p].coursename)) { }}<span class="course-tit"> {{=it[p].coursename}}</span>{{ } }}
+                </div>
+              </div>
+            </dd>
+          </dl>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      //打开详情
+      function answerDetail(obj){
+          var courseId = $(obj).attr('courseId');
+          var taskId = $(obj).attr('taskId');
+          courseId = isEmpty(courseId) || courseId == undefined || courseId == 'undefined' ? '课程id' : courseId;
+          taskId = isEmpty(taskId) || taskId == undefined || taskId == 'undefined' ? '任务id' : taskId;
+          var param={};
+          param.id=$(obj).attr('data-id');
+          param.memberId = $(obj).attr('data-key');
+          param.courseId = courseId;
+          param.taskId = taskId;
+          param.lx = 'answer-detail';
+          api.openFrame({
+              delay:200,
+              name: 'my-answer-detail',
+              url: 'my-answer-detail.html',
+              rect: {
+                  x: leftLw,
+                  y: 0,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight - headLh
+              },
+              pageParam:param,
+              bounces: false
+          });
+      }
+      apiready=function(){
+          $api.rmStorage('title');
+          $api.rmStorage('content');
+          $api.rmStorage('img');
+          $api.rmStorage('lx_duration');
+          $api.rmStorage('soundPath');
+          $api.rmStorage('isPublic');
+          $api.rmStorage('lx_lens');
+          $api.rmStorage('lx_soundPath');
+          getData(1);
+          var currentPage = 1;
+          //            api.addEventListener({
+          //                name: 'new-question-f'
+          //            }, function (ret,err) {
+          //                getData(1);
+          //            });
+          api.addEventListener({
+              name: 'answer-detail-lx'
+          }, function (ret,err) {
+              getData(1);
+          });
+          api.addEventListener({
+              name: 'continue_video'
+          }, function (ret,err) {
+              getData(1);
+          });
+          var aa = '';
+          api.addEventListener({
+              name: 'answer_lx'
+          }, function (ret) {
+              if (ret && ret.value) {
+                  aa = 1;
+                  total = ret.value.key1.totalCount;
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl);
+                  if (ret.value.page == 1) {
+                      if(isEmpty(ret.value.key1.data)||total==0){
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('body').removeClass('null');
+                      $('#content').html(content(ret.value.key1.data));
+                  } else {
+                      $('#content').append(content(ret.value.key1.data));
+                  }
+              }
+          });
+          api.addEventListener({
+              name: 'answer_f_lx'
+          }, function (ret) {
+              aa =2;
+              getData(1);
+          });
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if(aa == 1){
+                  if (currentPage < Math.ceil(total / 10)) {
+                      currentPage++;
+                      api.sendEvent({
+                          name: 'load_more_ma',
+                          extra: {key: 2}
+                      });
+                  }else {
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              }else {
+                  if (currentPage < Math.ceil(total / pageNum)) {
+                      currentPage++;
+                      getData(currentPage);
+                  }else {
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              }
+          });
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              if(aa == 1){
+                  api.sendEvent({
+                      name: 'load_more_ma',
+                      extra: {key: 1}
+                  });
+              }else{
+                  getData(1);
+              }
+              currentPage = 1;
+          });
+          api.addEventListener({
+              name: 'key_word_ma'
+          }, function (ret) {
+              var value = ret.value;
+              param.keyWords = value.key;
+              searchType = value.searchType;
+              if (value.typ == 1) {
+                  more_data(1);
+              } else if (value.typ == 2) {
+                  more_data(currentPage);
+              }
+          });
+      };
+      var pageNum = 10;
+      var total = 0;
+      var no_loaded=true;
+      function getData(page) {
+          var param = {};
+          param.self = 1;
+          param.ordertype = 1;
+          param.pageNo = page;
+          param.pageSize = pageNum;
+          param.token = $api.getStorage('token');
+          if(page==1&&show_pro&&no_loaded){
+              api.showProgress({
+                  title:'加载中',
+                  modal:false
+              });
+          }
+          ajaxRequest('api/studytools/questionlist/v2.1', 'get', param, function (ret, err) {//003.206 问题列表
+              if(show_pro&&no_loaded){
+                  api.hideProgress();
+              }
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  no_loaded=false;
+                  total = ret.totalCount;
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl);
+                  if(page==1){
+                      if(isEmpty(ret.data)||total==0){
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('body').removeClass('null');
+                      $('#content').html(content(ret.data));
+                  }else{
+                      $('#content').append(content(ret.data));
+                  }
+                   api.parseTapmode();
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>问答编辑</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">新建问答</div>
+      <ul class="right">
+        <li tapmode onclick="new_notes()"><i class="icon-check"></i></li>
+      </ul>
+    </div>
+    <div id="s_head" class="s-head none">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">新建问答</div>
+      <div tapmode onclick="new_notes()" class="right"><i class="icon-check"></i></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe(){
+          api.closeFrame({
+              name: 'answer-edit-f'
+          });
+          api.closeFrame();
+      }
+      var is_click = true;
+      function new_notes() {
+          //api.sendEvent({
+          //    name: 'new-question'
+          //});
+          if(is_click == true){
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              if (isEmpty($api.getStorage('title')) && isEmpty(api.pageParam.content)) {
+                  is_click = true;
+                  api.toast({msg: '标题不能为空',location:'middle'});
+                  return false;
+              }
+              if (isEmpty($api.getStorage('content')) && isEmpty(api.pageParam.title)) {
+                  is_click = true;
+                  api.toast({msg: '内容不能为空',location:'middle'});
+                  return false;
+              }
+              var content = '';
+              var title = '';
+              var img = '';
+              var soundPath = '';
+              var lx_duration = '';
+              if(!isEmpty($api.getStorage('content'))){
+                  content = $api.getStorage('content');
+              }else{
+                  content = api.pageParam.content;
+              }
+              if(!isEmpty($api.getStorage('title'))){
+                  title = $api.getStorage('title');
+              }else{
+                  title = api.pageParam.title;
+              }
+              if(!isEmpty($api.getStorage('soundPath'))){
+                  soundPath = $api.getStorage('soundPath');
+              }else{
+                  soundPath = api.pageParam.soundPath;
+              }
+              if(!isEmpty($api.getStorage('lx_duration'))){
+                  lx_duration = $api.getStorage('lx_duration');
+              }else{
+                  lx_duration = api.pageParam.lx_duration;
+              }
+              if(api.pageParam.wd){
+                  var param = {
+                      token: $api.getStorage('token'),
+                      title: $.trim(title), //提问标题
+                      content: $.trim(content), //提问内容
+                      imgPath: isEmpty($api.getStorage('img')) ? '' : $api.getStorage('img'), //图片数组，图片路径（以’，’分隔）
+                      clientType: appType, //客户端类型：iphone
+                      id: '', //笔记id，如果为空，则为添加，否则为修改
+                      //courseId: isEmpty(courseId) || courseId == 'undefined' || courseId == undefined ? '课程id' : courseId, // 课程id
+                      //subjectId: isEmpty(subjectId) || subjectId== 'undefined' || subjectId== undefined ? '科目id' : subjectId, //科目id(暂无)
+                      //categoryId: isEmpty(categoryId) || categoryId== 'undefined' || categoryId== undefined ? '证书' : categoryId, // 证书（暂无）
+                      //chapterId: isEmpty(chapterId) || chapterId== 'undefined' || chapterId== undefined ? '章节id' : chapterId, //章节id
+                      soundLen: isEmpty(lx_duration) ? '' : lx_duration, //声音文件的长度
+                      subjectName: isEmpty(api.pageParam.subjectName) ? '科目名称' : api.pageParam.subjectName, //科目名称
+                      categoryName: isEmpty(api.pageParam.categoryName)?'证书名称' : api.pageParam.categoryName,
+                      courseName:  isEmpty(api.pageParam.courseName) ? '课程名称': api.pageParam.courseName,
+                      chapterName: isEmpty(api.pageParam.chapterName) ?'章节名称' :api.pageParam.chapterName,
+                      task: '任务名称',
+                      courseId: isEmpty(api.pageParam.courseId) ? 'courseId' : api.pageParam.courseId,
+                      subjectId: isEmpty(api.pageParam.subjectId)? 'subjectId': api.pageParam.subjectId,
+                      categoryId: isEmpty(api.pageParam.categoryId) ?'categoryId' : api.pageParam.categoryId,
+                      chapterId: isEmpty(api.pageParam.chapterId) ? 'chapterId' :api.pageParam.chapterId,
+                      taskId:'',//任务id
+                      taskProgress: 0,//任务进度
+                      taskType:'',//任务类型
+                      soundPath: isEmpty(soundPath) ? '' : soundPath
+                  };
+              }else{
+                  var course_info = $api.getStorage('Course_info');
+                  var param = {
+                      token: $api.getStorage('token'),
+                      title: title, //提问标题
+                      content: content, //提问内容
+                      imgPath: isEmpty(img) ? '' : img, //图片数组，图片路径（以’，’分隔）
+                      courseId: isEmpty(course_info.courseId) || course_info.courseId == 'undefined' ? 'courseId' : course_info.courseId, // 课程id
+                      clientType: appType, //客户端类型：iphone
+                      id: '', //笔记id，如果为空，则为添加，否则为修改
+                      subjectId: isEmpty(course_info.subjectId) || course_info.subjectId == 'undefined' || course_info.subjectId == undefined ? 'subjectId' : course_info.subjectId, //科目id(暂无)
+                      categoryId: isEmpty(course_info.categoryId) || course_info.categoryId == 'undefined' ? 'categoryId' : course_info.categoryId, // 证书（暂无）
+                      chapterId: isEmpty(course_info.chapterId) || course_info.chapterId == 'undefined' ? 'chapterId' : course_info.chapterId, //章节id
+                      soundLen: isEmpty(lx_duration) ? '' : lx_duration, //声音文件的长度
+                      //subjectName: isEmpty(api.pageParam.subjectName) ? '科目名称' : api.pageParam.subjectName, //科目名称
+                      //categoryName: isEmpty(api.pageParam.categoryName)?'证书名称' : api.pageParam.categoryName,
+                      //courseName:  isEmpty(api.pageParam.courseName) ? '课程名称': api.pageParam.courseName,
+                      //chapterName: isEmpty(api.pageParam.chapterName) ?'章节名称' :api.pageParam.chapterName,
+                     subjectName : isEmpty(course_info.subjectName) || course_info.subjectName == 'undefined' ? 'subjectName' : course_info.subjectName,
+                     categoryName : isEmpty(course_info.categoryName) || course_info.categoryName == 'undefined' ? 'categoryName' : course_info.categoryName,
+                     courseName : isEmpty(course_info.courseName) || course_info.courseName == 'undefined' ? 'courseName' : course_info.courseName,
+                     chapterName : isEmpty(course_info.chapterName) || course_info.chapterName == 'undefined' ? 'courseName' : course_info.chapterName,
+                      task: '任务名称',
+                      taskId:'',//任务id
+                      taskProgress:0,//任务进度
+                      taskType:'',//任务类型
+                      soundPath: isEmpty(soundPath) ? '' : soundPath
+                  };
+              }
+              if(param.content.length < 10){
+                  is_click = true;
+                  api.toast({msg:'内容不能少于10个字'});
+                  return false;
+              }
+              api.showProgress({
+                  title : '处理中',
+                  modal : true
+              });
+              is_click = false;
+              ajaxRequest('api/studytools/questionsave/v2.1', 'post', param, function (ret, err) {//003.209.1 发布或修改问题（new）
+                  api.hideProgress();
+                  if (err) {
+                      is_click = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      is_click = true;
+                      var jsfun = "getData(1)";
+                      api.execScript({
+                          name:'root',
+                          frameName: 'my-answer',
+                          script: jsfun
+                      });
+                      api.sendEvent({
+                          name: 'new-question-f'
+                      });
+                      $api.rmStorage('content');
+                      $api.rmStorage('title');
+                      $api.rmStorage('img');
+                      $api.rmStorage('lx_duration');
+                      $api.rmStorage('soundPath');
+                      $api.rmStorage('isPublic');
+                      $api.rmStorage('lx_lens');
+                      $api.rmStorage('lx_soundPath');
+                      closeMe();
+                  }else{
+                      is_click = true;
+                      /*api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });*/
+                  }
+              });
+          }
+      }
+      apiready = function () {
+          $api.rmStorage('content');
+          $api.rmStorage('title');
+          $api.rmStorage('img');
+          $api.rmStorage('lx_duration');
+          $api.rmStorage('soundPath');
+          $api.rmStorage('isPublic');
+          $api.rmStorage('lx_lens');
+          $api.rmStorage('lx_soundPath');
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          if(api.pageParam.wd == '1'){//大窗口
+              api.openFrame({
+                  delay: 200,
+                  name: 'answer-edit-f',
+                  url: 'answer-edit-f.html',
+                  rect: {
+                      x: leftLw,
+                      y: headLh,
+                      w: api.winWidth - leftLw,
+                      h: api.winHeight - headLh
+                  },
+                  pageParam: api.pageParam,
+                  bounces: false
+              });
+          }else{//小窗口
+              $('#header').hide();
+              $('#s_head').show();
+              api.openFrame({
+                  delay: 200,
+                  name: 'answer-edit-f',
+                  url: 'answer-edit-f.html',
+                  rect: {
+                      x: leftSw,
+                      y: headSh,
+                      w: api.winWidth - leftSw,
+                      h: api.winHeight - headSh
+                  },
+                  pageParam: api.pageParam,
+                  bounces: false
+              });
+          }
+          api.addEventListener({
+              name: 'closeFrameAll'
+          },function () {
+              closeMe();
+          });
+          /*
+          api.addEventListener({
+              name: 'new-question-hq'
+          }, function (ret) {
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              if ($api.getStorage('title') == '') {
+                  api.toast({msg: '标题不能为空',location:'middle'});
+                  return false;
+              }
+              if ($api.getStorage('content') == '') {
+                  api.toast({msg: '内容不能为空',location:'middle'});
+                  return false;
+              }
+              if(api.pageParam.wd){
+                  var param = {
+                      token: $api.getStorage('token'),
+                      title: $api.getStorage('title'), //提问标题
+                      content: $api.getStorage('content'), //提问内容
+                      imgPath: isEmpty(ret.value.img) ? '' : ret.value.img, //图片数组，图片路径（以’，’分隔）
+                      //courseId: isEmpty(courseId) || courseId== 'undefined' || courseId== undefined ? '课程id' : courseId, // 课程id
+                      clientType: appType, //客户端类型：iphone
+                      id: '', //笔记id，如果为空，则为添加，否则为修改
+                      //subjectId: isEmpty(subjectId) || subjectId== 'undefined' || subjectId== undefined ? '科目id' : subjectId, //科目id(暂无)
+                      //categoryId: isEmpty(categoryId) || categoryId== 'undefined' || categoryId== undefined ? '证书' : categoryId, // 证书（暂无）
+                      //chapterId: isEmpty(chapterId) || chapterId== 'undefined' || chapterId== undefined ? '章节id' : chapterId, //章节id
+                      soundLen: isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration, //声音文件的长度
+                      subjectName: '科目名称', //科目名称
+                      categoryName: '证书名称',
+                      courseName: '课程名称',
+                      chapterName: '章节名称',
+                      task: '任务名称',
+                      courseId:'courseId',
+                      subjectId:'subjectId',
+                      categoryId:'categoryId',
+                      chapterId:'chapterId',
+                     taskId : '',//(no)
+                     taskProgress : '',//(no)
+                     taskType : '', //(no)
+                      soundPath: isEmpty(ret.value.soundPath) ? '' : ret.value.soundPath
+                  };
+              }else{
+                  var course_info = $api.getStorage('Course_info');
+                  var param = {
+                      token: $api.getStorage('token'),
+                      title: $api.getStorage('title'), //提问标题
+                      content: $api.getStorage('content'), //提问内容
+                      imgPath: isEmpty(ret.value.img) ? '' : ret.value.img, //图片数组，图片路径（以’，’分隔）
+                      courseId: isEmpty(course_info.courseId) || course_info.courseId == 'undefined' ? 'courseId' : course_info.courseId, // 课程id
+                      clientType: appType, //客户端类型：iphone
+                      id: '', //笔记id，如果为空，则为添加，否则为修改
+                      //subjectId: isEmpty(course_info.subjectId) || course_info.subjectId== 'undefined' || course_info.subjectId== undefined ? '' : course_info.subjectId, //科目id(暂无)
+                      subjectId: isEmpty(course_info.subjectId) || course_info.subjectId == 'undefined' || course_info.subjectId == undefined ? 'subjectId' : course_info.subjectId, //科目id(暂无)
+                      categoryId: isEmpty(course_info.categoryId) || course_info.categoryId == 'undefined' ? 'categoryId' : course_info.categoryId, // 证书（暂无）
+                      chapterId: isEmpty(course_info.chapterId) || course_info.chapterId == 'undefined' ? 'chapterId' : course_info.chapterId, //章节id
+                      soundLen: isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration, //声音文件的长度
+                      subjectName: '科目名称', //科目名称
+                      categoryName: '证书名称',
+                      courseName: '课程名称',
+                      chapterName: '章节名称',
+                      task: '任务名称',
+                      taskId : '',//(no)
+                      taskProgress : '',//(no)
+                      taskType : '', //(no)
+                      soundPath: ret.value.soundPath
+                  };
+              }
+              if(param.title == '' || !param.title) {
+                  api.toast({msg: '标题不能为空',location:'middle'});
+                  return false;
+              }
+              if(param.content == '' || !param.content) {
+                  api.toast({msg: '内容不能为空',location:'middle'});
+                  return false;
+              }
+              api.showProgress({
+                  title : '处理中',
+                  modal : false
+              });
+              ajaxRequest('api/studytools/questionsave/v2.1', 'post', param, function (ret, err) {//003.209.1 发布或修改问题（new）
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.sendEvent({
+                          name: 'new-question-f'
+                      });
+                      $api.rmStorage('content');
+                      $api.rmStorage('title');
+                      closeMe();
+      
+                  }
+                  else {
+      
+                  }
+              });
+          });
+          */
+      };
+    </script>
+  </body>
+</html>

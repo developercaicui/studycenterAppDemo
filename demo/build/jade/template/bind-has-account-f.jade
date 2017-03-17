@@ -60,7 +60,6 @@ block scripts
             var outh = $api.getStorage('outh');
             var param = {
                 account: username,
-                token: $api.getStorage('token'),
                 j_captcha: code,
                 password: password,
                 societyType: outh.societyType,
@@ -70,35 +69,41 @@ block scripts
                 title: '处理中',
                 modal: true
             });
-            ajaxRequest('api/v2.1/oauthBinding', 'post', param, function (ret, err) {//007.004 outh帐号绑定
-                api.hideProgress();
-                if (err) {
-                    get_img();
-                    api.toast({
-                        msg: err.msg,
-                        location: 'middle'
-                    });
-                    return false;
-                }
-                if (ret && ret.state == 'success') {
-                    $api.setStorage('token', ret.data.token);
-                    $api.setStorage('mine', ret.data);
-                    api.openWin({
-                        name: 'root',
-                        url: '../index.html',
-                        delay: 200,
-                        slidBackEnabled: false,
-                        pageParam: {to_ucenter: 1}
-                    });
-                } else {
-                    get_img();
-                    var msg = isEmpty(err_conf_007[ret.msg]) ? '' : err_conf_007[ret.msg];
-                    api.toast({
-                        msg: msg,
-                        location: 'middle'
-                    });
-                }
-            });
+           set_token(function(res, error) {
+            if (res.state == 'success') {
+              $api.setStorage('token', res.data.token);
+              param.token = res.data.token;
+              ajaxRequest('api/v2.1/oauthBinding', 'post', param, function (ret, err) {//007.004 outh帐号绑定
+                  api.hideProgress();
+                  if (err) {
+                      get_img();
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      $api.setStorage('token', ret.data.token);
+                      $api.setStorage('mine', ret.data);
+                      api.openWin({
+                          name: 'root',
+                          url: '../index.html',
+                          delay: 200,
+                          slidBackEnabled: false,
+                          pageParam: {to_ucenter: 1}
+                      });
+                  } else {
+                      get_img();
+                      var msg = isEmpty(err_conf_007[ret.msg]) ? '' : err_conf_007[ret.msg];
+                      api.toast({
+                          msg: msg,
+                          location: 'middle'
+                      });
+                  }
+              });
+            }
+          })
         }
         apiready = function () {
             get_img();

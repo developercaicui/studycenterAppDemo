@@ -1,96 +1,164 @@
-about-caicui			关于财萃头部win
-about-caicui-f          关于财萃frame
+webapp
+## 简介
+## 目录介绍（后续继续添加）
+.
+├── demo                         		   # 手机端apicloud项目文件
+│   ├── build/                             # jade格式文件
+│   ├── css/                               # CSS相关文件
+│        ├── about-note.css                     # 
+│        ├── about-video.css/                   # 
+│        ├── api.css/ 						    #
+│		 ├── caicui.css/                        #
+│		 ├── ...
+│   ├── fonts/							   # 字体文件
+│   ├── html/                              # 静态页面
+│        ├── about-caicui.html                  # 关于财萃页头部
+│        ├── about-caicui-f.html          	    # 关于财萃页frame
+│        ├── announce-detail.html          	    # 消息详情页头部
+│        ├── announce-detail-f.html          	# 消息详情页frame
+│        ├── atydying-datile.html          	    # 视频缓存页头部
+│        ├── atydying-datile-f.html          	# 视频缓存页frame
+│        ├── audio.html          	    		# 录音及图片上传块
+│        ├── bind.html          			    # 绑定手机页头部1/3
+│        ├── bind-has-account.html          	# 第三方登录绑定财萃账号头部
+│        ├── bind-has-account-f.html          	# 第三方登录绑定财萃账号frame
+│        ├── bind-one-f.html          	   		# 绑定手机页frame1/3
+│        ├── bind-three.html          	    	# 基本资料页头部3/3
+│        ├── bind-three-f.html          		# 基本资料页frame3/3
+│        ├── bind-two.html          	   		# 设定密码页头部2/3
+│        ├── bind-two-f.html          			# 设定密码页frame2/3
+│        ├── catalog.html          				# 缓存列表
+│        ├── chapter-notes.html          	    # 章节笔记页头部
+│        ├── chapter-notes-f.html          		# 章节笔记页frame
+│        ├── class-notes.html          	    	# 课程笔记页头部
+│        ├── class-notes-f.html          		# 课程笔记页frame
+│        ├── course.html          	    		# 临时文件
+│        ├── course-active-f.html          		# 激活课程页frame
+│        ├── course-active-top.html          	# 激活课程页头部
+│        ├── course-aq.html          	    	# 课程问答页头部
+│        ├── course-aq-f.html          			# 课程问答页frame
+│        ├── course-buy.html          	    	# 购买课程页
+│        ├── course-exam.html          			# 购买课程-选择考试时间弹窗
+│        ├── course-noactive-f.html          	# 购买课程-确认
+│        ├── course-notes-f.html          		# 课程笔记
+│        ├── course-overdue-f.html          	# 过期课程列表
+│        ├── course-question.html          		# 课程问答页头部
+│        ├── course-question-content.html       # 课程问答内容
+│        ├── course-question-f.html          	# 课程问答
+│        ├── course-question-head.html          # 课程问答-头
+│        ├── course-studying-f.html          	# 在学课程列表
+│        ├── course-studying-top.html          	# 在学课程列表页头部
+│        ├── course-talk-f.html          		# 课程讨论
+│        ├── course-talk-f-bak.html          	# 临时文件
+│        ├── course-talk-list.html          	# 课程讨论-下拉菜单
+│        ├── course-talk-moref.html          	# 课程讨论-更多
+│        ├── course-talk-top.html          		# 课程讨论页上部
+│        ├── course-test.html          	    	# 课程任务测试头部
+│        ├── course-test-f.html          		# 课程任务测试frame
+│        ├── course-test-pdf.html          	    # 课程任务测试-pdf
+│        ├── course-url.html          			# 课程视频
+│        ├── create-notes.html          	    # 新建笔记-视频内横版-头
+│        ├── create-notes-f.html          		# 新建笔记-视频内横版
+│        ├── create-question.html          	    # 新建问题-视频内横版-头
+│        ├── create-question-f.html          	# 新建问题-视频内横版
+│        ├── editor-bar2.html          	    	# 无
+│        ├── editor-notes.html          		# 编辑笔记-视频内横版-头
+│        ├── editor-notes-f.html          	    # 编辑笔记-视频内横版
+│        ├── editor-talk.html          	    	# 编辑讨论-视频内横版-头
+│        ├── editor-talk-f.html          		# 编辑讨论-视频内横版
+│        ├── faild-load.html          	    	# 页面加载失败提示页(临时文件)
+│        ├── findPswOne.html          	    	# 找回密码页头部1/2
+│        ├── findPswOne-f.html          		# 找回密码页frame1/2
+│        ├── findPswTwo.html          	    	# 找回密码页头部2/2
+│        ├── findPswTwo-f.html          		# 找回密码页frame2/2
+│        ├── footer.html          	    		# 空(临时文件)
+│        ├── footer-editor.html          		# 底部录音,上传图片,发布文本(编辑条)
+│        ├── Launch.html          	    		# (临时文件)
+│        ├── message-announce-f.html          	# 消息中心tab消息页
+│        ├── message-center.html          	    # 消息中心页
+│        ├── message-tips-f.html          		# 消息中心tab公告页
+│        ├── mine-notes.html          	    	# 我的笔记页头部
+│        ├── mine-notes-f.html          		# 我的笔记页frame
+│        ├── modify.html          	    		# 基本资料页头部
+│        ├── modify-f.html          			# 基本资料页frame
+│        ├── my-notes.html          	    	# 课程笔记页头部(临时文件)
+│        ├── my-notes-f.html          			# 课程笔记页frame(临时文件)
+│        ├── my-question.html          	    	# 我的问答页头部
+│        ├── my-question-f.html          		# 我的问答页frame
+│        ├── my-reply-f.html          	    	# 我的讨论页tab我回复的页
+│        ├── my-talk.html          	    		# 我的讨论页头部
+│        ├── my-talk-f.html          			# 我的讨论页frame
+│        ├── new-mine.html          	    	# 编辑笔记-选择章节页头部
+│        ├── new-mine-f.html          			# 编辑笔记-选择章节页frame
+│        ├── new-notes.html          	    	# 新建笔记页-头
+│        ├── new-notes-f.html          			# 新建笔记页frame
+│        ├── new-question.html          	    # 新建问题页-头
+│        ├── new-question-f.html          		# 新建问题页frame
+│        ├── new-talk.html          	    	# 新建讨论页-头
+│        ├── new-talk-f.html          			# 新建讨论页frame
+│        ├── notes-course-f.html          	    # (临时文件)
+│        ├── notes-detail-f.html          		# 笔记详情页frame
+│        ├── notes-detial-top.html          	# 笔记详情页-头
+│        ├── notes-mine-f.html          		# (临时文件)
+│        ├── opinion-feedback.html          	# 意见反馈-头
+│        ├── opinion-feedback-f.html          	# 意见反馈frame
+│        ├── outside.html          	    		# (临时文件)
+│        ├── over-page.html          			# (临时文件)
+│        ├── protocol.html          	    	# 注册协议-头
+│        ├── protocol-f.html          			# 注册协议-frame
+│        ├── question-detail-f.html          	# 问题详情-frame
+│        ├── question-detail-head.html          # 问题详情-头
+│        ├── question-mine.html          	    # 编辑问题-选择课程-头
+│        ├── question-mine-f.html          		# 编辑问题-选择课程-frame
+│        ├── release-notes.html          	    # (临时文件)
+│        ├── search.html          				# 搜索-头
+│        ├── search-f.html          	   	 	# (临时文件)
+│        ├── search-notes-f.html          		# 搜索-笔记
+│        ├── search-question-f.html          	# 搜索-问题
+│        ├── search-talk-f.html          		# 搜索-讨论
+│        ├── section-notes.html          	    # (临时文件)
+│        ├── select-photo-f.html          		# 添加图片的弹窗（相册or拍照）
+│        ├── set-up.html          	    		# 设置-头
+│        ├── set-up-f.html          			# 设置-frame
+│        ├── set-video.html          	    	# 设置视频质量-头
+│        ├── set-video-f.html          			# 设置视频质量-frame
+│        ├── sign-edit.html          	    	# 注册-基本资料-头
+│        ├── sign-edit-f.html          			# 注册-基本资料-frame
+│        ├── sign-photo-f.html          	    # 注册-头像
+│        ├── sign-up.html          	    		# 注册第一步-头
+│        ├── sign-up-f.html          			# 注册第一步-frame
+│        ├── studying-menu.html          	    # (临时文件)
+│        ├── talk-detail.html          			# 讨论详情-头
+│        ├── talk-detail-f.html          	    # 讨论详情-frame
+│        ├── timer-select.html          		# 日期插件
+│        ├── tips-detail.html          	    	# 公告详情-头
+│        ├── tips-detail-f.html          		# 公告详情-frame
+│        ├── user-index.html          	    	# 个人中心
+│        ├── user-mine-f.html          			# 我的资料
+│        ├── video.html          	   	 		# 视频主窗口
+│        ├── video-buffer.html          		# 视频缓存-头
+│        ├── video-cache-f.html          	    # 视频缓存-frame
+│        ├── video-draw.html          			# (临时文件)
+│        ├── video-header.html          	    # (临时文件)
+│        ├── video-menu.html          			# 视频右侧菜单
+│        ├── video-notes.html          	    	# 视频笔记
+│        ├── video-notes-question.html          # (临时文件)
+│        ├── video-question.html          	    # 视频问题
+│
+│   ├── icon/                              # 应用图标
+│   ├── image/                             # image静态资源
+│   ├── launch/                            # 启动图片目录
+│   ├── lib/                               # 路由相关文件
+│   ├── script/                            # script相关文件
+│   ├── config.xml                         # 配置文件(应用配置说明)
+│   ├── filelist                           # 文件简要说明
+│   ├── index.html                         # 启动页面
+│
+├── node_modules                        # 项目依赖模块
+│   ├── ...
+│
+├── widget/								# widget包文件
+├── package.json                        # 项目模块配置文件
+├── gulpfile.js                         # gulp任务
+└── README.md                           # 目录结构说明文档
 
-atydying-detail			课程缓存管理头部win
-atydying-detail-f		课程缓存管理frame
-
-bind-one			账号绑定(1)头部win
-bind-one-f		账号绑定(1)frame
-bind-two			账号绑定(2)头部win
-bind-two-f		账号绑定(2)frame
-bind-three		账号绑定(3)头部win
-bind-three-f		账号绑定(3)frame
-
-chapter-notes 			章节笔记头部win
-chapter-notes-f			章节笔记frame
-
-class-notes				课堂笔记头部win
-class-notes-f  			课堂笔记frame
-
-course-tab				课程头部win
-course-active			激活课程头部win
-course-studying-f		课程在学frame
-course-Noactive			课程未激活frame
-course-overdue-f        课程过期frame
-
-course-question			课程问答头部win
-course-question-f		课程问答frame
-
-course-talk-f  			课程讨论frame
-
-course-test				课程考试win头部
-course-test-f			课程考试frame
-
-course-exam				预约考试弹窗
-
-create-notes			创建笔记头部win
-create-notes-f			创建笔记frame-  
-edit-notes				编辑笔记头部window
-edit-notes-f			编辑笔记frame
-
-findPsw					找回密码
-
-footer					底部tab按钮
-
-course-aq				课程问答头部win
-course-aq-f				课程问答frame
-
-message-center			消息中心头部win
-message-announce-f		消息frame
-message-tips-f			公告frame
-announce-detail         消息详情头部
-announce-detail-f       消息详情frame
-tips-detail             公告详情头部
-tips-detail-f           公告详情frame
-
-new-notes				发起问题头部win
-new-notes-f				发起问题frame
-
-
-
-user-center             个人中心头部win
-user-mine-f             我的frame
-user-index              中心frame
-course-tab-f            课程frame
-
-question-detail-f		问答详情
-
-search                 	搜索头部win
-search-notes-f          搜索我的笔记frame
-search-question-f       搜索我的问题frame
-search-talk-f           搜索我的讨论frame
-
-
-<--课程部分
-course-stying-top       课程进度头部
-catalog                 目录
-course-question-f       问答
-course-notes-f          笔记
-course-talk-f           讨论
-course-question-head    更多问答头部
-course-question-content 更多问答frame
-class-notes             更多笔记头部
-class-notes-f           课程笔记
-mine-notes-f            我的笔记
-chapter-notes           章节笔记头部
-chapter-notes-f         章节笔记列表
-course-talk-top         更多讨论头部
-course-talk-moref        更多讨论frame
-course-talk-lst         更多讨论排序弹框frame
-talk-detail             讨论详情
-notes-detail-top        笔记详情头部
-notes-detail-f          笔记详情
-question-detail-head    问答详情头部
-question-detail-f       问答详情页
-editor-notes            笔记编辑头部
-editor-notes-f          笔记编辑

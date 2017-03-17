@@ -1,0 +1,32 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+#mask {
+  width: 100%;
+  height: 100%;
+  padding-top: 2rem;
+  background: rgba(0,0,0,0.6);
+}
+#mask .activated {
+  width: 11.45rem;
+  height: 11.3rem;
+  background: #fff;
+  margin: 0 auto;
+  border-radius: 0.1rem;
+}
+#mask .activated .up {
+  box-sizing: border-box;
+  height: 4.91rem;
+  border-bottom: 0.02rem solid #bcbaba;
+  padding: 0.26rem 0.26rem 0.19rem 0.26rem;
+}
+#mask .activated .up .left {
+  float: left;
+  height: 3.4rem;
+  width: 5.5rem;
+  background: url("../image/activated.png") 0 0 no-repeat;
+  background-size: 100%;
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="transparent body-video">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>视频页笔记详情</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">笔记详情</div>
+      <!--他人笔记显示这个-->
+      <ul id="isHer" class="right none">
+        <li tapmode onclick="coll()"><i class="icon-star"></i></li>
+        <li tapmode onclick="love()"><i class="icon-thumb-up"></i></li>
+      </ul>
+      <ul id="isMe" class="right none">
+        <li tapmode onclick="del()"><i class="icon-trash"></i></li>
+        <li tapmode onclick="toEdit()"><i class="icon-edit3"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe() {
+          api.closeFrame({name:'video-note-detail-f'});
+          //api.closeFrame({name:'video-note'});
+          /*var par = api.pageParam;
+          par.detail = 'detail';
+          api.openFrame({
+              delay:200,
+              name: 'video-note',
+              url: 'video-note.html',
+              rect : {
+                  x : 0,
+                  y : 0,
+                  w : api.winWidth,
+                  h : api.winHeight
+              },
+              bgColor: 'rgba(0,0,0,0)',
+              pageParam: par,
+              bounces: false
+          });*/
+      
+          api.closeFrame();
+      }
+      //删除笔记
+      function del(){
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token :$api.getStorage('token'),
+                      id : api.pageParam.id,
+                      type: 'note'
+                  };
+                  api.showProgress({
+                      title: '刪除中',
+                      modal: true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          var jsfun = "removeList('" + api.pageParam.id + "')";
+                          api.execScript({
+                              name: 'video',
+                              frameName: 'video-note-all',
+                              script: jsfun
+                          });
+                          api.execScript({
+                              name: 'video',
+                              frameName: 'video-note-me',
+                              script: jsfun
+                          });
+                          closeMe();
+                      }else {
+                          api.toast({
+                              msg: '删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      
+      }
+      //修改笔记
+      function toEdit() {
+          api.openFrame({
+              delay:200,
+              name: 'video-note-edit',
+              url: 'video-note-edit.html',
+              bgColor: 'rgba(0,0,0,0)',
+              rect: {
+                  x: 0,
+                  y: 0,
+                  w: api.winWidth,
+                  h: api.winHeight
+              },
+              pageParam: api.pageParam,
+              bounces: false
+          });
+      }
+      apiready = function(){
+          var memberId=api.pageParam.memberId;
+          if (memberId==getstor('memberId')) {
+              $('#isMe').show();
+          } else {
+              $('#isHer').show();
+          }
+          api.openFrame({
+              delay:200,
+              name: 'video-note-detail-f',
+              url: 'note-detail.html',
+              rect: {
+                  x: api.winWidth / 2,
+                  y: headLh,
+                  w: api.winWidth / 2
+              },
+              pageParam: api.pageParam,
+              bounces: false
+          });
+      };
+      //点击点赞
+      function love() {
+          var param = {};
+          param.id = api.pageParam.id;
+          param.type = 'note';
+          param.title = '';
+          param.userId = getstor('memberId');
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '处理中',
+              model: true
+          });
+          ajaxRequest('api/studytools/commons/praise/v2.1', 'get', param, function (ret, err) {//003.001 点赞
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  api.toast({
+                      msg: '点赞成功',
+                      location: 'middle'
+                  });
+                  api.parseTapmode();
+              }
+              else {
+                  api.toast({
+                      msg: '点赞失败',
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+                                      //收藏
+      function coll() {
+          var param = {};
+          param.noteId = api.pageParam.id;
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '处理中',
+              model: true
+          });
+          ajaxRequest('api/v2/note/favorite', 'get', param, function (ret, err) {//003.117  笔记收藏
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  api.toast({
+                      msg: '收藏成功',
+                      location: 'middle'
+                  });
+                  api.parseTapmode();
+              }
+              else {
+                  api.toast({
+                      msg: '收藏失败',
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

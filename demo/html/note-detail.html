@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="bg-white detail-page">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>笔记详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/col-lg.css">
+  </head>
+  <body>
+    <input name="extraData1" type="hidden" value="">
+    <input name="extraData2" type="hidden" value="">
+    <div id="content" class="note-detail"></div>
+    <script id="tpl" type="text/x-dot-template">
+          <dl class="cont-list">
+            <dd>
+              <div class="footer">
+                <div class="course-name">{{ if(!isEmpty(it.taskprogress)&&!isEmpty(it.taskType)){ }}
+                  <div class="tag-video-time"><i class="icon-play-o"></i><span id="playTime" tapmode onclick="jump_task('{{=it.taskprogress}}','{{=it.courseId}}','{{=it.taskId}}')">{{=formatType(it.taskType,it.taskprogress)}}</span></div>{{ } }}<span class="course-tit"> {{=it.chaptername}}</span>
+                </div>
+                <div class="time">
+                  <!--i.overt 公开--><span>{{if(!isEmpty(it.updateTime)) {  }}{{=formatDate(it.updateTime,'Y')+'-'+formatDate(it.updateTime,'M')+'-'+formatDate(it.updateTime,'D')}} {{ } }}</span><span>{{if(!isEmpty(it.updateTime)) {  }}{{=formatDate(it.updateTime,'h')+':'+formatDate(it.updateTime,'m')}} {{ } }}</span><span>{{=it.nikeName}}</span>
+                </div>
+              </div>
+              <div class="describe">{{=!isEmpty(it.content)?it.content:''}}</div>{{if(!isEmpty(it.soundPath) && it.soundlen>0) { }}
+              <div tapmode url="{{=static_url+it.soundPath}}" onclick="playAudio(this)" bg time="{{=it.soundlen}}" class="voice-player"></div>{{ } }}
+              {{if(it.imgPath) { }}
+              <div class="pic-group-detail">
+                {{var imgPath=it.imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=100) { }}<img src="{{=static_url+imgPath[i]}}">{{ } }}
+                {{ } }}
+              </div>{{ } }}
+            </dd>
+          </dl>
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function getData() {
+          var param = {};
+          param.id =api.pageParam.id;
+          param.token = $api.getStorage('token');
+          if(show_pro&&no_loaded){
+              api.showProgress({
+                  title: '加载中',
+                  modal: false
+              });
+          }
+          ajaxRequest('api/studytools/nodedetail/v2.1', 'get', param, function (ret, err) {//003.114
+              if(show_pro&&no_loaded){
+                  api.hideProgress();
+                  no_loaded=false;
+              }
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              if (ret && ret.state == 'success') {
+                  $('#content').html(content(ret.data));
+                  $('input[name=extraData1]').val(ret.data.memberId);
+                  $('input[name=extraData2]').val(ret.data.id);
+                  audioDom();
+                  api.parseTapmode();
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+      var no_loaded = true;
+      apiready = function () {
+          getData();
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame();
+          });
+      };
+      function openImageBrower(arr, i) {
+          //图片浏览器打开
+          var obj = api.require('imageBrowser');
+          obj.openImages({
+              imageUrls: arr.split(','),
+              activeIndex: i
+          });
+      }
+    </script>
+  </body>
+</html>

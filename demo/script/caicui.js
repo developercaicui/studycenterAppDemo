@@ -631,10 +631,10 @@ function getCCconfig(callback, is_force) {
 								$api.setStorage('CCconfig', JSON.parse(ret.data.appsecret));
 								callback(ret.data.appsecret);
 						} else {
-								api.toast({
-										msg: 'cc配置接口异常',
-										location: 'middle'
-								});
+								// api.toast({
+								// 		msg: 'cc配置接口异常',
+								// 		location: 'middle'
+								// });
 								callback(false);
 						}
 				});

@@ -362,7 +362,9 @@
             model: true
         });
         set_token(function(res, error) {
+
             if (error) {
+                api.hideProgress();
                 api.toast({
                     msg: error.msg,
                     location: 'middle'
@@ -374,7 +376,6 @@
                 param.account = name;
                 param.password = password;
                 param.token = res.data.token;
-
                 ajaxRequest('api/v2.1/login', 'post', param, function(ret, err) { //007.005 会员登录
                     api.hideProgress();
                     if (err) {
@@ -420,6 +421,7 @@
                     }
                 });
             } else {
+                api.hideProgress();
                 var err = '';
                 if (!isEmpty(err_conf_007[res.msg])) {
                     err = err_conf_007[res.msg];
@@ -428,6 +430,7 @@
                         location: 'middle'
                     });
                 }
+                
             }
         });
     }
@@ -443,7 +446,6 @@
         //				}, 1500);
         var obj = api.require('qq');
         obj.login(function(ret, err) {
-            alert('qq' + JSON.stringify(ret) + JSON.stringify(err))
             if (ret.openId) {
                 set_token(function(res, error) {
                     if (error) {
@@ -1044,10 +1046,7 @@
 
     }
     var is_resume;
-    apiready = function() {
-
-
-
+    apiready = function() {      
 
 
         var tasksProgress = {
@@ -1516,6 +1515,9 @@
                 }
             }
         });
+
+        
+
     };
     </script>
 </body>

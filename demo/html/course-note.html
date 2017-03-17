@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程笔记</title>
+  </head>
+  <body>
+    <div class="s-head">
+      <div tapmode onclick="goChapter()" class="left"><i class="icon-arrow-left"></i><span>章节列表</span></div>
+      <div class="center">
+        <div class="btn-group btn-success">
+          <div tapmode="active" onclick="set_indes(0)" class="btn active">大家的笔记</div>
+          <div tapmode="active" onclick="set_indes(1)" class="btn">我的笔记</div>
+        </div>
+      </div>
+      <ul class="right">
+        <li tapmode onclick="new_note()"><span>新建</span><i class="icon-plus"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function new_note(){
+          api.openFrame({
+              delay:200,
+              name: 'course-note-edit',
+              url: 'course-note-edit.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth  - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam:api.pageParam,
+              bounces: false
+          });
+      }
+      function goChapter(){
+          api.closeFrameGroup({
+              name: 'noteFrameGroup'
+          });
+          api.setFrameGroupAttr({
+              name: 'chapterFrameGroup',
+              hidden: false
+          });
+          api.closeFrame();
+      }
+      
+      function set_indes(a) {
+          api.setFrameGroupIndex({
+              name: 'noteFrameGroup',
+              index: a
+          });
+          $('.btn-group .btn').removeClass('active').eq(a).addClass('active');
+      }
+      
+      apiready = function () {
+          api.setFrameGroupAttr({
+              name:'chapterFrameGroup',
+              hidden:true
+          });
+          var noteIndex;
+          //如果是从“我的”笔记章节列表跳过来
+          if(api.pageParam.notetype == 'me'){
+              noteIndex = 1;
+          }else{
+              noteIndex = 0;
+          }
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrameGroup({
+                  name: 'noteFrameGroup'
+              });
+              api.closeFrame();
+          });
+          api.openFrameGroup({
+              name: 'noteFrameGroup',
+              scrollEnabled: true,
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headSh
+              },
+              bgColor: '#fff',
+              index: noteIndex,
+              preload: 1,
+              frames: [{
+                  name: 'course-note-all',
+                  url: 'course-note-all.html',
+                  pageParam:api.pageParam
+              }, {
+                  name: 'course-note-me',
+                  url: 'course-note-me.html',
+                  pageParam:api.pageParam
+              }]
+          }, function (ret, err) {
+              $('.btn-group .btn').removeClass('active').eq(ret.index).addClass('active');
+          });
+      };
+    </script>
+  </body>
+</html>

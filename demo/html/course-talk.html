@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程讨论</title>
+  </head>
+  <body>
+    <div class="s-head">
+      <div tapmode onclick="talk_sort()" class="left"><i class="icon-arrow-down"></i><span class="reply_new">最新回复</span></div>
+      <ul class="right">
+        <li tapmode onclick="showSearchBar('talk_search')"><i class="icon-search"></i><span>搜索</span></li>
+        <li tapmode onclick="open_talk()"><i class="icon-comments2"></i><span>我的讨论</span></li>
+        <!--li(tapmode, onclick="new_talk('talk-edit','small-h','','','course-talk')")-->
+        <li tapmode onclick="new_talk()"><span>新建</span><i class="icon-plus"></i></li>
+      </ul>
+      <div class="search-bar">
+        <input type="text" name="input-lx" placeholder="搜索" class="input-txt">
+        <div class="right"><i class="icon-search2"></i><span tapmode onclick="goSearch(this)" class="submit">搜索</span><span tapmode onclick="hideSearchBar()" class="cancel">取消</span></div>
+      </div>
+      <script type="text/javascript">
+        function showSearchBar(e){
+            searchType = e;
+            $('.search-bar').show(300);
+        }
+        function hideSearchBar(){
+            $('.search-bar').hide();
+            switch(searchType){
+                case 'note':
+                    api.setFrameAttr({
+                        name:'my-note-list-f',
+                        hidden:true
+                    });
+                    api.sendEvent({
+                        name: 'f_xg'
+                    });
+                    break;
+                case 'answer':
+                    api.sendEvent({
+                        name: 'answer_f_lx'
+                    });
+                    break;
+                case 'note_search':
+                    api.closeFrame({name:'course-note-all'});
+                    api.openFrameGroup({
+                        name: 'chapterFrameGroup',
+                        scrollEnabled: true,
+                        rect: {
+                            x: leftSw,
+                            y: headSh,
+                            w: api.winWidth - leftSw,
+                            h: api.winHeight - headSh
+                        },
+                        index: 0,
+                        preload: 0,
+                        frames: [{
+                            name: 'course-note-chapter-all',
+                            url: 'course-note-chapter-all.html',
+                            pageParam: api.pageParam
+                        }, {
+                            name: 'course-note-chapter-me',
+                            url: 'course-note-chapter-me.html',
+                            pageParam: api.pageParam
+                        }]
+                    }, function (ret, err) {
+                        $('.btn-group .btn').removeClass('active').eq(ret.index).addClass('active');
+                    });
+                    api.setFrameAttr({
+                        name: 'course-note-all',
+                        hidden: true
+                    });
+                    break;
+                case 'answer_search':
+                    api.closeFrame({name:'course-answer-all'});
+                    api.openFrameGroup({
+                        name: 'answerFrameGroup',
+                        scrollEnabled: true,
+                        rect: {
+                            x: leftSw,
+                            y: headSh,
+                            w: api.winWidth - leftSw,
+                            h: api.winHeight - headSh
+                        },
+                        index: 0,
+                        preload: 1,
+                        frames: [{
+                            name: 'course-answer-all',
+                            url: 'course-answer-all.html',
+                            pageParam: api.pageParam
+                        }, {
+                            name: 'course-answer-me',
+                            url: 'course-answer-me.html',
+                            pageParam: api.pageParam
+                        }]
+                    }, function (ret, err) {
+                        api.sendEvent({
+                            name: 'hasAnswerTab',
+                            extra: {key1: ret.index}
+                        });
+                    });
+                    api.setFrameAttr({
+                        name: 'course-answer-all',
+                        hidden: true
+                    });
+                    break;
+                case 'talk_search':
+                    api.closeFrame({name:'course-talk-f'});
+                    api.openFrame({
+                        delay:200,
+                        name: 'course-talk-f',
+                        url: 'course-talk-f.html',
+                        rect: {
+                            x: leftSw,
+                            y: headSh,
+                            w: api.winWidth - leftSw,
+                            h: api.winHeight - headSh
+                        },
+                        bounces: true,
+                        reload:true
+                    });
+                    break;
+                case 'talk_search_m':
+                    api.closeFrame({name: 'course-talk-me-f'});
+                    api.openFrame({
+                        delay: 200,
+                        name: 'course-talk-me-f',
+                        url: 'course-talk-me-f.html',
+                        rect: {
+                            x: leftSw,
+                            y: headSh,
+                            w: api.winWidth - leftSw,
+                            h: api.winHeight - headSh
+                        },
+                        bounces: true,
+                        reload: true
+                    });
+                    break;
+            }
+        
+        }
+      </script>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function open_talk(){
+          api.openFrame({
+              delay:200,
+              name: 'course-talk-me',
+              url: 'course-talk-me.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth  - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam:{courseId:$api.getStorage('Course_info').courseId},
+              bounces: false
+          });
+      }
+      function new_talk(){
+          api.openFrame({
+              delay:200,
+              name: 'course-talk-edit',
+              url: 'course-talk-edit.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth  - leftSw,
+                  h: headLh
+              },
+              pageParam:api.pageParam,
+              bounces: false
+          });
+      }
+      apiready = function (){
+          api.addEventListener({
+              name:'close_sort'
+          },function(ret){
+              var value=ret.value;
+              var sort_name=value.sort_name;
+              $('.reply_new').html(sort_name);
+          });
+          //myFrame('course-talk-f', 'small', true);
+          api.openFrame({
+              delay:200,
+              name: 'course-talk-f',
+              url: 'course-talk-f.html',
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth  - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam:api.pageParam
+          });
+      };
+      function talk_sort(){
+          api.openFrame({
+              name: 'talk-sort',
+              url: 'talk-sort.html',
+              bgColor: 'rgba(0,0,0,0)',
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth  - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam: {typ:1},
+              bounces: false,
+              delay:200,
+              reload:false
+          });
+      }
+    </script>
+  </body>
+</html>

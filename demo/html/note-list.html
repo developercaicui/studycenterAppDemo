@@ -1,0 +1,81 @@
+
+<div id="content"></div>
+<script id="tpl1" type="text/x-dot-template">
+  {{ var memberId = get_loc_val('mine','memberId'); }}
+  {{for(var p in it) { }}
+  {{ if(it[p].memberId == memberId){ }}
+  <dl id="li{{=it[p].id}}" class="cont-list">
+    <dt><img src="{{=static_url+it[p].headImg}}" class="left_icon avatar"/></dt>
+    <dd>
+      <div tapmode="tapmode" onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="link-box">
+        <div class="name">{{=it[p].nikeName}}</div>
+        <div class="describe">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>
+      </div>{{if(!isEmpty(it[p].imgPath)) { }}
+      <ul class="pic-group">
+        {{var imgPath=it[p].imgPath.split(',');}}
+        {{ for(var i in imgPath) { }}
+        {{imgPath[i]=static_url+imgPath[i];}}
+        {{if(i<=2) { }}
+        <li style="background-image:url('{{=imgPath[i]}}')" tapmode="tapmode" onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+        {{ } }}
+        {{ if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ }}}
+      </ul>{{ } }}
+      <div class="footer">{{if(it[p].isPublic == 0){ }}
+        <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>{{ } }}
+        <div class="time">{{if(it[p].isPublic == 0){ }}<i class="overt">公开</i>{{ } }}<span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+        <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) &&  !isEmpty(it[p].taskType)){ }}<span class="tag-video-time"><i class="icon-play-o"></i><i>{{=formatType(it[p].taskType,it[p].taskprogress)}}</i></span>{{ } }}<span class="course-tit">{{=it[p].coursename}}</span></div>
+      </div>
+    </dd>
+  </dl>{{ } }}
+  {{ } }}
+</script>
+<script id="tpl2" type="text/x-dot-template">
+  {{for(var p in it) { }}
+  {{if(it[p].isPublic == 0){ }}
+  <dl id="li{{=it[p].id}}" class="cont-list">
+    <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"/></dt>
+    <dd>
+      <div class="name">{{=it[p].nikeName}}</div>
+      <div tapmode="tapmode" onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="describe link-box">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>{{ if(!isEmpty(it[p].imgPath)) { }}
+      <ul class="pic-group">
+        {{var imgPath=it[p].imgPath.split(',');}}
+        {{ for(var i in imgPath) { }}
+        {{if(i<=2) { }}
+        <li style="background-image:url('{{=static_url+imgPath[i]}}')" tapmode="tapmode" onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+        {{ } }}
+        {{if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ } }}
+      </ul>{{ } }}
+      <div class="footer">
+        <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>
+        <div class="time"><i class="overt">公开</i><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+        <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) && !isEmpty(it[p].taskType)){ }}<span class="tag-video-time"><i class="icon-play-o"></i><span>{{=formatType(it[p].taskType,it[p].taskprogress)}}</span></span>{{ } }}<span class="course-tit"> {{=it[p].coursename}}</span></div>
+      </div>
+    </dd>
+  </dl>{{ } }}
+  {{ } }}
+</script>
+<script id="tpl3" type="text/x-dot-template">{{for(var p in it) { }}
+  <dl id="li{{=it[p].id}}" class="cont-list">
+    <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"/></dt>
+    <dd>
+      <div class="name">{{=it[p].nikeName}}</div>
+      <div tapmode="tapmode" onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="describe link-box">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>{{ if(!isEmpty(it[p].imgPath)) { }}
+      <ul class="pic-group">
+        {{var imgPath=it[p].imgPath.split(',');}}
+        {{ for(var i in imgPath) { }}
+        {{imgPath[i]=static_url+imgPath[i];}}
+        {{if(i<=2) { }}
+        <li style="background-image:url('{{=imgPath[i]}}')" tapmode="tapmode" onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+        {{ } }}
+        {{if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ } }}
+      </ul>{{ } }}
+      <div class="footer">
+        {{var uid = getstor('memberId');}}
+        {{if(it[p].isPublic == 0){ }}
+        <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>{{ } }}
+        <div class="time"><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+        <div class="course-name"><span class="course-tit"> {{=it[p].coursename}}</span></div>
+      </div>
+    </dd>
+  </dl>{{ } }}
+</script>

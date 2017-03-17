@@ -45,19 +45,23 @@
       <div class="course-content swiper-slide">
         <input type="checkbox" class="select-tag">
         <div class="course-test-title">
-          <p>{{ if(!isEmpty(value.title)) { }}  {{=value.title}} {{ } }}</p>
+          <p>{{ if(!isEmpty(value.title)) { }}  {{=value.title.replace(/\n|\r|\t|<[^<]*>/g,"")}} {{ } }}</p>
         </div>{{ if(value.questionTypes=='radio'){ }}
         <!--单项选择题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector exam-yf">{{~JSON.parse(value.context):val:kk}}
+        {{ if(!isEmpty(val.title)) { }}
           <div data-select="{{=numToAbc(kk)}}" onclick="select_radio(this,'{{=key}}')" tapmode data-check="{{=val.isChecked}}" class="selector-detail clear-fix"><span>{{=numToAbc(kk)}}</span>
-            <p>{{=val.title}}</p>
+             <p>{{=val.title.replace(/<[^<]*>/g,"")}}</p>
           </div>{{~}}
+        {{ } }}
         </div>{{ }else if(value.questionTypes=='checkbox'){ }}
         <!--多项选择题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector exam-yf">{{~JSON.parse(value.context):val:kk}}
+        {{ if(!isEmpty(val.title)) { }}
           <div data-select="{{=numToAbc(kk)}}" onclick="select_checkbox(this,'{{=key}}')" tapmode data-check="{{=val.isChecked}}" class="selector-detail clear-fix"><span>{{=numToAbc(kk)}}</span>
-            <p>{{=val.title}}</p>
+            <p>{{=val.title.replace(/<[^<]*>/g,"")}}</p>
           </div>{{~}}
+        {{ } }}
         </div>{{ }else if(value.questionTypes=='question'){ }}
         <!--问答题-->
         <div data-type="{{=value.questionTypes}}" data-num="{{=key}}" class="course-test-selector course_selector1 exam-yf">

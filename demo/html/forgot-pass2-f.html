@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>财萃Pad</title>
+  </head>
+  <body>
+    <div class="signmain">
+      <div class="form">
+        <ul>
+          <p class="tips">亲：常来学习，就不会忘记密码啦。</p>
+          <li>
+            <input type="password" placeholder="新密码" name="password" class="input-txt"><span tapmode="" onclick="look(this)"><i class="icon-eye"></i></span>
+          </li>
+          <li>
+            <input type="password" placeholder="再输入一次" name="repassword" class="input-txt"><span tapmode="" onclick="look(this)"><i class="icon-eye"></i></span>
+          </li>
+          <p class="tips-warning"></p>
+        </ul>
+        <div tapmode="" onclick="do_sub()" class="btn btn-block">完成</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      var phone,code;
+      function do_sub(){//找回密码提交动作
+          var param={};
+          var password= $.trim($('input[name=password]').val());
+          var repassword= $.trim($('input[name=repassword]').val());
+          if(password==''){
+              $('.tips-warning').text('请输入新密码');
+              return false;
+          }
+          if(repassword==''){
+              $('.tips-warning').text('请再次输入新密码');
+              return false;
+          }
+          var regex = /^\d{9,16}$|^(?!\d+$)\w{8,16}$/;
+          if (!regex.test(password)) {
+              $('.tips-warning').text('密码8-16位,不能有空格,纯数字最少要9位');
+              return false;
+          }
+          if(password!=repassword){
+              $('.tips-warning').text('两次密码不一致');
+              return false;
+          }
+      
+          set_token(function (res, error) {
+              if (error) {
+                  if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                      is_ok = true;
+                  }
+                  api.toast({
+                      msg: error.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (res.state == 'success') {
+                  param.token = res.data.token;
+                  param.mobile = phone;
+                  param.code = code;
+                  param.password = password;
+                  api.showProgress({
+                      title: '处理中',
+                      modal: true
+                  });
+                  ajaxRequest('api/v2.1/changePwdByPhone', 'post', param, function (ret, err) {//007.011 手机找回密码（new）
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          api.toast({
+                              msg: '请用新密码登录',
+                              location: 'middle'
+                          });
+                          setTimeout(function () {
+                              api.setStatusBarStyle({
+                                  style: 'dark'
+                              });
+                              api.closeToWin({
+                                  name: 'root'
+                              });
+                          }, 800);
+                      } else {
+                          if (err_conf_007[ret.msg]) {
+                            var   msg = err_conf_007[ret.msg];
+                              api.toast({
+                                  msg: msg,
+                                  location: 'middle'
+                              });
+                          }
+      
+                      }
+                  });
+      
+      
+              } else {
+                  var err = '';
+                  if (!isEmpty(err_conf_007[res.msg])) {
+                      err = err_conf_007[res.msg];
+                      api.toast({
+                          msg: err,
+                          location: 'middle'
+                      });
+                  }
+      
+              }
+          });
+      }
+      apiready = function () {
+          phone=api.pageParam.phone;
+          code=api.pageParam.code;
+      };
+    </script>
+  </body>
+</html>

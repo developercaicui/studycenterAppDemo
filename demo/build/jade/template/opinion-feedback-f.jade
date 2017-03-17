@@ -1,66 +1,196 @@
 extends ../layout/layout
 block head
     link(rel='stylesheet', href='../css/Sstyle.css')
+    style(type="text/css").
+      .pop-radios {
+          overflow: hidden;
+          line-height: 0.4rem;
+          margin-left: 10px;
+          padding:10px 0;
+      }
+      .pop-radios .pop-radio-label {
+          float: left;
+          margin-left: 10px;
+          width: 2.1rem;
+          height: 50px;
+      }
+      .pop-radios .pop-radio-label .pop-radio {
+          display: inline-block;
+          position: relative;
+          top: 1px;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          border: 1px solid #979797;
+      }
+      .pop-radios .pop-radio-label .pop-radio .pop-radio-round {
+          position: absolute;
+          top: 2px;
+          bottom: 0;
+          left: 2px;
+          right: 0;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #fff
+      }
+      .pop-radios .pop-radio-label .pop-radio-span {
+          display: inline-block;
+          color: #4A4A4A;
+          font-size: 0.26rem;
+      }
+      .pop-radios .pop-radio-label.active .pop-radio .pop-radio-round {
+        background-color: #F5A623
+      }
+      .pop-textarea-content {
+          width: initial;
+          height: 195px;
+          border: 1px solid #E4E4E4;
+          padding: 20px;
+          margin: 0 20px;
+          background-color: #fff
+      }
+      .pop-tel {
+          width: 100%;
+          float: left;
+          color: #3E4E63;
+          margin-left: 0.3rem;
+          margin-top:30px;
+          font-size: .26rem;
+      }
+      .pop-tel .pop-input-tel {
+          width: 72%;
+          border: 1px solid #E4E4E4;
+          padding: 10px;
+          outline: none;
+          font-size: .26rem;
+          margin-left: 10px;
+          background-color: #fff
+      }
+      .feeback-but {
+           margin-top: 0; 
+      }
 block body
+    #pop-radios.pop-radios
+      a.pop-radio-label.active(href="javascript:;")
+        span.pop-radio
+          span.pop-radio-round
+        span.pop-radio-span 视频课程问题
+      |           
+      a.pop-radio-label(href="javascript:;")
+        span.pop-radio
+          span.pop-radio-round
+        span.pop-radio-span 学习中心问题
+      |           
+      a.pop-radio-label(href="javascript:;")
+        span.pop-radio
+          span.pop-radio-round
+        span.pop-radio-span 试题报错
+      |           
+      a.pop-radio-label(href="javascript:;")
+        span.pop-radio
+          span.pop-radio-round
+        span.pop-radio-span 新版建议
+      |           
+      a.pop-radio-label(href="javascript:;")
+        span.pop-radio
+          span.pop-radio-round
+        span.pop-radio-span 投诉学服
     .feeback-textareaBox
-        textarea.txtFeed(placeholder='请留下您宝贵的意见',name="content")
+        textarea.txtFeed(placeholder='亲爱的同学：小财非常欢迎你向小财反馈产品的意见建议和体验感受。我们一定会认真调整，及时反馈。根据你的建议，不断完善和优化我们的产品，为你提供更舒适的学习体验。',name="content")
+    .pop-tel
+      | 联系方式
+      input.pop-input-tel(type="text")
     input.greenBtm.feeback-but.adjust-height(type='button', value='发送',tapmode,onclick="sub()")
 block scripts
     script(type='text/javascript').
         var is_ok = true;
         function sub() {
-            var content = $.trim($('textarea[name=content]').val());
-            if (content == '') {
-                api.toast({
-                    msg: '意见内容不能为空',
-                    location: 'middle'
-                });
-                return false;
-            }
-            var title = content.substr(0, 20);
-            var nickName = get_loc_val('mine', 'nickName');
-            var param = {};
-            var systype = api.systemType;
-            param.contact = "来源:" + systype;
-            param.content = content;
-            param.title = title;
-            param.nickName = nickName;
-            param.token = $api.getStorage('token');
-            api.showProgress({
-                title: '发表中',
-                modal: true
-            });
-            if (is_ok) {
-                is_ok = false;
-                ajaxRequest('api/v2/lessonMessage/addLMG', 'post', param, function (ret, err) {//002.003 留言接口
-                    api.hideProgress();
-                    if (err) {
-                        is_ok = true;
-                        api.toast({
-                            msg: err.msg,
-                            location: 'middle'
-                        });
-                        return false;
-                    }
-                    if (ret && ret.state == 'success') {
-                        api.toast({
-                            msg: '发表成功',
-                            location: 'middle'
-                        });
-                        setTimeout(function () {
-                            api.closeWin();
-                        }, 600);
-                    } else {
-                        is_ok = true;
-                        api.toast({
-                            msg: '发表失败，请重试！',
-                            location: 'middle'
-                        });
-                    }
-                });
-            }
+          var content = $.trim($('textarea[name=content]').val());
+          if (content == '') {
+              api.toast({
+                  msg: '意见内容不能为空',
+                  location: 'middle'
+              });
+              return false;
+          }
+          //var title=content.substr(0,20);
+          var nickName = get_loc_val('mine', 'nickName');
+          var param = {};
+          var systype = api.systemType;
+          // param.contact = "来源:" + systype;
+          // param.content = content;
+          // param.title = 'ipad手机留言';
+          // param.nickName = nickName;
+          // param.token = $api.getStorage('token');
+          param.memberId = getstor('memberId');//投诉人id
+          param.memberName = nickName;//投诉人昵称
+          param.cmptType = $(".pop-radio-label.active").find(".pop-radio-span").text();//投诉类型
+          param.cmptContent = content;//投诉内容
+          param.contactWay = $(".pop-input-tel").val();//联系方式
+          param.deviceDesc = systype;//设备描述
+          api.showProgress({
+              title: '发表中',
+              modal: true
+          });
+          if (is_ok) {
+              is_ok = false;
+              ajaxRequest('api/business/complaintOpinion/create/v1.0', 'post', param, function (ret, err) {
+              //ajaxRequest('api/v2/lessonMessage/addLMG', 'post', param, function (ret, err) {//002.003 留言接口
+                  api.hideProgress();
+                  if (err) {
+                      is_ok = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({
+                          msg: '发表成功',
+                          location: 'middle'
+                      });
+                      setTimeout(function () {
+                          api.closeFrame();
+                      }, 600);
+                  } else {
+                      is_ok = true;
+                      api.toast({
+                          msg: '发表失败，请重试！',
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
         }
         apiready = function () {
             //键盘弹出后输入框缩小
             commonFun.adjustHeight(0.077);
+            //联系方式
+            ajaxRequest('api/v2/member/get',"get", {"token":$api.getStorage('token')}, function (ret, error) {
+              if(error){
+                  api.toast({
+                      msg:error.msg,
+                      location:'middle'
+                  });
+                  return false;
+              }
+              if(ret){
+                if(ret.data.mobile){
+                    $(".pop-input-tel").val(ret.data.mobile)
+                }else{
+                    $(".pop-input-tel").val(ret.data.email)
+                } 
+              }
+                             
+            })
+             //投诉类型
+            $('#pop-radios .pop-radio-label').on('click', function () {
+                $(this).addClass('active').siblings().removeClass('active');
+            });
         };

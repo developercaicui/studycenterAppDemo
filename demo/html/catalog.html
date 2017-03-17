@@ -386,7 +386,7 @@
                                                       'isok': 0,
                                                       'total': 0
                                                   };
-                                              }
+                                             }
                                           }
                                       }
                                   } else {
@@ -553,16 +553,16 @@
                                   var cId = child2[k].chapterId;
                                   arr[cId] = {};
                                   for (var x in child2[k].tasks) {
-                                      if (child[j].isLeaf == 'false') {
+                                      //if (child[j].isLeaf == 'false') {
       
-                                      } else {
+                                      //} else {
                                           var taskid = child2[k].tasks[x].taskId;
                                           arr[cId][taskid] = {
                                               'progress': 0,
                                               'isok': 0,
                                               'total': 0
                                           };
-                                      }
+                                     // }
                                   }
                               }
                           } else {

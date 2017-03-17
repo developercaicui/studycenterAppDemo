@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="transparent body-video">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>笔记编辑</title>
+  </head>
+  <body>
+    <div tapmode onclick="closeMeS(this)" load="no" class="backdrop video-bg"></div>
+    <div id="header" class="v-head header header-white">
+      <div id="head1">
+        <div tapmode onclick="closeMe()" class="left"><i class="icon-close"></i></div>
+        <div class="center">笔记</div>
+        <ul class="right">
+          <li tapmode onclick="toFrame2()"><span>他人笔记</span></li>
+          <li tapmode onclick="publish()"><i class="icon-check"></i></li>
+        </ul>
+      </div>
+      <div id="head2" class="none">
+        <div tapmode onclick="backFrame1()" class="left"><i class="icon-back"></i></div>
+        <div class="center">
+          <div class="btn-group btn-success">
+            <div tapmode="active" onclick="set_index(0)" class="btn active">全部笔记</div>
+            <div tapmode="active" onclick="set_index(1)" class="btn">我的笔记</div>
+          </div>
+        </div>
+        <ul class="right">
+          <li tapmode onclick="backFrame1()"><span>新建</span><i class="icon-plus"></i></li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMeS(e) {
+          var _s = $(e).attr('load');
+          if (_s == 'no') {
+              return false;
+          } else {
+              closeMe();
+          }
+      }
+      function closeMe() {
+          api.closeFrameGroup({
+              name: 'noteVideoFrameGroup'
+          });
+          api.closeFrame({
+              name: 'footer-editor'
+          });
+          api.closeFrame({
+              name: 'video-note-detail'
+          });
+          api.closeFrame({
+              name: 'video-note-detail-f'
+          });
+          api.closeFrame({
+              name: 'video-note-edit'
+          });
+          api.closeFrame({
+              name: 'video-note-edit-f2'
+          });
+          if (!isEmpty(api.pageParam.times)) {
+              api.sendEvent({
+                  name: 'continue_video',
+                  extra: {'times': api.pageParam.times}
+              });
+          }
+          api.closeFrame();
+      }
+      //从编辑去笔记列表
+          function toFrame2() {
+              $('.video-bg').attr('load', 'yes');
+              $('#head2').show().siblings().hide();
+              api.openFrameGroup({
+                  name: 'noteVideoFrameGroup',
+                  scrollEnabled: true,
+                  rect: {
+                      x: api.winWidth / 2,
+                      y: headLh,
+                      w: api.winWidth / 2
+                  },
+                  index: 0,
+                  frames: [{
+                      name: 'video-note-all',
+                      url: 'video-note-all.html',
+                      bgColor: '#ffffff',
+                      pageParam: api.pageParam
+                  }, {
+                      name: 'video-note-me',
+                      url: 'video-note-me.html',
+                      bgColor: '#ffffff',
+                      pageParam: api.pageParam
+                  }]
+              }, function (ret, err) {
+                  $('.btn-group .btn').removeClass('active').eq(ret.index).addClass('active');
+              });
+          }
+      //从详情回笔记列表
+          function backFrame2() {
+              $('#head2').show().siblings().hide();
+              api.closeFrame({
+                  name: 'video-note-detail'
+              });
+              api.closeFrame({
+                  name: 'footer-editor'
+              });
+              api.setFrameGroupAttr({
+                  name: 'noteVideoFrameGroup',
+                  hidden: false
+              });
+          }
+      //从笔记列表回新建
+          function backFrame1(){
+              $('.video-bg').attr('load', 'no');
+              $('#head1').show().siblings().hide();
+              api.setFrameGroupAttr({
+                  name: 'noteVideoFrameGroup',
+                  hidden: true
+              });
+          }
+      
+          function set_index(a) {
+              api.setFrameGroupIndex({
+                  name: 'noteVideoFrameGroup',
+                  index: a
+              });
+              $('.btn-group .btn').removeClass('active').eq(a).addClass('active');
+          }
+      
+          var note_id;
+      //fei 定义的变量
+          var courseId;//课程id
+          var course_detail;//课程详情
+          var times;//学习的进度,视频为妙,其他为页码
+          var chapter_info;//章节信息
+          var task_info;//任务信息
+          var task_arr = '';//所有任务信息
+          apiready = function () {
+              api.addEventListener({
+                  name: "setNoteTab"
+              }, function (ret) {
+                  $('.btn-group .btn').removeClass('active').eq(ret.value.ind).addClass('active');
+              });
+              if (api.pageParam.detail == 'detail') {
+                  toFrame2();
+              }
+              $api.rmStorage('content');
+              var header = $api.byId('header');
+              $api.fixIos7Bar(header);
+          //获取变量数据
+              courseId = api.pageParam.courseId;
+              course_detail = api.pageParam.course_detail;
+              chapter_info = api.pageParam.chapter_info;
+              times = api.pageParam.times;
+              task_info = api.pageParam.task_info;
+          };
+          var is_click = true;
+      
+          function publish() {
+          //alert(333);
+              if (is_click == true) {
+              //api.alert({msg:$api.getStorage('soundLen')});
+                  /*
+                   var course_detail = api.pageParam.course_detail;//课程详情
+                   var task_info = api.pageParam.task_info;//任务详情
+                   var progress = api.pageParam.progress;//任务进度
+                   var chapters_num = api.pageParam.chapters_num;
+                   var chapters_child_num = api.pageParam.chapters_child_num;
+                   var chapters_info = course_detail.chapters[chapters_num];//当前一级章节信息
+                   var chapters_child_info = chapters_info.children[chapters_child_num];//当前二级章节信息
+                   */
+                  if (!isEmpty($api.getStorage('content'))) {
+                  //alert(222);
+                      is_click = false;
+                      var systype = api.systemType;
+                      var appType;
+                      if (systype == 'ios') {
+                          appType = 'ipad';
+                      } else if (systype == 'android') {
+                          appType = 'apad';
+                      }
+                      var param = {};
+                      param.token = $api.getStorage('token'); //必须
+                      param.content = $api.getStorage('content'); //笔记内容，必须
+                      param.imgPath = $api.getStorage('img');//图片数组，图片路径（以’，’分隔）,非必须
+                      param.soundPath = $api.getStorage('soundPath');//声音文件单一,非必须
+                      param.courseId = course_detail.courseId;//课程id，必须
+                      param.taskId = task_info.taskId;//任务id,非必须
+                      param.taskProgress = times;//任务进度,非必须,int,非必须
+                      param.taskType = task_info.taskType;//非必须，任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+                      param.clientType = appType;//客户端类型：iphone,必须
+                      param.id = '';//笔记id，如果为空，则为添加，否则为修改
+                      param.title = 'title';//必须，笔记标题
+                      param.isPublic = $api.getStorage('isPublic');//必须，bool: true笔记公开，false不公开
+                      param.subjectId = course_detail.subjectId;//必须，科目id
+                      param.categoryId = course_detail.categoryId;//必须，string:证书id
+                      param.chapterId = chapter_info.chapterId;//必须，string:章节id
+                      param.soundLen = $api.getStorage('lx_duration');//string:声音文件的时长，如果有声音文件，此字段必传
+                      param.subjectName = course_detail.subjectName;//必须，科目名称
+                      param.categoryName = course_detail.categoryName;//必须，证书名称
+                      param.courseName = course_detail.courseName;//必须，课程名称
+                      param.chapterName = chapter_info.chapterTitle;//必须，章节名称
+                      param.taskName = task_info.title;//必须，任务名称
+                      if (param.content.length < 10) {
+                          is_click = true;
+                          api.toast({msg: '内容不能少于10个字'});
+                          return false;
+                      }
+                      api.showProgress({
+                          title: '正在发布',
+                          modal: true
+                      });
+                      ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116.1  发布或修改笔记
+                          api.hideProgress();
+                          if (err) {
+                              is_click = true;
+                              api.toast({
+                                  msg: err.msg,
+                                  location: 'middle'
+                              });
+                              return false;
+                          }
+                          if (ret && ret.state == 'success') {
+                              $api.rmStorage('content');
+                              $api.rmStorage('title');
+                              $api.rmStorage('img');
+                              $api.rmStorage('lx_duration');
+                              $api.rmStorage('soundPath');
+                              $api.rmStorage('isPublic');
+                              $api.rmStorage('lx_lens');
+                              $api.rmStorage('lx_soundPath');
+                              api.alert({
+                                  title: '温馨提示',
+                                  msg: '发布成功',
+                                  buttons: ['返回']
+                              }, function (ret, err) {
+                                  if (ret.buttonIndex == 1) {
+                                  //继续播放
+                                      api.sendEvent({
+                                          name: 'continue_video',
+                                          extra: {'times': api.pageParam.times}
+                                      });
+                                  //关闭页面
+                                      closeMe();
+                                  }
+                              });
+                          } else {
+                              is_click = true;
+                          }
+                      });
+                  } else {
+                      api.toast({
+                          msg: '请填写正文',
+                          location: 'middle'
+                      });
+                  }
+              }
+          //api.sendEvent({
+          //    name: 'new-notes-video',
+          //    extra: {'type': 'notes'}
+          //});
+          }
+      //点击点赞
+          function love() {
+              var param = {};
+              param.id = note_id;
+              param.type = 'note';
+              param.title = '';
+              param.userId = getstor('memberId');
+              param.token = $api.getStorage('token');
+              api.showProgress({
+                  title: '处理中',
+                  model: false
+              });
+              ajaxRequest('api/studytools/commons/praise/v2.1', 'get', param, function (ret, err) {//003.001 点赞
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({
+                          msg: '点赞成功',
+                          location: 'middle'
+                      });
+                      api.parseTapmode();
+                  }
+                  else {
+                      api.toast({
+                          msg: '点赞失败',
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
+                                     //点击收藏
+          function coll() {
+              var param = {};
+              param.noteId = note_id;
+              param.token = $api.getStorage('token');
+              api.showProgress({
+                  title: '处理中',
+                  model: true
+              });
+              ajaxRequest('api/v2/note/favorite', 'get', param, function (ret, err) {//003.117  笔记收藏
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({
+                          msg: '收藏成功',
+                          location: 'middle'
+                      });
+                      api.parseTapmode();
+                  }
+                  else {
+                      api.toast({
+                          msg: '收藏失败',
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
+      
+          function del() {
+              api.actionSheet({
+                  title: '温馨提示',
+                  cancelTitle: '取消',
+                  buttons: ['确定删除']
+              }, function (ret, err) {
+                  if (ret.buttonIndex == 1) {
+                      var param = {
+                          token: $api.getStorage('token'),
+                          id: note_id,
+                          type: 'note'
+                      };
+                      api.showProgress({
+                          title: '刪除中',
+                          modal: true
+                      });
+                      ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                          api.hideProgress();
+                          if (err) {
+                              api.toast({
+                                  msg: err.msg,
+                                  location: 'middle'
+                              });
+                              return false;
+                          }
+                          if (ret && ret.state == 'success') {
+                              /*
+                               api.sendEvent({
+                               name: 'new-question-f'
+                               });
+                               api.closeFrame({
+                               name: 'answer-detail-f'
+                               });
+                               api.closeFrame({
+                               name: 'footer-editor'
+                               });
+                               api.closeFrame();
+                               */
+                              api.sendEvent({
+                                  name: 'closeRightNote'
+                              });
+                          //关闭页面
+                              api.sendEvent({
+                                  name: 'continue_video',
+                                  extra: {'times': api.pageParam.times}
+                              });
+                          } else {
+                              api.toast({
+                                  msg: '删除接口异常',
+                                  location: 'middle'
+                              });
+                          }
+                      });
+                  }
+              });
+          }
+    </script>
+  </body>
+</html>

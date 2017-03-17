@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="homepage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>财萃Pad</title>
+  </head>
+  <body>
+    <div class="nologin show none">
+      <div class="logo"><img src="../image/logo-t.png" alt=""></div>
+      <ul class="form">
+        <li>
+          <input type="text" placeholder="手机号／邮箱" name="username" class="input-txt">
+        </li>
+        <li>
+          <input type="password" placeholder="请输入密码" name="password" class="input-txt"><span tapmode="" onclick="forget()" class="forget">忘记密码?</span>
+        </li>
+        <!--li.remberpass(tapmode,onclick="rember(this)")
+        div.is_rember.bgcl
+            p
+        |记住账号密码
+        -->
+        <li>
+          <div onclick="login()" tapmode="" class="btn btn-success btn-block">登录</div>
+        </li>
+      </ul>
+      <div tapmode="" onclick="phone_reg()" class="phone">手机号注册</div>
+      <div class="lands">
+        <div tapmode="" onclick="login_qq()" class="ot login_qq"><i class="icon-qq"></i><span>qq</span></div>
+        <div tapmode="" onclick="login_weixin()" class="ot login_wx"><i class="icon-weixin"></i><span>微信</span></div>
+        <div tapmode="" onclick="login_weibo()" class="ot login_wb"><i class="icon-weibo"></i><span>微博</span></div>
+      </div>
+    </div>
+    <div class="onlogin none">
+      <div id="header" head="0" class="header header-white header-home">
+        <div class="header-index">
+          <div class="center">
+            <div class="logo"></div>
+          </div>
+          <div tapmode onclick="myFrame('pop-msg','full',false,this,'')" class="right"><i class="icon-message"></i><span class="msg-mark center_num1"></span></div>
+        </div>
+        <div class="header-course">
+          <div class="center">
+            <div class="logo"></div>
+          </div>
+          <div tapmode onclick="myFrame('pop-msg','full',false,this,'')" class="right"><i class="icon-message"></i><span class="msg-mark center_num2"></span></div>
+        </div>
+        <div class="header-note">
+          <div class="center">章节列表</div>
+          <ul class="right">
+            <li tapmode onclick="showSearchBar('note');myFrame('my-note-list-f','large',false,this,'dash')"><i class="icon-search2"></i></li>
+            <li tapmode onclick="newMyNote()"><span>新建</span><i class="icon-plus"></i></li>
+          </ul>
+        </div>
+        <div class="header-answer">
+          <div class="center">我的问答</div>
+          <ul class="right">
+            <li tapmode onclick="open_answer()"><i class="icon-file-plus"></i></li>
+            <li tapmode onclick="showSearchBar('answer')"><i class="icon-search2"></i></li>
+          </ul>
+        </div>
+        <div class="search-bar">
+          <input type="text" name="input-lx" placeholder="搜索" class="input-txt">
+          <div class="right"><i class="icon-search2"></i><span tapmode onclick="goSearch(this)" class="submit">搜索</span><span tapmode onclick="hideSearchBar()" class="cancel">取消</span></div>
+        </div>
+        <script type="text/javascript">
+          function showSearchBar(e){
+              searchType = e;
+              $('.search-bar').show(300);
+          }
+          function hideSearchBar(){
+              $('.search-bar').hide();
+              switch(searchType){
+                  case 'note':
+                      api.setFrameAttr({
+                          name:'my-note-list-f',
+                          hidden:true
+                      });
+                      api.sendEvent({
+                          name: 'f_xg'
+                      });
+                      break;
+                  case 'answer':
+                      api.sendEvent({
+                          name: 'answer_f_lx'
+                      });
+                      break;
+                  case 'note_search':
+                      api.closeFrame({name:'course-note-all'});
+                      api.openFrameGroup({
+                          name: 'chapterFrameGroup',
+                          scrollEnabled: true,
+                          rect: {
+                              x: leftSw,
+                              y: headSh,
+                              w: api.winWidth - leftSw,
+                              h: api.winHeight - headSh
+                          },
+                          index: 0,
+                          preload: 0,
+                          frames: [{
+                              name: 'course-note-chapter-all',
+                              url: 'course-note-chapter-all.html',
+                              pageParam: api.pageParam
+                          }, {
+                              name: 'course-note-chapter-me',
+                              url: 'course-note-chapter-me.html',
+                              pageParam: api.pageParam
+                          }]
+                      }, function (ret, err) {
+                          $('.btn-group .btn').removeClass('active').eq(ret.index).addClass('active');
+                      });
+                      api.setFrameAttr({
+                          name: 'course-note-all',
+                          hidden: true
+                      });
+                      break;
+                  case 'answer_search':
+                      api.closeFrame({name:'course-answer-all'});
+                      api.openFrameGroup({
+                          name: 'answerFrameGroup',
+                          scrollEnabled: true,
+                          rect: {
+                              x: leftSw,
+                              y: headSh,
+                              w: api.winWidth - leftSw,
+                              h: api.winHeight - headSh
+                          },
+                          index: 0,
+                          preload: 1,
+                          frames: [{
+                              name: 'course-answer-all',
+                              url: 'course-answer-all.html',
+                              pageParam: api.pageParam
+                          }, {
+                              name: 'course-answer-me',
+                              url: 'course-answer-me.html',
+                              pageParam: api.pageParam
+                          }]
+                      }, function (ret, err) {
+                          api.sendEvent({
+                              name: 'hasAnswerTab',
+                              extra: {key1: ret.index}
+                          });
+                      });
+                      api.setFrameAttr({
+                          name: 'course-answer-all',
+                          hidden: true
+                      });
+                      break;
+                  case 'talk_search':
+                      api.closeFrame({name:'course-talk-f'});
+                      api.openFrame({
+                          delay:200,
+                          name: 'course-talk-f',
+                          url: 'course-talk-f.html',
+                          rect: {
+                              x: leftSw,
+                              y: headSh,
+                              w: api.winWidth - leftSw,
+                              h: api.winHeight - headSh
+                          },
+                          bounces: true,
+                          reload:true
+                      });
+                      break;
+                  case 'talk_search_m':
+                      api.closeFrame({name: 'course-talk-me-f'});
+                      api.openFrame({
+                          delay: 200,
+                          name: 'course-talk-me-f',
+                          url: 'course-talk-me-f.html',
+                          rect: {
+                              x: leftSw,
+                              y: headSh,
+                              w: api.winWidth - leftSw,
+                              h: api.winHeight - headSh
+                          },
+                          bounces: true,
+                          reload: true
+                      });
+                      break;
+              }
+          
+          }
+        </script>
+        <div class="header-talk">
+          <div tapmode onclick="talk_sort()" class="left"><i class="icon-arrow-down"></i><span>最新回复</span></div>
+          <div class="center">我的讨论</div>
+        </div>
+        <div class="header-cache">
+          <div class="center">缓存列表</div>
+          <ul class="right cache">
+            <li tapmode onclick="rightcancel($(this))" class="none">
+              <div class="btn btn-o">取消</div>
+            </li>
+            <li tapmode onclick="allremove($(this))" class="none">
+              <div class="btn btn-o red">批量删除</div>
+            </li>
+            <li tapmode onclick="righttrash($(this))"><i class="icon-trash"></i></li>
+          </ul>
+        </div>
+      </div>
+      <div id="slider" class="slider">
+        <div class="slider-menu">
+          <div tapmode onclick="modify()" class="imgbox"><img class="avatar"></div>
+          <ul id="leftMenu">
+            <li onclick="set_index(0)" class="active"><span><i class="icon icon-dashboard"></i>
+                <p>学习中心</p></span></li>
+            <li onclick="set_index(1)"><span><i class="icon icon-course"></i>
+                <p>在线课程</p></span></li>
+            <li onclick="set_index(2)"><span><i class="icon icon-edit3"></i>
+                <p>我的笔记</p></span></li>
+            <li onclick="set_index(3)"><span><i class="icon icon-question"></i>
+                <p>我的问答</p></span></li>
+            <li onclick="set_index(4)"><span><i class="icon icon-comments2"></i>
+                <p>我的讨论</p></span></li>
+            <li onclick="set_index(5)"><span><i class="icon icon-download2"></i>
+                <p>缓存课程</p></span></li>
+            <li tapmode onclick="myFrame('set-info','full',false,this,'')"><span><i class="icon-cog"></i>
+                <p>设置</p></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div style="opacity:.0001; position:fixed; z-index:-1;left:-10rem">
+      <div id="sHead" class="s-head"></div>
+      <div id="sLeft" class="course-slider"></div>
+      <ul id="sFoot" class="footer-nav"></ul>
+      <div id="svgDown" class="down-progress"></div>
+      <div id="svgAudio" class="audio-progress"></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript" src="../script/pagejs/user-center.js"></script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{for(var p in it.chapters) { }}
+          <ul class="cache-list">
+            <li class="list">
+              <dl>
+                <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                  <p>{{=it.chapters[p].chapterTitle}}</p>
+                </dt>
+              </dl>
+              <ul class="list">
+                {{ var child=it.chapters[p].children;}}
+                {{for(var n in child){ }}
+                <dl onclick="toStudying('{{=child[n].chapterId}}','{{=child[n].chapterTitle}}')" tapmode>
+                  <dt>
+                    <p>{{=child[n].chapterTitle}}</p>
+                  </dt>
+                </dl>{{ } }}
+              </ul>
+            </li>
+          </ul>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript" src="../script/debug.js"></script>
+    <script type="text/javascript">
+      var courseId = '';
+      function get_data() {
+          var uid = getstor('memberId');
+          var cid = api.pageParam.courseId;
+          var time1 = Date.now();
+          var data = isEmpty($api.getStorage(cid + '-' + uid)) ? '' : $api.getStorage(cid + '-' + uid);
+          if (data && time1 - data['time'] < course_detail_expire) {
+              api.refreshHeaderLoadDone();
+              var course_data = data.data;
+              if (isEmpty(course_data)) {
+                  $('body').addClass('null');
+                  return false;
+              }
+              $('body').removeClass('null');
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              $('#content').html('');
+              $('#content').html(content(course_data[0]));
+              api.parseTapmode();
+          } else {
+              var param = {};
+              param.courseId = api.pageParam.courseId;
+              ajaxRequest('api/v2.1/course/courseDetail', 'get', param, function (ret, err) {
+                  api.refreshHeaderLoadDone();
+                  api.parseTapmode();
+                  if (err) {
+                     /* api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });*/
+                      return false;
+                  }
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl);
+                  if (ret && ret.state == 'success') {
+                      if (isEmpty(ret.data)) {
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      courseId = ret.data[0].courseId;
+                      $('body').removeClass('null');
+                      $('#content').html('');
+                      $('#content').html(content(ret.data[0]));
+                      var time_now = Date.now();
+                      var data = {
+                          'time': time_now,
+                          'data': ret.data
+                      };
+                      $api.setStorage(cid + '-' + uid, data);
+                  } else {
+                      api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });
+                  }
+              });
+          }
+          $('.bewrite .bewtitl').parent().siblings().css({
+              height: '0px'
+          });
+      }
+      function  toStudying(chapterId,title){
+          if(api.pageParam.test == 'notes'){//大窗口新建
+              /*api.sendEvent({
+               name:'select_chapter',
+               extra:{chapterId:chapterId,courseId:courseId,title:title}
+               });*/
+              var img = $api.getStorage('img');
+              var lx_duration = $api.getStorage('lx_duration');
+              var soundPath = $api.getStorage('soundPath');
+              var content = $api.getStorage('content');
+              api.closeFrame({
+                  name: 'note-chapter-list'
+              });
+              api.closeFrame({
+                  name: 'course-chapter-list'
+              });
+              api.openFrame({
+                  delay:200,
+                  name: 'my-note-edit',
+                  url: 'my-note-edit.html',
+                  rect: {
+                      x: leftLw,
+                      y: 0,
+                      w: api.winWidth - leftLw,
+                      h: api.winHeight
+                  },
+                  pageParam: {
+                      charpterid:chapterId,
+                      courseId:courseId,
+                      title:title,
+                      img: img,
+                      lx_duration: lx_duration,
+                      soundPath: soundPath,
+                      content: content
+                  },
+                  bounces: false,
+                  reload:true
+              });
+          }
+      }
+      apiready=function(){
+          get_data();
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              get_data();
+          });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame();
+          });
+      };
+    </script>
+  </body>
+</html>

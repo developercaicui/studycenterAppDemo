@@ -42,25 +42,29 @@ block body
             input.select-tag(type='checkbox')
             .course-test-title
                 p
-                    | {{ if(!isEmpty(value.title)) { }}  {{=value.title}} {{ } }}
+                    | {{ if(!isEmpty(value.title)) { }}  {{=value.title.replace(/\n|\r|\t|<[^<]*>/g,"")}} {{ } }}
             | {{ if(value.questionTypes=='radio'){ }}
             //单项选择题
             .course-test-selector.exam-yf(data-type='{{=value.questionTypes}}',data-num='{{=key}}')
                 | {{~JSON.parse(value.context):val:kk}}
+                | {{ if(!isEmpty(val.title)) { }}
                 .selector-detail.clear-fix(data-select='{{=numToAbc(kk)}}',onclick="select_radio(this,'{{=key}}')",tapmode,data-check='{{=val.isChecked}}')
                     span {{=numToAbc(kk)}}
                     p
-                        | {{=val.title}}
+                        | {{=val.title.replace(/<[^<]*>/g,"")}}
                 | {{~}}
+                | {{ } }}
             | {{ }else if(value.questionTypes=='checkbox'){ }}
             //多项选择题
             .course-test-selector.exam-yf(data-type='{{=value.questionTypes}}',data-num='{{=key}}')
                 | {{~JSON.parse(value.context):val:kk}}
+                | {{ if(!isEmpty(val.title)) { }}
                 .selector-detail.clear-fix(data-select='{{=numToAbc(kk)}}',onclick="select_checkbox(this,'{{=key}}')",tapmode,data-check='{{=val.isChecked}}')
                     span {{=numToAbc(kk)}}
                     p
-                        | {{=val.title}}
+                        | {{=val.title.replace(/<[^<]*>/g,"")}}
                 | {{~}}
+                | {{ } }}
             | {{ }else if(value.questionTypes=='question'){ }}
             //问答题
             .course-test-selector.course_selector1.exam-yf(data-type='{{=value.questionTypes}}',data-num='{{=key}}')

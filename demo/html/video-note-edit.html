@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="transparent body-video">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>视频笔记修改</title>
+  </head>
+  <body>
+    <div class="backdrop opacity"></div>
+    <div id="header" class="v-head header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">修改笔记</div>
+      <ul class="right">
+        <li tapmode onclick="publish()"><i class="icon-check"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe() {
+          api.closeFrame({
+              name: 'video-note-edit-f2'
+          });
+          api.closeFrame();
+      }
+      apiready = function () {
+          var header = $api.byId('header');
+          var param = api.pageParam;
+          param.editNew = 'edit';
+          if (!isEmpty(api.pageParam)) {
+              for (var p in api.pageParam) {
+                  param[p] = api.pageParam[p];
+              }
+          }
+          api.openFrame({
+              delay:200,
+              name: 'video-note-edit-f2',
+              url: 'note-edit-f.html',
+              bgColor: 'rgba(0,0,0,0)',
+              rect: {
+                  x: api.winWidth / 2,
+                  y: headLh,
+                  w: api.winWidth / 2
+              },
+              pageParam: param,
+              bounces: false
+          });
+      };
+      //修改笔记
+      var is_click = true;
+      function publish() {
+          if(is_click == true){
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              if ($api.getStorage('lx_duration') == '' || $api.getStorage('lx_duration') == 0 || $api.getStorage('lx_duration') == undefined) {
+                  var lx_lens = $api.getStorage('lx_lens');
+                  $api.setStorage('lx_duration', lx_lens);
+              }
+              if ($api.getStorage('soundPath') == '' || $api.getStorage('soundPath') == 0 || $api.getStorage('soundPath') == undefined) {
+                  var lx_soundPath = $api.getStorage('lx_soundPath');
+                  $api.setStorage('soundPath', lx_soundPath);
+              }
+              if (isEmpty($api.getStorage('content'))) {
+                  api.toast({msg: '内容不能为空'});
+                  return false;
+              }
+              if (api.pageParam.courseId == '') {
+                  api.toast({msg: '章节id不能为空'});
+                  return false;
+              }
+              if (api.pageParam.id == '') {
+                  api.toast({msg: '笔记id不能为空'});
+                  return false;
+              }
+              var param = {
+                  token: $api.getStorage('token'),
+                  content: $api.getStorage('content'),
+                  imgPath: isEmpty($api.getStorage('img')) ? '' : $api.getStorage('img'),
+                  soundPath: isEmpty($api.getStorage('soundPath')) ? '' : $api.getStorage('soundPath'),
+                  courseId: api.pageParam.courseId, // 课程id
+                  taskId:api.pageParam.taskId,
+                  taskProgress:api.pageParam.taskProgress,
+                  taskType:api.pageParam.taskType,
+                  clientType: appType, //客户端类型：iphone
+                  id: api.pageParam.id, //笔记id，如果为空，则为添加，否则为修改
+                  title: 'title',//title获取不到，但是必须赋值
+                  isPublic: $api.getStorage('isPublic'), // 笔记是否公开
+                  subjectId: api.pageParam.course_detail.subjectId, //科目id(暂无)
+                  categoryId: api.pageParam.course_detail.categoryId, // 证书（暂无）
+                  chapterId: api.pageParam.charpterid, //章节id
+                  soundLen: isEmpty($api.getStorage('lx_duration')) ? '' : $api.getStorage('lx_duration'),
+                  subjectName: api.pageParam.course_detail.subjectName,// 科目名称
+                  categoryName: api.pageParam.course_detail.categoryName, //证书名称
+                  courseName: api.pageParam.course_detail.courseName,//课程名称
+                  chapterName: isEmpty($api.getStorage('video-chapterName')) ? 'z' : $api.getStorage('video-chapterName'),//章节名称
+                  taskName: api.pageParam.task_info.title //任务名称
+              };
+              api.showProgress({
+                  title: '处理中',
+                  modal: true
+              });
+              is_click = false;
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116  修改笔记
+                  api.hideProgress();
+                  if (err) {
+                      is_click = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      /*api.sendEvent({
+                          name: 'bjxq',
+                          extra: {id: api.pageParam.id}
+                      });
+                      api.closeFrame({
+                          name: 'note-edit-f'
+                      });
+                      api.closeFrame({
+                          name: 'footer-editor'
+                      });*/
+                      $api.rmStorage('content');
+                      $api.rmStorage('img');
+                      $api.rmStorage('lx_duration');
+                      $api.rmStorage('soundPath');
+                      $api.rmStorage('isPublic');
+                      $api.rmStorage('lx_lens');
+                      $api.rmStorage('lx_soundPath');
+                      api.closeFrame({
+                          name:'video-note-detail'
+                      });
+                      api.closeFrame({
+                          name:'video-note-detail-f'
+                      });
+                      api.openFrame({
+                          delay:200,
+                          name: 'video-note-detail',
+                          url: 'video-note-detail.html',
+                          rect: {
+                              x: api.winWidth / 2,
+                              y: 0,
+                              w: api.winWidth / 2,
+                              h: headLh
+                          },
+                          pageParam: api.pageParam,
+                          bounces: false
+                      });
+                      closeMe();
+                  }else{
+                      is_click = true;
+                  }
+              });
+          }
+      }
+      function publish2() {
+      
+          api.closeFrame({
+              name:'video-note-detail'
+          });
+          api.closeFrame({
+              name:'video-note-detail-f'
+          });
+          api.openFrame({
+              delay:200,
+              name: 'video-note-detail',
+              url: 'video-note-detail.html',
+              rect: {
+                  x: api.winWidth / 2,
+                  y: 0,
+                  w: api.winWidth / 2,
+                  h: headLh
+              },
+              pageParam: api.pageParam,
+              bounces: false
+          });
+          closeMe();
+      }
+    </script>
+  </body>
+</html>

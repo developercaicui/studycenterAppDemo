@@ -1,0 +1,65 @@
+
+<script id="tpl" type="text/x-dot-template">{{~it.res1:value:k }}
+  <div class="cache-course note-chapter">
+    <div class="cache-list chaptertitle">
+      <dl class="cache-list-title">
+        <dt>
+          <p>{{=it.res1[k].title}}</p>
+        </dt>
+        <dd></dd>
+      </dl>
+    </div>{{~it.res1[k].children:val:key}}
+    {{var c_id=val.id;}}
+    {{ if(val.isLeaf=='false'){ }}
+    <ul class="cache-list one_chapter">
+      <li class="list">
+        <dl>
+          <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+            <p>{{=val.title}}</p>
+          </dt>
+        </dl>{{~val.children:val2:key2}}
+        {{ if(val2.isLeaf=='false'){ }}
+        <ul class="list">
+          <dl class="haschild">
+            <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+              <p>{{=val2.title}}</p>
+            </dt>
+          </dl>{{~val2.children:val3:key3}}
+          <li class="list">
+            <dl class="haschild">
+              <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val3.id}}" title="{{=val3.title}}">
+                <p>{{=val3.title}}</p>
+              </dt>
+              <dd><i class="icon-edit"></i><span>{{=val3.nodeNum}}</span>{{var id3=val3.id;}}
+                {{if(!isEmpty(it.res2[id3])&&it.res2[id3]!=0){ }}
+                <div class="msg-mark">{{=it.res2[id3]<100?it.res2[id3]:'99+'}}</div>{{ } }}
+              </dd>
+            </dl>
+          </li>{{~}}
+        </ul>{{ }else{ }}
+        <ul class="list">
+          <dl>
+            <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val2.id}}" title="{{=val2.title}}">
+              <p>{{=val2.title}}</p>
+            </dt>
+            <dd><i class="icon-edit"></i><span>{{=val2.nodeNum}}</span>{{var id2=val2.id;}}
+              {{if(!isEmpty(it.res2[id2])&&it.res2[id2]!=0){ }}
+              <div class="msg-mark">{{=it.res2[id2]<100?it.res2[id2]:'99+'}}</div>{{ } }}
+            </dd>
+          </dl>
+        </ul>{{ } }}
+        {{~}}
+      </li>
+    </ul>{{ }else{ }}
+    <ul class="cache-list one_chapter">
+      <li class="list">
+        <dl>
+          <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val.id}}" title="{{=val.title}}">
+            <p> {{=val.title}}</p>
+          </dt>
+        </dl>
+      </li>
+    </ul>{{ } }}
+    {{~}}
+  </div>{{~}}
+</script>

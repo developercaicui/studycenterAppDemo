@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="transparent">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>消息中心</title>
+    <link rel="stylesheet" type="text/css" href="../css/col-lg.css">
+  </head>
+  <body>
+    <div id="content" class="info_des"></div>
+    <script id="tpl" type="text/x-dot-template">
+          <ul>{{for(var p in it) { }}
+            <li onclick="open_detail(this)" data-id="{{=it[p].id}}" data-img="{{=!isEmpty(it[p].headImg)?static_url+it[p].headImg:default_img}}" data-content="{{=it[p].content}}" data-senttime="{{=it[p].sentTime}}" data-title="{{=it[p].title}}"><img src="{{=!isEmpty(it[p].headImg)?static_url+it[p].headImg:default_img}}" class="icon-img-bg">              
+              <div class="info_examine">
+                <div class="examine_tit">{{=it[p].title}}
+                  <div class="time_box">{{=formatDate(it[p].sentTime,'Y')+'-'+formatDate(it[p].sentTime,'M')+'-'+formatDate(it[p].sentTime,'D')}}</div>
+                </div>                
+                <div class="examine_con">{{=it[p].content}}</div>
+              </div>
+            </li>{{ } }}
+          </ul>
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function getData(page) {
+          var param = {};
+          param.pageNo = page;
+          param.pageSize = pageSize;
+          param.type = 1;
+          param.isRead=0;
+          param.token = $api.getStorage('token');
+          if(page==1&&show_pro&&no_loaded){
+              api.showProgress({
+                  title:'加载中',
+                  modal:false
+              });
+          }
+          ajaxRequest('api/v2/message/list', 'get', param, function (ret, err) {
+              if(show_pro&&no_loaded){
+                  api.hideProgress();
+              }
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+              }
+              if (ret && ret.state == 'success') {
+                  no_loaded=false;
+                  totalCount = ret.totalCount;
+                  if (page == 1) {
+                      if(isEmpty(ret.data)||totalCount==0){
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('body').removeClass('null');
+                      $('#content').html(content(ret.data));
+                  } else {
+                      $('#content').append(content(ret.data));
+                  }
+              } else {
+                  api.toast({
+                      msg: '消息接口异常',
+                      location: 'middle'
+                  });
+              }
+          });
+      }
+      var pageSize = 5;
+      var totalCount = 0;
+      var no_loaded=true;
+      apiready = function () {
+          getData(1);
+          var currentPage = 1;
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              getData(1);
+              currentPage = 1;
+          });
+                 //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if (currentPage <= Math.ceil(totalCount / pageSize)) {
+                  currentPage++;
+                  getData(currentPage);
+              }
+          });
+      };
+      function open_detail(obj) {
+          var e = $(obj).data("id"),
+          c = $(obj).data("content"),
+          b = $(obj).data("sentTime"),
+          a = $(obj).data("title"),
+          d = $(obj).data("img");
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.messageId = e;
+          ajaxRequest('api/v2/message/updateStatus', 'get', param, function (ret, err) {//001.003  更新消息为已读
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  $(obj).addClass('none');
+                  //已读消息更新接听
+                  var num = $api.getStorage('center_num') - 1;
+                  $api.setStorage('center_num', num);
+                  api.sendEvent({
+                      name: 'center_num'
+                  });
+              } else {
+                  /*api.toast({
+                      msg: ret.state
+                  });*/
+              }
+              api.openFrame({
+                  delay:200,
+                  name: 'pop-msg-f',
+                  url: 'pop-msg-f.html',
+                  rect: {
+                      x: api.pageParam.px,
+                      y: api.pageParam.py,
+                      w: api.pageParam.pw,
+                      h: api.pageParam.ph
+                  },
+                  pageParam: {name: 'test', title: a, sentTime:b, content: c, img: d},
+                  bounces: false
+              });
+          });
+          api.sendEvent({
+              name: 'msgDetail'
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>缓存列表</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{ for(var p in it) { }}
+          <div class="cache_title top">
+            <div class="left"> {{=it[p].data[0].courseName}}</div>
+            <input type="hidden" value="{{=it[p].data[0].courseId}}" sel="0" class="courseid">
+            <div tapmode class="label one">
+              <p class="total-check"><i class="icon-check"></i></p>
+            </div>
+            <div class="right progress-box">
+              <div class="progress">
+                <div role="progressbar" ratio="60" min="0" max="100" class="progress-bar"></div>
+              </div>
+              <div class="progress-val"></div>
+            </div>
+          </div>
+          <ul class="list-group accordion content_box">
+            {{ if(!isEmpty(it[p].data[0].chapters)) { }}
+            {{ var chapters=it[p].data[0].chapters;}}
+            {{ for(var i in chapters) { }}
+            {{ if(!isEmpty(chapters[i])) { }}
+            <li courseId="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" class="content open mycaptA {{=is_loadA(chapters[i].chapterId)}}">
+              <div class="title list-toggle bewrite">
+                <p tapmode onclick="listToggle(this)" class="left"><i class="icon-arrow-right"></i><span>{{=chapters[i].chapterTitle}}</span></p>
+                <input type="hidden" value="{{=chapters[i].chapterId}}" sel="0" class="chaptera">
+                <div tapmode class="label two">
+                  <p class="right"><i class="icon-check"></i></p>
+                </div>
+              </div>
+              <ul class="download list-group list-liebiao">
+                {{var child=chapters[i].children; }}
+                {{ for(var n in child) { }}
+                {{ if(!isEmpty(child[n]) && !isEmpty(child[n].chapterTitle) && child[n].chapterTitle!=undefined) { }}
+                {{ var is_show=is_loadB(child[n].chapterId);}}
+                <li courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" class="mycaptB {{=is_show}}">
+                  <div class="li-left"><span tapmode onclick="next('{{=it[p].data[0].courseId}}','{{=i}}','{{=n}}')">{{=child[n].chapterTitle}}</span></div>
+                  <div class="li-right">
+                    <dl class="console">{{=countTaskType(it[p].data[0],i,n)}}
+                      <dd>
+                        {{var state=3;}}
+                        {{var progress=get_dowm(child[n].chapterId);}}
+                        {{ if(progress==0){state=3;}else if(progress==100){state=4;}else if(progress>0 && progress<100){state=2;} }}
+                        {{? state==1}}
+                        <div id="{{=child[n].chapterId}}" tapmode status="ing" courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" type="1" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                          <div class="val">{{=progress}}</div>
+                        </div>{{?? state==2}}
+                        <div id="{{=child[n].chapterId}}" tapmode status="wait" courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" type="2" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                          <div class="val">{{=progress}}</div>
+                        </div>{{?? state==3}}
+                        <div id="{{=child[n].chapterId}}" tapmode status="begin" courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" type="3" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                          <div class="val">{{=progress}}</div>
+                        </div>{{?? state==4}}
+                        <div id="{{=child[n].chapterId}}" tapmode status="end" courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" type="4" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+                          <div class="val">100</div>
+                        </div>{{?}}
+                        <div courseid="{{=it[p].data[0].courseId}}" chapterida="{{=chapters[i].chapterId}}" chapteridb="{{=child[n].chapterId}}" class="down_course none"></div>
+                        <div class="down_data none">{{=JSON.stringify(child[n].tasks)}}</div>
+                      </dd>
+                      <dd>
+                        <input type="hidden" value="{{=child[n].chapterId}}" sel="0" class="chapterb">
+                        <div tapmode class="label three">
+                          <p class="lastcheck"><i class="icon-check"></i></p>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                </li>{{ } }}
+                {{ } }}
+              </ul>
+            </li>{{ } }}
+            {{ } }}
+            {{ } }}
+          </ul>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/pagejs/cache-list.js"></script>
+  </body>
+</html>

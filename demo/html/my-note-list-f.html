@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html class="bg-white my-list">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程笔记-我的笔记</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl1" type="text/x-dot-template">
+          {{ var memberId = get_loc_val('mine','memberId'); }}
+          {{for(var p in it) { }}
+          {{ if(it[p].memberId == memberId){ }}
+          <dl id="li{{=it[p].id}}" class="cont-list">
+            <dt><img src="{{=static_url+it[p].headImg}}" class="left_icon avatar"></dt>
+            <dd>
+              <div tapmode onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="link-box">
+                <div class="name">{{=it[p].nikeName}}</div>
+                <div class="describe">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>
+              </div>{{if(!isEmpty(it[p].imgPath)) { }}
+              <ul class="pic-group">
+                {{var imgPath=it[p].imgPath.split(',');}}
+                {{ for(var i in imgPath) { }}
+                {{imgPath[i]=static_url+imgPath[i];}}
+                {{if(i<=2) { }}
+                <li style="background-image:url('{{=imgPath[i]}}')" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{ if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ }}}
+              </ul>{{ } }}
+              <div class="footer">{{if(it[p].isPublic == 0){ }}
+                <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>{{ } }}
+                <div class="time">{{if(it[p].isPublic == 0){ }}<i class="overt">公开</i>{{ } }}<span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) &&  !isEmpty(it[p].taskType)){ }}<span class="tag-video-time"><i class="icon-play-o"></i><i>{{=formatType(it[p].taskType,it[p].taskprogress)}}</i></span>{{ } }}<span class="course-tit">{{=it[p].coursename}}</span></div>
+              </div>
+            </dd>
+          </dl>{{ } }}
+          {{ } }}
+    </script>
+    <script id="tpl2" type="text/x-dot-template">
+          {{for(var p in it) { }}
+          {{if(it[p].isPublic == 0){ }}
+          <dl id="li{{=it[p].id}}" class="cont-list">
+            <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"></dt>
+            <dd>
+              <div class="name">{{=it[p].nikeName}}</div>
+              <div tapmode onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="describe link-box">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>{{ if(!isEmpty(it[p].imgPath)) { }}
+              <ul class="pic-group">
+                {{var imgPath=it[p].imgPath.split(',');}}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2) { }}
+                <li style="background-image:url('{{=static_url+imgPath[i]}}')" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ } }}
+              </ul>{{ } }}
+              <div class="footer">
+                <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>
+                <div class="time"><i class="overt">公开</i><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) && !isEmpty(it[p].taskType)){ }}<span class="tag-video-time"><i class="icon-play-o"></i><span>{{=formatType(it[p].taskType,it[p].taskprogress)}}</span></span>{{ } }}<span class="course-tit"> {{=it[p].coursename}}</span></div>
+              </div>
+            </dd>
+          </dl>{{ } }}
+          {{ } }}
+    </script>
+    <script id="tpl3" type="text/x-dot-template">{{for(var p in it) { }}
+          <dl id="li{{=it[p].id}}" class="cont-list">
+            <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"></dt>
+            <dd>
+              <div class="name">{{=it[p].nikeName}}</div>
+              <div tapmode onclick="to_detail_top(this)" isPub="{{=it[p].isPublic}}" data-uid="{{=it[p].memberId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].courseId}}" charpterId="{{=it[p].charpterId}}" taskprogress="{{=it[p].taskprogress}}" taskType="{{=it[p].taskType}}" taskId="{{=it[p].taskId}}" coursename="{{=it[p].coursename}}" updateTime="{{=it[p].updateTime}}" class="describe link-box">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>{{ if(!isEmpty(it[p].imgPath)) { }}
+              <ul class="pic-group">
+                {{var imgPath=it[p].imgPath.split(',');}}
+                {{ for(var i in imgPath) { }}
+                {{imgPath[i]=static_url+imgPath[i];}}
+                {{if(i<=2) { }}
+                <li style="background-image:url('{{=imgPath[i]}}')" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{if(imgPath.length>=3) { }}<b>共{{=it[p].imgPath.split(',').length}}张</b>{{ } }}
+              </ul>{{ } }}
+              <div class="footer">
+                {{var uid = getstor('memberId');}}
+                {{if(it[p].isPublic == 0){ }}
+                <div class="count"><i class="icon-star"></i><span>{{=isEmpty(it[p].favoriteCount)?'0':it[p].favoriteCount}}</span><i class="icon-thumb-up"></i><span>{{=isEmpty(it[p].praiseCount)?'0':it[p].praiseCount}}</span></div>{{ } }}
+                <div class="time"><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{ } }}</span><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name"><span class="course-tit"> {{=it[p].coursename}}</span></div>
+              </div>
+            </dd>
+          </dl>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function to_detail_top(e){
+          var param = api.pageParam;
+          param.id = $(e).attr('data-id');
+          param.courseId = $(e).attr('data-key');
+          param.charpterid=isEmpty($(e).attr('charpterId')) || $(e).attr('charpterId') == 'undefined' ? 'charpterId' :$(e).attr('charpterId');
+          param.memberId=$(e).attr('data-uid');
+          param.isPublic = $(e).attr('isPub');
+          param.taskProgress = $(e).attr('taskprogress');
+          param.taskType = $(e).attr('taskType');
+          param.taskId = $(e).attr('taskId');
+          param.updateTime = $(e).attr('updateTime');
+          if(isEmpty(api.pageParam.title)){
+              param.title = $(e).attr('coursename');
+          }
+          api.openFrame({
+              delay:200,
+              name: 'my-note-detail',
+              url:  'my-note-detail.html',
+              bgColor: 'rgba(0,0,0,0)',
+              rect: {
+                  x: leftLw,
+                  y: 0,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight
+              },
+              pageParam: param,
+              bounces: false
+          });
+      }
+      var pageSize = 10;
+      var  is_loaded=false;
+      function getData(page) {
+          var param = {};
+          param.pageSize = pageSize;
+          param.pageNo = page;
+          //param.charpterid = api.pageParam.charpterid;
+          param.charpterid = charpterid;
+          param.ordertype = 1;
+          param.self =1;
+          param.token = $api.getStorage('token');
+          if(page == 1 && !is_loaded){
+              api.showProgress({
+                  title: '加载中'
+              });
+          }
+          ajaxRequest('api/studytools/nodelist/v2.1', 'get', param, function (ret, err) {//003.113.1
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              var tpl = $('#tpl1').html();
+              var content = doT.template(tpl);
+              if (ret && ret.state == 'success') {
+                  is_loaded=true;
+                  total = ret.totalCount;
+                  if (page == 1) {
+                      if(isEmpty(ret.data)||total==0){
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('body').removeClass('null');
+                      $('#content').html(content(ret.data));
+                  } else {
+                      $('#content').append(content(ret.data));
+                  }
+                  audioDom();
+                  api.parseTapmode();
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+      var total = 0;
+      var charpterid = '';
+      apiready = function () {
+          charpterid = api.pageParam.charpterid;
+          api.addEventListener({
+              name: 'chapter-notes-f'
+          }, function (ret) {
+              charpterid = ret.value.charpterid;
+              getData(1);
+          });
+          //我的新建以后的刷新
+          api.addEventListener({
+              name: 'chapter'
+          }, function (ret) {
+              //alert(222);
+              charpterid = ret.value.charpterid;
+              getData(1);
+          });
+          if(!api.pageParam.sous){
+              getData(1);
+          }else{
+              $('#content').html('');
+              $('body').addClass('null');
+          }
+          api.addEventListener({
+              name: 'my-note-detail-sc'
+          }, function (ret) {
+              getData(1);
+          });
+          var currentPage = 1;
+          //搜索笔记
+          api.addEventListener({
+              name: 'note_lx'
+          }, function (ret) {
+              if (ret && ret.value) {
+                  aa = 1;
+                  var tpl = $('#tpl3').html();
+                  var content = doT.template(tpl);
+                  total = ret.value.key1.totalCount;
+                  if ($('body').hasClass('null')) {
+                      $('body').removeClass('null');
+                  }
+                  if (ret.value.page == 1) {
+                      if(isEmpty(ret.value.key1.data)){
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('#content').html(content(ret.value.key1.data));
+                  } else {
+                      $('#content').append(content(ret.value.key1.data));
+                 }
+              }
+          });
+      
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if(aa == 1){
+                  if (currentPage < Math.ceil(total / 10)) {
+                      currentPage++;
+                     //加载
+                      get_dt(currentPage);
+                      /*
+                      api.sendEvent({
+                          name: 'load_more_mn',
+                          extra: {key: 2}
+                      });
+                      */
+                  }else {
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              }else{
+                  if (currentPage < Math.ceil(total / pageSize)) {
+                      currentPage++;
+                      getData(currentPage);
+                  }else{
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              }
+          });
+          api.addEventListener({
+              name: 'f_xg'
+          }, function (ret) {
+              aa = 2;
+              api.setFrameAttr({
+                   name:'my-note-list-f',
+                   hidden:true
+              });
+          });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function (ret) {
+              api.closeFrame();
+          });
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              if(aa == 1){
+                  get_dt(1);
+              }else{
+                  if (!api.pageParam.sous) {
+                      getData(1);
+                  }
+              }
+              currentPage = 1;
+          });
+          api.addEventListener({
+              name: 'bjxq'
+          }, function (ret) {
+              getData(1);
+          });
+      
+          api.addEventListener({
+              name: 'key_word_mn'
+          }, function (ret) {
+              var value = ret.value;
+              param.keyWords = value.key;
+              searchType = value.searchType;
+              if (value.typ == 1) {
+                  more_data(1);
+              } else if (value.typ == 2) {
+                  more_data(currentPage);
+              }
+          });
+      
+      };
+      var aa = '';
+      var keyword = '';
+      function note_result(ret){
+          //var search = JSON.parse(ret);
+          var search = ret;
+          aa = 1;
+          var tpl = $('#tpl3').html();
+          var content = doT.template(tpl);
+          total = ret.key1.totalCount;
+          keyword = search.keyword;
+          if ($('body').hasClass('null')) {
+              $('body').removeClass('null');
+          }
+          if (search.page == 1) {
+              if(isEmpty(search.key1.data)){
+                  $('#content').html('');
+                  $('body').addClass('null');
+                  return false;
+              }
+              $('#content').html(content(search.key1.data));
+          } else {
+              $('#content').append(content(search.key1.data));
+          }
+      }
+      
+      function get_dt(page) {
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.pageNo = page;
+          param.pageSize = 10;
+          param.keyWords = keyword;
+          param.findType=1;
+          api.showProgress({
+              title: '加载中',
+              modal: false
+          });
+          ajaxRequest('api/studytools/findcontent/v2.1', 'get', param, function (ret, err) {//003.002 内容搜索
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  var tpl = $('#tpl3').html();
+                  var content = doT.template(tpl);
+                  $('#content').append(content(ret.data));
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+      function next(e, link) {
+          var id = $(e).data('id');
+          var param = api.pageParam;
+          api.pageParam.id = id;
+          api.openWin({
+              name: link,
+              url: link + '.html',
+              bgColor: '#000',
+              opaque: true,
+              reload: true,
+              softInputMode: 'resize',
+              pageParam: param,
+              vScrollBarEnabled: false
+          });
+      }
+      $('.delete').on('tap', function (e) {
+          e.preventDefault();
+          api.openFrame({
+              name: 'Launch',
+              url: 'Launch.html',
+              delay:200
+          });
+      }, false);
+      $('.chaptext').on('tap', function (e) {
+          e.preventDefault();
+          api.openFrame({
+              name: 'notes-details',
+              url: 'notes-details.html',
+              delay:200
+          });
+      }, false);
+      //点击点赞
+    </script>
+  </body>
+</html>

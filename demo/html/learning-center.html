@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>学习中心</title>
+    <link rel="stylesheet" type="text/css" href="../css/col-lg.css">
+  </head>
+  <body>
+    <div class="dashboard">
+      <!--第二部分-->
+      <ul id="course_content" class="das-top"></ul>
+      <div class="content_three">
+        <div class="left">
+          <h1 class="section_tit">学习概况</h1>
+          <div class="three_chart cl">
+            <div class="time_box">
+              <div class="aver_time">
+                <div class="circle_box"></div>平均时长
+              </div>
+              <div class="study_time">
+                <div class="circle_box2"></div>我的学习时长
+              </div>
+            </div>
+            <div class="line_table">
+              <canvas id="canvasLine" style="width:100%;height:100%;"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="right">
+          <h1 class="section_tit">学时用时占比</h1>
+          <div class="three_percent">
+            <div id="graph" style="width:100%;height:100%;"></div>
+          </div>
+          <div class="explain">
+            <ul id="content-used" class="clearfix"></ul>
+          </div>
+        </div>
+        <div class="left">
+          <h1 class="section_tit">能力评估</h1>
+          <ul class="abl_tit cl">
+            <li>财迷中排名第<span class="ranking">28</span>位</li>
+            <li>三天不做题</li>
+            <li>等于没学习</li>
+          </ul>
+          <div class="ability_box">
+            <div class="leftbar">
+              <ul id="content_score" class="ring_box cl"></ul>
+            </div>
+            <div class="rightbar">
+              <ul id="content_able"></ul>
+            </div>
+          </div>
+        </div>
+        <div id="content_error" class="right"></div>
+      </div>
+    </div>
+    <script id="tpl_course" type="text/x-dot-template">
+      {{var data=it.courselist;}}
+      {{ for(var p in data) { }}
+            <li tapmode onclick="CourseDetail('{{=data[p].courseId}}','{{=data[p].chapterId}}','{{=data[p].subjectID}}','{{=data[p].categoryId}}','{{=data[p].courseName}}','{{=data[p].chapterName}}','{{=data[p].subjectName}}','{{=data[p].categoryName}}')">
+              <h1 style=" width: 100%;overflow:hidden;text-overflow :ellipsis;font-size: 0.28rem;">
+                {{  if(!isEmpty(data[p].categoryName)) { }}
+                {{=data[p].categoryName}}
+                {{ } }}
+                {{=data[p].subjectName}}
+              </h1>
+              <h2>{{=data[p].courseName}}</h2>{{ if(!isEmpty(data[p].chapterName) && !isEmpty(data[p].lastTaskdate)){ }}
+              <p>上次学到：{{=data[p].chapterName}}</p>{{ }else{ }}
+              <p>上次学到：您还没有学习记录</p>{{ } }}
+              {{ if(!isEmpty(data[p].taskprogress) && !isEmpty(data[p].taskTotal)) { }}
+              <div class="circle">
+                <div class="circle-progress">
+                  <div class="val">{{=parseInt(Math.round((data[p].taskprogress/data[p].taskTotal).toFixed(4)*100))>90 ?  100 :parseInt(Math.round((data[p].taskprogress/data[p].taskTotal).toFixed(4)*100)) }}</div>
+                </div>
+                <div class="num"><span>{{=data[p].taskprogress}}／</span><b>{{=data[p].taskTotal}}</b></div>
+              </div>{{ }else{ }}
+              <div class="circle">
+                <div class="circle-progress">
+                  <div class="val">0</div>
+                </div>
+                <div class="num"><span>0／</span><b>{{=data[p].taskTotal?data[p].taskTotal:0}}</b></div>{{ } }}
+              </div>
+            </li>
+            <!--第三部分-->{{ } }}
+    </script>
+    <script id="tpl_able" type="text/x-dot-template">
+                    {{  if(!isEmpty(it)) { }}
+                    {{ if(it.chapter!=undefined && it.chapter!=null && it.chapter!='undefined' && it.chapter!='null') { }}
+                    <li>
+                      <div class="chapter_box">章节定向
+                        <div s="{{=it.chapter}}" class="percent_box">{{=it.chapter}}%</div>
+                      </div>
+                      <div class="progress_line">
+                        <div class="line_box"></div>
+                      </div>
+                    </li>{{ } }}
+                    {{ if(it.knowledgePoint!=undefined  && it.knowledgePoint!=null && it.knowledgePoint!='undefined'  && it.knowledgePoint!='null') { }}
+                    <li>
+                      <div class="chapter_box">考试特训
+                        <div s="{{=it.knowledgePoint}}" class="percent_box">{{=it.knowledgePoint}}%</div>
+                      </div>
+                      <div class="progress_line">
+                        <div class="line_box line_box2"></div>
+                      </div>
+                    </li>{{ } }}
+                    {{ if(it.intelligent!=undefined && it.intelligent!=null && it.intelligent!='undefined' && it.intelligent!='null') { }}
+                    <li>
+                      <div class="chapter_box">职能组卷
+                        <div s="{{=it.intelligent}}" class="percent_box">{{=it.intelligent}}%</div>
+                      </div>
+                      <div class="progress_line">
+                        <div class="line_box line_box3"></div>
+                      </div>
+                    </li>{{ } }}
+                    {{ if(it.simulated!=undefined && it.simulated!=null && it.simulated!='undefined' && it.simulated!='null') { }}
+                    <li>
+                      <div class="chapter_box">模拟考试
+                        <div s="{{=it.simulated}}" class="percent_box">{{=it.simulated}}%</div>
+                      </div>
+                      <div class="progress_line">
+                        <div class="line_box line_box4"></div>
+                      </div>
+                    </li>{{ } }}
+                    {{ if(it.real!=undefined && it.real!=null && it.real!='undefined' && it.real!='null') { }}
+                    <li>
+                      <div class="chapter_box">真题重现
+                        <div s="{{=it.real}}" class="percent_box">{{=it.real}}%</div>
+                      </div>
+                      <div class="progress_line">
+                        <div class="line_box line_box5"></div>
+                      </div>
+                    </li>{{ } }}
+                    {{ } }}
+    </script>
+    <script id="tpl_score" type="text/x-dot-template">{{  if(!isEmpty(it)) { }}
+                    <li>
+                      <div class="circle-progress">
+                        <div class="val">{{ if(isEmpty(it.total)) { }}0{{ }else{ }}{{=((it.total/it.total))*100}} {{ } }}</div>
+                      </div>
+                      <p><span>共</span><b>{{=isEmpty(it.total) ? 0 : it.total}}</b><span>题</span></p>
+                    </li>
+                    <li>
+                      <div class="circle-progress">
+                        <div class="val">{{ if(isEmpty(it.total)) { }}0{{ }else{ }}{{=((it.error*100)/it.total).toFixed(0)}} {{ } }}</div>
+                      </div>
+                      <p><b>{{=isEmpty(it.error) ? 0 : it.error}}</b><span>错题</span></p>
+                    </li>
+                    <li>
+                      <div class="circle-progress">
+                        <div class="val">{{ if(isEmpty(it.total)) { }}0{{ }else{ }}{{=(((it.total-it.error)*100/it.total).toFixed(0))}} {{ } }}</div>
+                      </div>
+                      <p><span>答对</span><b>{{=(it.total-it.error)}}</b></p>
+                    </li>{{ } }}
+    </script>
+    <script id="tpl_used" type="text/x-dot-template">
+                  {{for(var p in it.data) { }}
+                  {{? p < 3}}
+                  <li>{{=it.data[p].label}} {{=((it.data[p].value/it.n).toFixed(2))*100}}%
+                    <div class="circle_dot"></div>
+                  </li>{{? }}
+                  {{ } }}
+                  {{for(var p in it.data) { }}
+                  {{? p >= 3}}
+                  <li>{{=it.data[p].label}} {{=((it.data[p].value/it.n).toFixed(2))*100}}%
+                    <div class="circle_dot"></div>
+                  </li>{{? }}
+                  {{ } }}
+    </script>
+    <script id="tpl_error" type="text/x-dot-template">
+              <h1 class="section_tit">错题本</h1>
+              <div class="des_error">已消灭错题：<span>{{=it.correct}}</span>道</div>
+              <div class="des_error exit_error">尚存余错题：<span>{{=it.leave}}</span>道</div>
+              <!--.cha_btn.cl-->
+              <!--    .cha_error.cur_btn(tapmode,onclick="next()") 查看错题-->
+              <!--    .beat_error.cur_btn(tapmode,onclick="next()") 消灭错题-->
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script src="../script/jquery.js"></script>
+    <script src="../script/Chart.js"></script>
+    <script src="../script/morris.js"></script>
+    <script src="../script/raphael-min.js"></script>
+    <script src="../script/pagejs/learning-center.js"></script>
+  </body>
+</html>

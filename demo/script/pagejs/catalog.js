@@ -308,7 +308,6 @@ function set_down_status(str){
 
             $('.space').html("可用空间" + data.size + "MB<span></span>");
             $(obj).find('.val').text(data.progress);
-
             break;
         case 'end':
             clearInterval(down_timer);

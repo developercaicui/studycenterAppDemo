@@ -1,0 +1,126 @@
+
+<div class="search-bar">
+  <input type="text" name="input-lx" placeholder="搜索" class="input-txt"/>
+  <div class="right"><i class="icon-search2"></i><span tapmode="tapmode" onclick="goSearch(this)" class="submit">搜索</span><span tapmode="tapmode" onclick="hideSearchBar()" class="cancel">取消</span></div>
+</div>
+<script type="text/javascript">
+  function showSearchBar(e){
+      searchType = e;
+      $('.search-bar').show(300);
+  }
+  function hideSearchBar(){
+      $('.search-bar').hide();
+      switch(searchType){
+          case 'note':
+              api.setFrameAttr({
+                  name:'my-note-list-f',
+                  hidden:true
+              });
+              api.sendEvent({
+                  name: 'f_xg'
+              });
+              break;
+          case 'answer':
+              api.sendEvent({
+                  name: 'answer_f_lx'
+              });
+              break;
+          case 'note_search':
+              api.closeFrame({name:'course-note-all'});
+              api.openFrameGroup({
+                  name: 'chapterFrameGroup',
+                  scrollEnabled: true,
+                  rect: {
+                      x: leftSw,
+                      y: headSh,
+                      w: api.winWidth - leftSw,
+                      h: api.winHeight - headSh
+                  },
+                  index: 0,
+                  preload: 0,
+                  frames: [{
+                      name: 'course-note-chapter-all',
+                      url: 'course-note-chapter-all.html',
+                      pageParam: api.pageParam
+                  }, {
+                      name: 'course-note-chapter-me',
+                      url: 'course-note-chapter-me.html',
+                      pageParam: api.pageParam
+                  }]
+              }, function (ret, err) {
+                  $('.btn-group .btn').removeClass('active').eq(ret.index).addClass('active');
+              });
+              api.setFrameAttr({
+                  name: 'course-note-all',
+                  hidden: true
+              });
+              break;
+          case 'answer_search':
+              api.closeFrame({name:'course-answer-all'});
+              api.openFrameGroup({
+                  name: 'answerFrameGroup',
+                  scrollEnabled: true,
+                  rect: {
+                      x: leftSw,
+                      y: headSh,
+                      w: api.winWidth - leftSw,
+                      h: api.winHeight - headSh
+                  },
+                  index: 0,
+                  preload: 1,
+                  frames: [{
+                      name: 'course-answer-all',
+                      url: 'course-answer-all.html',
+                      pageParam: api.pageParam
+                  }, {
+                      name: 'course-answer-me',
+                      url: 'course-answer-me.html',
+                      pageParam: api.pageParam
+                  }]
+              }, function (ret, err) {
+                  api.sendEvent({
+                      name: 'hasAnswerTab',
+                      extra: {key1: ret.index}
+                  });
+              });
+              api.setFrameAttr({
+                  name: 'course-answer-all',
+                  hidden: true
+              });
+              break;
+          case 'talk_search':
+              api.closeFrame({name:'course-talk-f'});
+              api.openFrame({
+                  delay:200,
+                  name: 'course-talk-f',
+                  url: 'course-talk-f.html',
+                  rect: {
+                      x: leftSw,
+                      y: headSh,
+                      w: api.winWidth - leftSw,
+                      h: api.winHeight - headSh
+                  },
+                  bounces: true,
+                  reload:true
+              });
+              break;
+          case 'talk_search_m':
+              api.closeFrame({name: 'course-talk-me-f'});
+              api.openFrame({
+                  delay: 200,
+                  name: 'course-talk-me-f',
+                  url: 'course-talk-me-f.html',
+                  rect: {
+                      x: leftSw,
+                      y: headSh,
+                      w: api.winWidth - leftSw,
+                      h: api.winHeight - headSh
+                  },
+                  bounces: true,
+                  reload: true
+              });
+              break;
+      }
+  
+  }
+</script>

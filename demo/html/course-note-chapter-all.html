@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="bg-white">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程笔记-大家的笔记-章节列表</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{~it.res1:value:k }}
+      <div class="cache-course note-chapter">
+        <div class="cache-list chaptertitle">
+          <dl class="cache-list-title">
+            <dt>
+              <p>{{=it.res1[k].title}}</p>
+            </dt>
+            <dd></dd>
+          </dl>
+        </div>{{~it.res1[k].children:val:key}}
+        {{var c_id=val.id;}}
+        {{ if(val.isLeaf=='false'){ }}
+        <ul class="cache-list one_chapter">
+          <li class="list">
+            <dl>
+              <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                <p>{{=val.title}}</p>
+              </dt>
+            </dl>{{~val.children:val2:key2}}
+            {{ if(val2.isLeaf=='false'){ }}
+            <ul class="list">
+              <dl class="haschild">
+                <dt onclick="toggleChild(this)"><i class="icon-arrow-down"></i>
+                  <p>{{=val2.title}}</p>
+                </dt>
+              </dl>{{~val2.children:val3:key3}}
+              <li class="list">
+                <dl class="haschild">
+                  <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val3.id}}" title="{{=val3.title}}">
+                    <p>{{=val3.title}}</p>
+                  </dt>
+                  <dd><i class="icon-edit"></i><span>{{=val3.nodeNum}}</span>{{var id3=val3.id;}}
+                    {{if(!isEmpty(it.res2[id3])&&it.res2[id3]!=0){ }}
+                    <div class="msg-mark">{{=it.res2[id3]<100?it.res2[id3]:'99+'}}</div>{{ } }}
+                  </dd>
+                </dl>
+              </li>{{~}}
+            </ul>{{ }else{ }}
+            <ul class="list">
+              <dl>
+                <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val2.id}}" title="{{=val2.title}}">
+                  <p>{{=val2.title}}</p>
+                </dt>
+                <dd><i class="icon-edit"></i><span>{{=val2.nodeNum}}</span>{{var id2=val2.id;}}
+                  {{if(!isEmpty(it.res2[id2])&&it.res2[id2]!=0){ }}
+                  <div class="msg-mark">{{=it.res2[id2]<100?it.res2[id2]:'99+'}}</div>{{ } }}
+                </dd>
+              </dl>
+            </ul>{{ } }}
+            {{~}}
+          </li>
+        </ul>{{ }else{ }}
+        <ul class="cache-list one_chapter">
+          <li class="list">
+            <dl>
+              <dt onclick="noteList(this)" data-key="{{=it.res1[k].id}}" data-id="{{=val.id}}" title="{{=val.title}}">
+                <p> {{=val.title}}</p>
+              </dt>
+            </dl>
+          </li>
+        </ul>{{ } }}
+        {{~}}
+      </div>{{~}}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function noteList(obj){
+          var param={};
+          param.courseId = $(obj).attr('data-key');
+          param.categoryId = $api.getStorage('Course_info').categoryId;
+          param.subjectId = $api.getStorage('Course_info').subjectId;
+          param.charpterid = $(obj).attr('data-id');
+          param.name = 'pageparam';
+          param.title = $(obj).attr('title');
+          api.openFrame({
+              delay: 200,
+              name: 'course-note',
+              url: 'course-note.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam: param,
+              bounces: false
+          });
+      }
+      var pageSize = 10;
+      function getData(page) {
+          var data1;
+          var param = {};
+          param.pageSize = pageSize;
+          param.courseid = $api.getStorage('Course_info').courseId;
+          param.categoryId = $api.getStorage('Course_info').categoryId;
+          param.subjectId = $api.getStorage('Course_info').subjectId;
+          param.pageNo = page;
+          param.self = 0;
+          param.token = $api.getStorage('token');
+          if(page==1&&show_pro&&no_loaded){
+              api.showProgress({
+                  title:'加载中',
+                  modal:false
+              });
+          }
+          ajaxRequest('api/studytools/coursechapternodecount/v2.1', 'post', param, function (ret, err) {//003.115.1
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  if(isEmpty(ret.data)){
+                      $('#content').html('');
+                      $('body').addClass('null');
+                      return false;
+                  }
+                  //                            return ret.info;
+                  var da = ret.data;
+                  var chapter_ids = [];
+                  //                    chapter_ids.push("ff8080814dad5062014db32051bf01a3");
+                  if (!isEmpty(da)) {
+                      for (var p in da) {
+                          if (!isEmpty(da[p].children)) {
+                              for (var p1 in da[p].children) {
+                                  chapter_ids.push(da[p].children[p1].id);
+                                  if (!isEmpty(da[p].children[p1].children)) {
+                                      for (var p2 in da[p].children[p1].children) {
+                                          chapter_ids.push(da[p].children[p1].children[p2].id);
+                                          if (!isEmpty(da[p].children[p1].children[p2].children)) {
+                                              for (var p3 in da[p].children[p1].children[p2].children) {
+                                                  chapter_ids.push(da[p].children[p1].children[p2].children[p3].id);
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+                  var param = {};
+                  param.token = $api.getStorage('token');
+                  param.charpterids = chapter_ids.join(",");
+                  ajaxRequest('api/studytools/nodenotread/v2.1', 'post', param, function (ret, err) {//003.119
+                      if (show_pro && no_loaded) {
+                          api.hideProgress();
+                      }
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      var tpl = $('#tpl').html();
+                      var content = doT.template(tpl);
+                      if (ret && ret.state == 'success') {
+                          no_loaded = false;
+                          total = ret.totalCount;
+                          var data3 = ret.data;
+                          var data4 = {};
+                          var data5 = {};
+                          for (var p in data3) {
+                              var t = (data3[p].id).replace("", "");
+                              data4[t] = data3[p].count;
+                          }
+                          if (page == 1) {
+                              data1 = da;
+                              $('body').removeClass('null');
+                              $('#content').html(content({'res1': data1, 'res2': data4}));
+                          }
+                          else {
+                              $('#content').append(content({'res1': data1, 'res2': data4}));
+                          }//显示隐藏动画
+                          api.parseTapmode();
+                          $('.chaptertitle').addClass('none');
+                      } else {
+                          /*api.toast({
+                              msg: ret.msg,
+                              location: 'middle'
+                          });*/
+                      }
+                  });
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+          //            return data1;
+      }
+      var total = 0;
+      var no_loaded=true;
+      apiready = function () {
+          getData(1);
+          var currentPage = 1;
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              getData(1);
+              currentPage = 1;
+          });
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if (currentPage < Math.ceil(total / pageSize)) {
+                  currentPage++;
+                  getData(currentPage);
+              } else {
+                  api.toast({
+                      msg: '加载完成!'
+                  });
+              }
+          });
+      };
+    </script>
+  </body>
+</html>

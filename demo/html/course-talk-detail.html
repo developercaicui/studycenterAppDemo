@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程讨论</title>
+  </head>
+  <body>
+    <div class="s-head">
+      <div tapmode onclick="backTalk()" class="left"><i class="icon-back"></i></div>
+      <div class="center"> 讨论详情</div>
+      <ul class="right">
+        <li tapmode onclick="toEdit()"><i class="icon-edit3"></i></li>
+        <li tapmode onclick="del()"><i class="icon-trash"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function toEdit(){
+          api.closeFrame({
+              name: 'footer-editor'
+          });
+          var pParam = api.pageParam;
+          pParam.text = 'text';
+          if(!isEmpty(api.pageParam)){
+              for(var p in api.pageParam){
+                  pParam[p]=api.pageParam[p];
+              }
+          }
+          api.openFrame({
+              delay:200,
+              name: 'course-talk-edit',
+              url: 'course-talk-edit.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth - leftSw,
+                  h: headLh
+              },
+              pageParam: pParam,
+              bounces: false
+          });
+      }
+      
+      function closeMe(){
+          api.closeFrame({
+              name:'course-talk-detail-f'
+          });
+          api.closeFrame({
+              name:'footer-editor'
+          });
+          api.closeFrame();
+      }
+      function backTalk(){
+          //返回刷新处理
+          api.closeFrame({
+              name: 'course-talk'
+          });
+          api.closeFrame({
+              name: 'course-talk-f'
+          });
+          api.openFrame({
+              delay:200,
+              name: 'course-talk',
+              url: 'course-talk.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth - leftSw,
+                  h: headLh
+              },
+              pageParam: api.pageParam,
+              bounces: false
+          });
+          closeMe();
+      }
+      apiready = function () {
+          api.pageParam.lx = 'talk-detail';
+          api.pageParam.kc = 1;
+          var mine = $api.getStorage('mine');
+          var memberId = mine.memberId;
+          if(memberId != api.pageParam.memberId){
+              $('.icon-edit3').hide();
+              $('.icon-trash').hide();
+          }
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              closeMe();
+          });
+          api.openFrame({
+              delay:200,
+              name: 'course-talk-detail-f',
+              url: 'talk-detail-f.html',
+              bgColor: '#fff',
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth -leftSw,
+                  h: api.winHeight - headSh
+              },
+              pageParam: api.pageParam,
+              bounces: true
+          });
+          api.openFrame({
+              delay:200,
+              name: 'footer-editor',
+              url: 'footer-editor.html',
+              rect: {
+                  x: leftSw,
+                  y: api.winHeight - footSh,
+                  w: api.winWidth - leftSw,
+                  h: footSh
+              },
+              pageParam: api.pageParam,
+              bounces: false
+          });
+      };
+      //讨论删除
+      function del() {
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token: $api.getStorage('token'),
+                      id: api.pageParam.id,
+                      type: 'discuss'
+                  };
+                  api.showProgress({
+                      title : '删除中',
+                      modal : true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          //                            api.sendEvent({
+                          //                                name: 'my-talk-detail-sc'
+                          //                            });
+      
+                          var jsfun = "removeList('" + api.pageParam.id + "')";
+                          api.execScript({
+                              name: 'root',
+                              frameName: 'my-talk',
+                              script: jsfun
+                          });
+                          api.execScript({
+                              name: 'course',
+                              frameName: 'course-talk-f',
+                              script: jsfun
+                          });
+                          api.execScript({
+                              name: 'course',
+                              frameName: 'course-talk-me-f',
+                              script: jsfun
+                          });
+                          closeMe();
+                      } else {
+                          api.toast({
+                              msg: '讨论删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

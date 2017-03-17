@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>财萃Pad</title>
+  </head>
+  <body>
+    <div class="signmain">
+      <ul class="form">
+        <li class="img_captcha none">
+          <input type="text" placeholder="图形验证码" name="captcha" class="input-txt"><img id="captcha_img" tapmode="" onclick="get_img(this)">
+        </li>
+        <li>
+          <input type="text" placeholder="手机号" name="phone" maxlength="11" class="input-txt"><span onclick="get_code(this)" tapmode="" class="forget msg_code">获取验证码</span>
+        </li>
+        <li>
+          <input type="text" placeholder="验证码" name="code" class="input-txt">
+        </li>
+        <li>
+          <div tapmode="" onclick="my_next()" class="btn btn-success btn-block">下一步</div>
+          <input type="hidden" name="has_img" value="">
+        </li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      var img = common_url + '/api/v2.1/captcha?s=' + Math.random();
+      function get_img() {
+              img = common_url + '/api/v2.1/captcha?s=' + Math.random();
+              $('#captcha_img').attr('src', img);
+      
+      }
+      //下一步
+      function my_next() {
+          var phone = $.trim($('input[name=phone]').val());
+          var code= $.trim($('input[name=code]').val());
+          if (phone == '') {
+              api.toast({
+                  msg: '请输入手机号',
+                  location: 'middle'
+              });
+              return false;
+          }
+              //var regex = /^0?(13[0-9]|15[012356789]|18[0123456789]|17[0]|14[57])[0-9]{8}$/;
+          var regex = /^1[0-9]{10}$/i;
+          if (!regex.test(phone)) {
+              api.toast({
+                  msg: '手机号格式错误',
+                  location: 'middle'
+              });
+              return false;
+          }
+          if(code==''){
+              api.toast({
+                  msg: '请输入验证码',
+                  location: 'middle'
+              });
+              return false;
+          }
+          api.showProgress({
+              title: '处理中',
+              modal: true
+          });
+          set_token(function (res, error) {
+              if (error) {
+                  if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                      is_ok = true;
+                  }
+                  api.toast({
+                      msg: error.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (res.state == 'success') {
+                  var param={};
+                  param.phone = phone;
+                  param.type = 'validate';
+                  param.code = code;
+                  param.token = res.data.token;
+                  ajaxRequest('api/v2.1/msg/code', 'post', param, function (ret, err) {
+                      api.hideProgress();
+                      if (err) {
+                          if (api.connectionType == 'none' || api.connectionType == 'unknown') {
+                              is_ok = true;
+                          }
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          api.openWin({
+                              name: 'forgot-pass2',
+                              url: 'forgot-pass2.html',
+                              pageParam:{phone:phone,code:code},
+                              delay: 200
+                          });
+                      } else {
+                          if (ret.msg == 'false') {
+                              api.toast({
+                                  msg: '验证码错误',
+                                  location: 'middle'
+                              });
+                          } else if (ret.msg == '1000') {
+                              api.toast({
+                                  msg: 'type类型错误',
+                                  location: 'middle'
+                              });
+                          }
+                      }
+                  });
+              } else {
+                  var err = '';
+                  if (!isEmpty(err_conf_007[res.msg])) {
+                      err = err_conf_007[res.msg];
+                      api.toast({
+                          msg: err,
+                          location: 'middle'
+                      });
+                  }
+      
+              }
+          });
+      }
+      var is_ok = true;
+      apiready = function() {
+          get_img();
+      };
+    </script>
+  </body>
+</html>

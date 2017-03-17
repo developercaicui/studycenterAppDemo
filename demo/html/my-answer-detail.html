@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的问答详情头部</title>
+  </head>
+  <body>
+    <!--头部-->
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">问答详情 （未回复）</div>
+      <div class="right"><i tapmode onclick="del()" class="icon-trash"></i></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe(){
+          api.closeFrame({
+              name:'my-answer-detail-f'
+          });
+          api.closeFrame({
+              name:'footer-editor'
+          });
+          api.closeFrame();
+      }
+      apiready = function () {
+          var memberId = get_loc_val('mine','memberId');
+          if(api.pageParam.memberId != memberId){
+              $('.icon-trash').addClass('none');
+          }
+          api.addEventListener({
+              name: 'answerChange'
+          }, function (ret) {
+              $('.center').html('问答详情 (已回复)');
+          });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              closeMe();
+          });
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+      //            myFrame('answer-detail-f','large',true,api.pageParam,'');
+      
+          var page = api.pageParam;
+          api.openFrame({
+              name: 'my-answer-detail-f',
+              url: 'answer-detail-f.html',
+              bgColor: '#fff',
+              rect: {
+                  x: leftLw,
+                  y: headLh,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight-headLh
+              },
+              pageParam: page,
+              bounces: true
+          });
+          var param ={};
+          param.editorStyle = 1;
+          if(!isEmpty(api.pageParam)){
+              for(var p in api.pageParam){
+                  param[p]=api.pageParam[p];
+              }
+          }
+          api.openFrame({
+              name: 'footer-editor',
+              url: 'footer-editor.html',
+              rect: {
+                  x: leftLw,
+                  y: api.winHeight - footSh,
+                  w: api.winWidth - leftLw,
+                  h: footSh
+              },
+              pageParam: param,
+              bounces: false
+          });
+      };
+      function del(){
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token :$api.getStorage('token'),
+                      id : api.pageParam.id,
+                      type: 'question'
+                  };
+                  api.showProgress({
+                      title: '刪除中',
+                      modal: true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          //                            api.sendEvent({
+                          //                                name: 'new-question-f'
+                          //                            });
+                          var jsfun="removeList('"+ api.pageParam.id+"')";
+                          api.execScript({
+                              frameName: 'my-answer',
+                              script: jsfun
+                          });
+                          closeMe();
+                      }else {
+                          api.toast({
+                              msg: '删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>请选择课程</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center">请选择课程</div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe(){
+          api.closeFrame({
+              name: 'my-question-mine-f'
+          });
+          api.closeFrame();
+      }
+      apiready=function(){
+          api.openFrame({
+              delay:200,
+              name: 'course-question-mine-f',
+              url: 'course-question-mine-f.html',
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headSh
+              },
+              pageParam:api.pageParam,
+              bounces: true
+          });
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame({
+                  name: 'course-question-mine-f'
+              });
+              api.closeFrame();
+          });
+      };
+    </script>
+  </body>
+</html>

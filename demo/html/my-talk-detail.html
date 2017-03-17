@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的讨论详情头部</title>
+  </head>
+  <body>
+    <!--头部-->
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeFrame()" class="left"><i class="icon-back"></i></div>
+      <div class="center">讨论详情</div>
+      <ul class="right">
+        <li tapmode onclick="toEdit()"><i class="icon-edit3"></i></li>
+        <li tapmode onclick="del()"><i class="icon-trash"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function toEdit(){
+          api.setFrameAttr({
+              name: 'footer-editor',
+              hidden:true
+          });
+         var param ={};
+          param.text = 'text';
+          if(!isEmpty(api.pageParam)){
+              for(var p in api.pageParam){
+                  param[p]=api.pageParam[p];
+              }
+          }
+          window.localStorage.frameSize = 'large';
+          api.openFrame({
+              delay:200,
+              name: 'talk-edit',
+              url: 'talk-edit.html',
+              bgColor :'rgba(0,0,0,0)',
+              rect: {
+                  x: leftLw,
+                  y: 0,
+                  w: api.winWidth  - leftLw,
+                  h: api.winHeight
+              },
+              pageParam: param
+          });
+      }
+      function closeFrame(){
+          api.closeFrame({
+              name:'my-talk-detail-f'
+          });
+          api.closeFrame({
+              name:'footer-editor'
+          });
+          api.closeFrame();
+      }
+      apiready = function () {
+          var mine = $api.getStorage('mine');
+          var memberId = mine.memberId;
+          if(memberId != api.pageParam.memberId){
+              $('.icon-edit3').addClass('none');
+              $('.icon-trash').addClass('none');
+          }
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame({
+                  name:'talk-detail-f'
+              });
+              api.closeFrame({
+                  name:'footer-editor'
+              });
+              api.closeFrame();
+          });
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          api.openFrame({
+              delay:200,
+              bounces: true,
+              opaque: true,
+              reload: true,
+              vScrollBarEnabled: false,
+              name: 'my-talk-detail-f',
+              url: 'talk-detail-f.html',
+              bgColor: '#fff',
+              pageParam: {id:api.pageParam.id},
+              rect: {
+                  x: leftLw,
+                  y: headLh,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight - headLh
+              }
+          });
+          var pmm = {};
+          pmm.editorStyle = '1';
+          if(!isEmpty(api.pageParam)){
+              for(var p in api.pageParam){
+                  pmm[p]=api.pageParam[p];
+              }
+          }
+          api.openFrame({
+              delay:200,
+              name: 'footer-editor',
+              url: 'footer-editor.html',
+              rect: {
+                  x: leftLw,
+                  y: api.winHeight - footSh,
+                  w: api.winWidth - leftLw,
+                  h: footSh
+              },
+              pageParam: pmm,
+              bounces: false
+          });
+      };
+      //讨论删除
+      function del() {
+          api.actionSheet({
+              title: '温馨提示',
+              cancelTitle: '取消',
+              buttons: ['确定删除']
+          }, function (ret, err) {
+              if (ret.buttonIndex == 1) {
+                  var param = {
+                      token: $api.getStorage('token'),
+                      id: api.pageParam.id,
+                      type: 'discuss'
+                  };
+                  api.showProgress({
+                      title : '删除中',
+                      modal : true
+                  });
+                  ajaxRequest('api/studytools/delmycontent/v2.1', 'get', param, function (ret, err) {//003.305  删除问题
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          //                            api.sendEvent({
+                          //                                name: 'my-talk-detail-sc'
+                          //                            });
+                          var jsfun = "removeList('" + api.pageParam.id + "')";
+                          api.execScript({
+                              frameName: 'my-talk',
+                              script: jsfun
+                          });
+                          closeFrame();
+                      } else {
+                          api.toast({
+                              msg: '讨论删除接口异常',
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

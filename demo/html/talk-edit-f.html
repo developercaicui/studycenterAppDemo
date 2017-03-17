@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html class="bg-white form-page">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>讨论编辑</title>
+  </head>
+  <body>
+    <div class="form">
+      <input placeholder="输入标题" type="text" onblur="upperCase()" oninput="upperCase()" onchange="upperCase()" class="lx_title">
+      <textarea placeholder="输入正文" onblur="upperCase()" oninput="upperCase()" onchange="upperCase()" class="lx_content"></textarea>
+    </div>
+    <div onclick="cancelAdd(this)" class="backdrop1"></div>
+    <div onclick="close_edit()" class="backdrop opacity none"></div>
+    <ul class="set-photo">
+      <li>上传图片</li>
+      <li tapmode="" onclick="getPic('camera',1024,768)">拍照</li>
+      <li tapmode="" onclick="getPic('album',1024,768)">选择本地图片</li>
+    </ul>
+    <div type="2" class="editor-bar">
+      <div class="editor-tool"><i onclick="open_edit('img')" class="icon-picture2"></i><i onclick="open_edit('audio')" class="icon-recording-o"></i>
+        <div tapmode onclick="sub(this)" class="btn btn-success">发布</div>
+        <div class="switch">
+          <p></p><span>私人</span>
+        </div>
+      </div>
+      <div class="newaudio">
+        <div id="audio" class="audio audio-progress"><i class="icon-recording"></i>
+          <div class="val">0</div><i tapmode url="" onclick="playAudioMe(this)" bg time="34" class="icon-play"></i>
+        </div>
+        <p class="newaut">按住开始录音</p>
+        <p class="newtip">0.0</p>
+        <button onclick="resetAudio()">重录</button>
+      </div>
+      <div class="newimg">
+        <p>最多可添加五张图片</p>
+        <div class="adchimg">
+          <div onclick="open_img()" class="addimg"><i class="icon-plus"></i></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      function open_edit(e) {
+          if (e == 'audio') {
+              $('.newaudio').show();
+              $('.newimg').hide();
+              circleProgress();
+          } else{
+              stopAdd();
+              $('.newimg').show();
+              $('.newaudio').hide();
+          }
+          $('.backdrop').show();
+      }
+      function stopAdd(){
+          var _oldimg = $('.checkimg').length;
+          if(_oldimg > 4){
+              $('.addimg').hide();
+          }else{
+              $('.addimg').show();
+          }
+      }
+      function cancelAdd(e){
+          var _s = $(e).attr('close');
+          if(_s == 'no'){
+              $('.set-photo,.backdrop1').hide();
+          }
+      }
+      function close_edit() {
+          $('.newaudio,.newimg,.backdrop').hide();
+      }
+      
+      var setAudio;
+      var audiosrc = new Date();
+      var lx_path = '', lx_duration, soundPath = '';
+      var _t = $('#audio');
+      $('body').delegate('#audio', 'touchstart', function (event) {
+          window.clearInterval(setAudio);
+          event.preventDefault();
+          var cirVal = parseInt(_t.find('.val').text());
+          var cirW = parseInt(_t.width());
+          var cirI = _t.find('circle').eq(1);
+          if (!$(this).hasClass('end')) {
+              _t.addClass('ing');
+              setAudio = setInterval(function () {
+                  if (cirVal > 1799) {
+                      recordEnd();
+                  } else {
+                      cirVal += 1;
+                      var percent = cirVal / 1800, perimeter = Math.PI * 0.9 * cirW;
+                      $(cirI).css('stroke-dasharray', perimeter * percent + " " + perimeter * (1 - percent));
+                      _t.find('.val').text(cirVal);
+                      $('.newtip').text((cirVal * .1).toFixed(1));
+                  }
+              }, 100);
+              api.startRecord({
+                  path: 'fs://mp3/' + audiosrc + '.amr'
+              });
+          }
+      });
+      $('body').delegate('#audio', 'touchend', function (event) {
+          window.clearInterval(setAudio);
+          event.preventDefault();
+          var cirVal = parseInt(_t.find('.val').text());
+          if (cirVal < 30) {
+              api.stopRecord();
+              api.alert({
+                  msg: '录音时间太短'
+              });
+              window.clearInterval(setAudio);
+              resetAudio();
+              //      return false;
+          } else {
+              recordEnd();
+          }
+      });
+      function recordEnd() {
+          $('.editor-bar').attr('hasaud',1);
+          _t.removeClass('ing').addClass('end');
+          window.clearInterval(setAudio);
+          api.stopRecord(function (ret, err) {
+              if (ret) {
+                  lx_path = 'fs://mp3/' + audiosrc + '.amr';
+                  lx_duration = ret.duration;
+                  $api.setStorage('lx_duration', ret.duration);
+                  $('.icon-play').attr('url', lx_path);
+                  var headers = {
+                      'X-Requested-With': 'XMLHttpRequest'
+                  };
+                  api.ajax({
+                      url: common_url + '/' + 'api/v2.1/commons/fileUpload',
+                      method: 'post',
+                      headers: headers,
+                      timeout: 120,
+                      cache: false,
+                      data: {
+                          values: {
+                              'token': $api.getStorage('token'),
+                              'mediatime': lx_duration
+                          },
+                          files: {
+                              'file': lx_path
+                          }
+                      }
+                  }, function (ret, err) {
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          soundPath = ret.data.path;
+                          $api.setStorage('soundPath', soundPath);
+                      }else{
+                          api.toast({
+                              msg: ret.msg,
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      }
+      
+      function playAudioMe(item) {
+          var _url = $(item).attr('url');
+          $(item).addClass('play');
+          if (isEmpty($(item).attr('bg'))) {
+              api.startPlay({
+                  path: _url
+              }, function () {
+                  $(item).removeClass('play');
+              });
+              $(item).attr('bg', '1');
+          } else {
+              $(item).removeClass('play');
+              api.stopPlay();
+              $(item).attr('bg', '');
+          }
+      }
+      
+      function resetAudio() {
+          $('.editor-bar').attr('hasaud',0);
+          $('.voice-player').remove();
+          $('.newtip,.val').text('0.0');
+          _t.find('circle').eq(1).css('stroke-dasharray', "1 9999999");
+          _t.removeClass('ing end');
+          $api.setStorage('lx_duration', '');
+          $api.setStorage('soundPath', '');
+      }
+      //select-phone
+      function open_img() {
+          $('.backdrop1,.set-photo').show();
+          $('.backdrop1').attr('close','no');
+      }
+      var ids = '';
+      function upload(img) {
+          $('.set-photo').hide();
+          $('.backdrop1').attr('close', 'yes');
+          api.showProgress({
+              title: '上传中',
+              modal: true
+          });
+          var headers = {
+              'X-Requested-With': 'XMLHttpRequest'
+          };
+          api.ajax({
+              url: common_url + '/' + 'api/v2.1/commons/fileUpload',
+              method: 'post',
+              headers: headers,
+              timeout: 120,
+              cache: false,
+              data: {
+                  values: {
+                      'token': $api.getStorage('token')
+                  },
+                  files: {
+                      'file': img
+                  }
+              }
+          }, function (ret, err) {
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  var imgs = ret.data;
+                  var url = static_url + imgs.path;
+                  var url1 = imgs.path;
+                  var str = '<div class="checkimg" data-id="' + url1 + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+                  var img = '';
+                  if (!isEmpty($api.getStorage('img'))){
+                      ids = $api.getStorage('img');
+                      ids += ',' + url1;
+                  }else {
+                      ids = url1;
+                  }
+                  $api.setStorage('img', ids);
+                  var tupian = [];
+                  $('.checkimg').each(function (i) {
+                      tupian.push($('.checkimg').eq(i).attr('data-id'));
+                  });
+                  if (tupian.length == 4) {
+                      $('.addimg').hide();
+                  }
+                  $('.addimg').after(str);
+                  $('.editor-bar').attr('hasimg',1);//有图片时加小红点
+      
+                  $('.backdrop1').hide();
+              } else {
+                  api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });
+                  $('.backdrop1').hide();
+              }
+          });
+      }
+      function getPic(type, w, h) {
+          $('.backdrop').unbind();
+          if (api && api.systemType == '131231312') {
+              var imageCrop = api.require('imageCrop');
+              switch (type) {
+                  case 'camera':
+                      imageCrop.takePhoto(function (ret, err) {
+                          $('.backdrop').click(function () {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                          });
+                          if (err) {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                              return false;
+                          }
+                          if (ret && ret.imgPath) {
+                              if (!in_array(getFixName(ret.imgPath), allowPicTtype)) {
+                                  api.toast({
+                                      msg: '无法上传此种格式的图片',
+                                      location: 'middle'
+                                  });
+                                  return false;
+                              }
+                              imageCrop.clipPhoto({
+                                  "imgPath": ret.imgPath,
+                                  "height": h,
+                                  "width": w
+                              }, function (ret1, err1) {
+                                  if (err1) {
+                                      api.toast({
+                                          msg: err1.msg,
+                                          location: 'middle'
+                                      });
+                                      $api.setStorage('sign-photo', 1);
+                                      //api.closeFrame();
+                                      return false;
+                                  }
+                                  $('body').bind('click', function () {
+                                      $api.setStorage('sign-photo', 1);
+                                      //api.closeFrame();
+                                  });
+                                  if (ret1 && ret1.imgPath) {
+                                      upload(ret1.imgPath);
+                                  }
+                              });
+                          }
+                      });
+                      break;
+                  case 'album':
+                      imageCrop.getPhoto(function (ret, err) {
+                          $('.backdrop').click(function () {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                          });
+                          if (err) {
+                              //api.closeFrame();
+                              return false;
+                          }
+                          if (ret && ret.imgPath) {
+                              if (!in_array(getFixName(ret.imgPath), allowPicTtype)) {
+                                  api.toast({
+                                      msg: '无法上传此种格式的图片',
+                                      location: 'middle'
+                                  });
+                                  return false;
+                              }
+                              imageCrop.clipPhoto({
+                                  "imgPath": ret.imgPath,
+                                  "height": h,
+                                  "width": w
+                              }, function (ret1, err1) {
+                                  if (err1) {
+                                      api.toast({
+                                          msg: err1.msg,
+                                          location: 'middle'
+                                      });
+                                      return false;
+                                  }
+                                  if (ret1 && ret1.imgPath) {
+                                      upload(ret1.imgPath);
+                                  }
+                              });
+                          }
+                      });
+                      break;
+                  default:
+                      break;
+              }
+          } else {
+              api.getPicture({
+                  sourceType: type,
+                  encodingType: 'jpg',
+                  destinationType: 'url',
+                  targetWidth: w,
+                  targetHeight: h,
+                  allowEdit: false
+              }, function (ret, err) {
+                  $('.backdrop').click(function () {
+                      $api.setStorage('sign-photo', 1);
+                      //api.closeFrame();
+                  });
+                  if (err) {
+                      $api.setStorage('sign-photo', 1);
+                      //api.closeFrame();
+                      return false;
+                  }
+                  if (ret && ret.data) {
+                      if (!in_array(getFixName(ret.data), allowPicTtype)) {
+                          api.toast({
+                              msg: '无法上传此种格式的图片',
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      upload(ret.data);
+                  }
+              });
+          }
+      }
+      
+      $('.newimg').delegate('.icon-close', 'click', function () {
+          var id = '';
+          $(this).parent().remove();
+          stopAdd();
+          $('.checkimg').each(function (i) {
+              id += $('.checkimg').eq(i).attr('data-id') + ',';
+          });
+          var aa = id.substring(0, id.length - 1);
+          $api.setStorage('img', aa);
+          if(aa < 1) {
+              $('.editor-bar').attr('hasimg',0);
+          }
+      });
+      //志朋有时间把开关滑块这块代码优化一下---杨澍15-12-05
+      $('.switch').attr('num', '1');
+      $api.setStorage('isPublic', '1');
+      $('.switch').on('touchend', function () {
+          if ($('.switch').attr('class') == 'switch switch2') {
+              $('.switch').attr('num', '1');
+              $api.setStorage('isPublic', '1');
+              $('.switch').removeClass('switch2');
+              $('.switch p').removeClass('switchp1');
+              $('.switch span').removeClass('switchpsp');
+              $('.switch span').html('私人');
+          } else {
+              $('.switch').attr('num', '0');
+              $api.setStorage('isPublic', '0');
+              $('.switch').addClass('switch2');
+              $('.switch p').addClass('switchp1');
+              $('.switch span').addClass('switchpsp');
+              $('.switch span').html('公开');
+          }
+      });
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function upperCase(){
+          var title = $('.lx_title').val();
+          var content = $('.lx_content').val();
+          if(!isEmpty(title)){
+              $api.setStorage('title', title);
+          }
+          if(!isEmpty(content)){
+              $api.setStorage('content', content);
+          }
+      }
+      apiready = function(){
+          if(api.pageParam.text == 'text'){//修改
+              getData(1);
+          }else{
+      
+          }
+      };
+      var pageSize = 10;
+      function getData(page) {
+          var param = {};
+          param.id = api.pageParam.id;
+          param.pageNo = page;
+          param.pageSize = pageSize;
+          param.ordertype = 2;
+          param.token = $api.getStorage('token');
+          api.showProgress({
+              title: '加载中',
+              modal: false
+          });
+          ajaxRequest('api/studytools/discussdetail/v2.1', 'get', param, function (ret, err) {//003.301.1  讨论详情和回复列表
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  //api.alert({msg: ret.data.title});
+                  //api.alert({msg: ret.data.content});
+                  /*
+                  $('.lx_title').val(ret.data.title);
+                  $('.lx_content').html(ret.data.content);
+                  var memberId = get_loc_val('mine', 'memberId');
+                  if (api.pageParam.memberId == memberId) {
+                      api.sendEvent({
+                          name: 'notes_bj_lx',
+                          extra: {key1: ret.data.imgPath, soundPath: ret.data.soundPath, soundlen: ret.data.soundlen}
+                      });
+                  }
+                  api.parseTapmode();
+                  audioDom();
+                  */
+                  if(api.pageParam.text == 'text'){//修改
+                      $('.lx_title').val(ret.data.title);
+                      $('textarea').val(ret.data.content);
+                      $api.setStorage('content', ret.data.content);
+                      $api.setStorage('title',ret.data.title);
+                      if(!isEmpty(ret.data.imgPath)){
+                          $api.setStorage('img', ret.data.imgPath);
+                          var imgPath = ret.data.imgPath.split(',');
+                          var str = '';
+                          $.each(imgPath, function (i, item) {
+                              var url = static_url + item;
+                              str += '<div class="checkimg" data-id="' + item + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+                          });
+                          $('.addimg').after(str);
+                      }
+                      lx_lens = ret.data.soundlen;
+                      lx_soundPath = ret.data.soundPath;
+                      $api.setStorage('lx_lens', ret.data.soundlen);
+                      $api.setStorage('lx_soundPath', ret.data.soundPath);
+                      if (lx_lens == 0 || lx_lens == '' || lx_soundPath == '') {
+      
+                      } else {
+                          $('.newaudio').append('<div class="voice-player" tapmode, url="' + static_url + ret.data.soundPath + '", onclick="playAudio(this)", bg, time="' + ret.data.soundlen + '" style="position: absolute;top:5%;left:5%;"></div>');
+                      }
+                      audioDom();
+                  }
+      
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

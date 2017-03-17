@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程问答-所有问答</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script id="tpl" type="text/x-dot-template">{{ for(var p in it){  }}
+          <dl id="li{{=it[p].id}}" class="cont-list">
+            <dt><img src="{{=static_url+it[p].headImg}}" class="avatar"></dt>
+            <dd>
+              <div tapmode onclick="answerDetail(this)" courseId="{{=it[p].courseId}}" taskId="{{=it[p].taskId}}" data-id="{{=it[p].id}}" data-key="{{=it[p].memberId}}" class="link-box">
+                <div class="name">{{=it[p].nikeName}}</div>
+                <div class="title">{{=it[p].title}}</div>
+                <div class="describe">{{=!isEmpty(it[p].contentSummary)?it[p].contentSummary:''}}</div>
+              </div>{{ if(!isEmpty(it[p].imgPath)) { }}
+              <ul class="pic-group">
+                {{ var imgPath=it[p].imgPath.split(','); }}
+                {{ for(var i in imgPath) { }}
+                {{if(i<=2) { }}
+                <li style="background-image:url({{=static_url+imgPath[i]}})" tapmode onclick="openImageBrower('{{=it[p].imgPath}}','{{=i}}')"></li>{{ } }}
+                {{ } }}
+                {{if(imgPath.length>=3) { }}<b>共{{=imgPath.length}}张</b>{{ } }}
+              </ul>{{ } }}
+              <div class="footer">
+                <div class="count"><i class="icon-replys"></i><span>{{=isEmpty(it[p].replyCount)?'0':it[p].replyCount }}</span></div>
+                <div class="time"><span>{{ if(!isEmpty(it[p].updateTime)) { }}{{=formatDate(it[p].updateTime,'Y')+'-'+formatDate(it[p].updateTime,'M')+'-'+formatDate(it[p].updateTime,'D')}} {{=formatDate(it[p].updateTime,'h')+':'+formatDate(it[p].updateTime,'m')}} {{ } }}</span></div>
+                <div class="course-name">{{if(it[p].taskprogress && parseInt(it[p].taskprogress) && !isEmpty(it[p].taskType)){ }}
+                  <div class="tag-video-time"><i class="icon-play-o"></i><span>{{=formatType(it[p].taskType,it[p].taskprogress)}}</span></div>{{ } }}
+                  {{if(!isEmpty(it[p].coursename)) { }}<span class="course-tit"> {{=it[p].coursename}}</span>{{ } }}
+                </div>
+              </div>
+            </dd>
+          </dl>{{ } }}
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      //打开详情
+      function answerDetail(obj){
+          var param={};
+          var courseId = $(obj).attr('courseId');
+          var taskId = $(obj).attr('taskId');
+          courseId = isEmpty(courseId) || courseId == undefined || courseId == 'undefined' ? '课程id' : courseId;
+          taskId = isEmpty(taskId) || taskId == undefined || taskId == 'undefined' ? '任务id' : taskId;
+          param.id=$(obj).attr('data-id');
+          param.memberId = $(obj).attr('data-key');
+          param.courseId = courseId;
+          param.taskId = taskId;
+          param.lx = 'answer-detail';
+          api.openFrame({
+              delay: 200,
+              name: 'course-answer-detail',
+              url: 'course-answer-detail.html',
+              rect: {
+                  x: leftSw,
+                  y: headLh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headLh
+              },
+              pageParam:param,
+              bounces: false
+          });
+      }
+      var pageNum = 10;
+      var total = 0;
+      var aa='';//用于判断刷新和加载更多是否搜索页面的a==1是
+      var no_loaded=true;
+      apiready = function () {
+          getData(1);
+          api.addEventListener({ //新建监听
+              name: 'new-question-f'
+          }, function (ret, err) {
+              getData(1);
+          });
+          //            api.addEventListener({ //删除监听
+          //                name: 'my-question-lx'
+          //            }, function (ret, err) {
+          //                getData(1);
+          //            });
+          var currentPage = 1;
+          //滚动到底部
+          api.addEventListener({
+              name: 'scrolltobottom'
+          }, function (ret, err) {
+              if (aa == 1) {
+                  if (currentPage < Math.ceil(total / 10)) {
+                      currentPage++;
+                      no_loaded = false;
+                      get_dt(currentPage);
+                  } else {
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              } else {
+                  if (currentPage < Math.ceil(total / pageNum)) {
+                      currentPage++;
+                      getData(currentPage);
+                  } else {
+                      api.toast({
+                          msg: '加载完毕'
+                      });
+                  }
+              }
+          });
+          api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: 'widget://image/arrow-down-o.png',
+              bgColor: '#f3f3f3',
+              textColor: '#787b7c',
+              textDown: '下拉更多',
+              textUp: '松开刷新',
+              showTime: false
+          }, function (ret, err) {
+              if (aa == 1) {
+                  no_loaded = true;
+                  get_dt(1);
+              } else {
+                  getData(1);
+              }
+              currentPage = 1;
+          });
+      };
+      function getData(page) {
+          if (!isEmpty(api.pageParam.data)) {//接收从caicui.js发送来搜索结果的监听,用于第一次搜索结果重新给模板页面赋值
+              aa = 1;
+              var data = api.pageParam.data;
+              total = data.key1.totalCount;
+              keyword = data.keyword;
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              if (isEmpty(data.key1.data)||total==0) {
+                  $('#content').html('');
+                  $('body').addClass('null');
+                  return false;
+              }
+              $('body').removeClass('null');
+              $('#content').html(content(data.key1.data));
+              no_loaded = false;
+              return false;
+          }
+          var param = {};
+          param.self = 0;
+          param.ordertype = 1;
+          param.pageNo = page;
+          param.pageSize = pageNum;
+          param.courseid= $api.getStorage('Course_info').courseId;
+          param.categoryId= $api.getStorage('Course_info').categoryId;
+          param.subjectId= $api.getStorage('Course_info').subjectId;
+          param.token = $api.getStorage('token');
+          if (page == 1 && show_pro && no_loaded) {
+              api.showProgress({
+                  title: '加载中',
+                  modal: false
+              });
+          }
+          ajaxRequest('api/studytools/questionlist/v2.1', 'get', param, function (ret, err) {//003.206 问题列表
+              if (show_pro && no_loaded) {
+                  api.hideProgress();
+              }
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              var tpl = $('#tpl').html();
+              var content = doT.template(tpl);
+              if (ret && ret.state == 'success') {
+                  no_loaded=false;
+                  total = ret.totalCount;
+                  if(page==1){
+                      if (isEmpty(ret.data)||total==0) {
+                          $('#content').html('');
+                          $('body').addClass('null');
+                          return false;
+                      }
+                      $('#content').html(content(ret.data));
+                      $('body').removeClass('null');
+                  }else{
+                      $('#content').append(content(ret.data));
+                  }
+                  api.parseTapmode();
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+      //wenda搜索下一页与下拉刷新请求
+      function get_dt(page) {
+          var param = {};
+          param.token = $api.getStorage('token');
+          param.pageNo = page;
+          param.pageSize = 5;
+          param.keyWords = keyword;
+          param.findType=2;
+          ajaxRequest('api/studytools/findcontent/v2.1', 'get', param, function (ret, err) {//003.002 内容搜索
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  var tpl = $('#tpl').html();
+                  var content = doT.template(tpl);
+                  if (no_loaded) {
+                      $('#content').html(content(ret.data));
+                  } else {
+                      $('#content').append(content(ret.data));
+                  }
+              } else {
+                  /*api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });*/
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

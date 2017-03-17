@@ -1,0 +1,22 @@
+
+<script id="tpl" type="text/x-dot-template">{{for(var p in it.res1) { }}
+  <h2> {{=it.res1[p].title}}</h2>{{var obj=it.res1[p].children;}}
+  {{for(var pp in obj) { }}
+  <ul class="list-group accordion">
+    <li class="up_down">
+      <div tapmode="tapmode" onclick="listToggle(this)" class="title"><i class="icon-arrow-right"></i><span>{{=obj[pp].title}}</span></div>
+      <ul class="list-group list-liebiao">
+        {{var oob=obj[pp].children;}}
+        {{for(var ppp in oob) { }}
+        <li tapmode="tapmode" onclick="noteList(this)" data-key="{{=it.res1[p].id}}" data-id="{{=oob[ppp].id}}" title="{{=oob[ppp].title}}">
+          <div class="li-left"><span>{{=oob[ppp].title}}</span></div>
+          <div class="li-right">
+            <dl style="position:relative;" class="console">
+              <dd><i class="icon-edit"></i>{{var id=oob[ppp].id;}}<span class="number">{{=oob[ppp].nodeNum}}</span>{{if(!isEmpty(it.res2[id])&&it.res2[id]!=0){ }}<span class="msg-mark msg-mark-mr">{{=it.res2[id]>99?'99+':it.res2[id]}}</span>{{ } }}</dd>
+            </dl>
+          </div>{{ } }}
+        </li>
+      </ul>
+    </li>
+  </ul>{{ } }}{{ } }}
+</script>

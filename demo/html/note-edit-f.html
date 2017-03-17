@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html class="bg-white form-page note-edit">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>编辑笔记</title>
+  </head>
+  <body>
+    <div class="chapter-bar clearfix">
+      <div class="left"><span class="tag-video-time"><i class="icon-play-o"></i><i id="playTime"></i></span><span id="courseName" class="title">请选择课程章节</span></div>
+      <div class="right"><span id="pubTime" class="time"></span><i class="icon-arrow-right"></i></div>
+    </div>
+    <div class="form">
+      <!--input#note_title(placeholder='输入标题',class='lx_title none', type='text', onblur="upperCase()")-->
+      <textarea id="note_content" placeholder="输入正文" onblur="upperCase()" oninput="upperCase()" onchange="upperCase()" class="lx_content"></textarea>
+    </div>
+    <div onclick="cancelAdd(this)" class="backdrop1"></div>
+    <div onclick="close_edit()" class="backdrop opacity none"></div>
+    <ul class="set-photo">
+      <li>上传图片</li>
+      <li tapmode="" onclick="getPic('camera',1024,768)">拍照</li>
+      <li tapmode="" onclick="getPic('album',1024,768)">选择本地图片</li>
+    </ul>
+    <div type="2" class="editor-bar">
+      <div class="editor-tool"><i onclick="open_edit('img')" class="icon-picture2"></i><i onclick="open_edit('audio')" class="icon-recording-o"></i>
+        <div tapmode onclick="sub(this)" class="btn btn-success">发布</div>
+        <div class="switch">
+          <p></p><span>私人</span>
+        </div>
+      </div>
+      <div class="newaudio">
+        <div id="audio" class="audio audio-progress"><i class="icon-recording"></i>
+          <div class="val">0</div><i tapmode url="" onclick="playAudioMe(this)" bg time="34" class="icon-play"></i>
+        </div>
+        <p class="newaut">按住开始录音</p>
+        <p class="newtip">0.0</p>
+        <button onclick="resetAudio()">重录</button>
+      </div>
+      <div class="newimg">
+        <p>最多可添加五张图片</p>
+        <div class="adchimg">
+          <div onclick="open_img()" class="addimg"><i class="icon-plus"></i></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      function open_edit(e) {
+          if (e == 'audio') {
+              $('.newaudio').show();
+              $('.newimg').hide();
+              circleProgress();
+          } else{
+              stopAdd();
+              $('.newimg').show();
+              $('.newaudio').hide();
+          }
+          $('.backdrop').show();
+      }
+      function stopAdd(){
+          var _oldimg = $('.checkimg').length;
+          if(_oldimg > 4){
+              $('.addimg').hide();
+          }else{
+              $('.addimg').show();
+          }
+      }
+      function cancelAdd(e){
+          var _s = $(e).attr('close');
+          if(_s == 'no'){
+              $('.set-photo,.backdrop1').hide();
+          }
+      }
+      function close_edit() {
+          $('.newaudio,.newimg,.backdrop').hide();
+      }
+      
+      var setAudio;
+      var audiosrc = new Date();
+      var lx_path = '', lx_duration, soundPath = '';
+      var _t = $('#audio');
+      $('body').delegate('#audio', 'touchstart', function (event) {
+          window.clearInterval(setAudio);
+          event.preventDefault();
+          var cirVal = parseInt(_t.find('.val').text());
+          var cirW = parseInt(_t.width());
+          var cirI = _t.find('circle').eq(1);
+          if (!$(this).hasClass('end')) {
+              _t.addClass('ing');
+              setAudio = setInterval(function () {
+                  if (cirVal > 1799) {
+                      recordEnd();
+                  } else {
+                      cirVal += 1;
+                      var percent = cirVal / 1800, perimeter = Math.PI * 0.9 * cirW;
+                      $(cirI).css('stroke-dasharray', perimeter * percent + " " + perimeter * (1 - percent));
+                      _t.find('.val').text(cirVal);
+                      $('.newtip').text((cirVal * .1).toFixed(1));
+                  }
+              }, 100);
+              api.startRecord({
+                  path: 'fs://mp3/' + audiosrc + '.amr'
+              });
+          }
+      });
+      $('body').delegate('#audio', 'touchend', function (event) {
+          window.clearInterval(setAudio);
+          event.preventDefault();
+          var cirVal = parseInt(_t.find('.val').text());
+          if (cirVal < 30) {
+              api.stopRecord();
+              api.alert({
+                  msg: '录音时间太短'
+              });
+              window.clearInterval(setAudio);
+              resetAudio();
+              //      return false;
+          } else {
+              recordEnd();
+          }
+      });
+      function recordEnd() {
+          $('.editor-bar').attr('hasaud',1);
+          _t.removeClass('ing').addClass('end');
+          window.clearInterval(setAudio);
+          api.stopRecord(function (ret, err) {
+              if (ret) {
+                  lx_path = 'fs://mp3/' + audiosrc + '.amr';
+                  lx_duration = ret.duration;
+                  $api.setStorage('lx_duration', ret.duration);
+                  $('.icon-play').attr('url', lx_path);
+                  var headers = {
+                      'X-Requested-With': 'XMLHttpRequest'
+                  };
+                  api.ajax({
+                      url: common_url + '/' + 'api/v2.1/commons/fileUpload',
+                      method: 'post',
+                      headers: headers,
+                      timeout: 120,
+                      cache: false,
+                      data: {
+                          values: {
+                              'token': $api.getStorage('token'),
+                              'mediatime': lx_duration
+                          },
+                          files: {
+                              'file': lx_path
+                          }
+                      }
+                  }, function (ret, err) {
+                      api.hideProgress();
+                      if (err) {
+                          api.toast({
+                              msg: err.msg,
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      if (ret && ret.state == 'success') {
+                          soundPath = ret.data.path;
+                          $api.setStorage('soundPath', soundPath);
+                      }else{
+                          api.toast({
+                              msg: ret.msg,
+                              location: 'middle'
+                          });
+                      }
+                  });
+              }
+          });
+      }
+      
+      function playAudioMe(item) {
+          var _url = $(item).attr('url');
+          $(item).addClass('play');
+          if (isEmpty($(item).attr('bg'))) {
+              api.startPlay({
+                  path: _url
+              }, function () {
+                  $(item).removeClass('play');
+              });
+              $(item).attr('bg', '1');
+          } else {
+              $(item).removeClass('play');
+              api.stopPlay();
+              $(item).attr('bg', '');
+          }
+      }
+      
+      function resetAudio() {
+          $('.editor-bar').attr('hasaud',0);
+          $('.voice-player').remove();
+          $('.newtip,.val').text('0.0');
+          _t.find('circle').eq(1).css('stroke-dasharray', "1 9999999");
+          _t.removeClass('ing end');
+          $api.setStorage('lx_duration', '');
+          $api.setStorage('soundPath', '');
+      }
+      //select-phone
+      function open_img() {
+          $('.backdrop1,.set-photo').show();
+          $('.backdrop1').attr('close','no');
+      }
+      var ids = '';
+      function upload(img) {
+          $('.set-photo').hide();
+          $('.backdrop1').attr('close', 'yes');
+          api.showProgress({
+              title: '上传中',
+              modal: true
+          });
+          var headers = {
+              'X-Requested-With': 'XMLHttpRequest'
+          };
+          api.ajax({
+              url: common_url + '/' + 'api/v2.1/commons/fileUpload',
+              method: 'post',
+              headers: headers,
+              timeout: 120,
+              cache: false,
+              data: {
+                  values: {
+                      'token': $api.getStorage('token')
+                  },
+                  files: {
+                      'file': img
+                  }
+              }
+          }, function (ret, err) {
+              api.hideProgress();
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  var imgs = ret.data;
+                  var url = static_url + imgs.path;
+                  var url1 = imgs.path;
+                  var str = '<div class="checkimg" data-id="' + url1 + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+                  var img = '';
+                  if (!isEmpty($api.getStorage('img'))){
+                      ids = $api.getStorage('img');
+                      ids += ',' + url1;
+                  }else {
+                      ids = url1;
+                  }
+                  $api.setStorage('img', ids);
+                  var tupian = [];
+                  $('.checkimg').each(function (i) {
+                      tupian.push($('.checkimg').eq(i).attr('data-id'));
+                  });
+                  if (tupian.length == 4) {
+                      $('.addimg').hide();
+                  }
+                  $('.addimg').after(str);
+                  $('.editor-bar').attr('hasimg',1);//有图片时加小红点
+      
+                  $('.backdrop1').hide();
+              } else {
+                  api.toast({
+                      msg: ret.msg,
+                      location: 'middle'
+                  });
+                  $('.backdrop1').hide();
+              }
+          });
+      }
+      function getPic(type, w, h) {
+          $('.backdrop').unbind();
+          if (api && api.systemType == '131231312') {
+              var imageCrop = api.require('imageCrop');
+              switch (type) {
+                  case 'camera':
+                      imageCrop.takePhoto(function (ret, err) {
+                          $('.backdrop').click(function () {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                          });
+                          if (err) {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                              return false;
+                          }
+                          if (ret && ret.imgPath) {
+                              if (!in_array(getFixName(ret.imgPath), allowPicTtype)) {
+                                  api.toast({
+                                      msg: '无法上传此种格式的图片',
+                                      location: 'middle'
+                                  });
+                                  return false;
+                              }
+                              imageCrop.clipPhoto({
+                                  "imgPath": ret.imgPath,
+                                  "height": h,
+                                  "width": w
+                              }, function (ret1, err1) {
+                                  if (err1) {
+                                      api.toast({
+                                          msg: err1.msg,
+                                          location: 'middle'
+                                      });
+                                      $api.setStorage('sign-photo', 1);
+                                      //api.closeFrame();
+                                      return false;
+                                  }
+                                  $('body').bind('click', function () {
+                                      $api.setStorage('sign-photo', 1);
+                                      //api.closeFrame();
+                                  });
+                                  if (ret1 && ret1.imgPath) {
+                                      upload(ret1.imgPath);
+                                  }
+                              });
+                          }
+                      });
+                      break;
+                  case 'album':
+                      imageCrop.getPhoto(function (ret, err) {
+                          $('.backdrop').click(function () {
+                              $api.setStorage('sign-photo', 1);
+                              //api.closeFrame();
+                          });
+                          if (err) {
+                              //api.closeFrame();
+                              return false;
+                          }
+                          if (ret && ret.imgPath) {
+                              if (!in_array(getFixName(ret.imgPath), allowPicTtype)) {
+                                  api.toast({
+                                      msg: '无法上传此种格式的图片',
+                                      location: 'middle'
+                                  });
+                                  return false;
+                              }
+                              imageCrop.clipPhoto({
+                                  "imgPath": ret.imgPath,
+                                  "height": h,
+                                  "width": w
+                              }, function (ret1, err1) {
+                                  if (err1) {
+                                      api.toast({
+                                          msg: err1.msg,
+                                          location: 'middle'
+                                      });
+                                      return false;
+                                  }
+                                  if (ret1 && ret1.imgPath) {
+                                      upload(ret1.imgPath);
+                                  }
+                              });
+                          }
+                      });
+                      break;
+                  default:
+                      break;
+              }
+          } else {
+              api.getPicture({
+                  sourceType: type,
+                  encodingType: 'jpg',
+                  destinationType: 'url',
+                  targetWidth: w,
+                  targetHeight: h,
+                  allowEdit: false
+              }, function (ret, err) {
+                  $('.backdrop').click(function () {
+                      $api.setStorage('sign-photo', 1);
+                      //api.closeFrame();
+                  });
+                  if (err) {
+                      $api.setStorage('sign-photo', 1);
+                      //api.closeFrame();
+                      return false;
+                  }
+                  if (ret && ret.data) {
+                      if (!in_array(getFixName(ret.data), allowPicTtype)) {
+                          api.toast({
+                              msg: '无法上传此种格式的图片',
+                              location: 'middle'
+                          });
+                          return false;
+                      }
+                      upload(ret.data);
+                  }
+              });
+          }
+      }
+      
+      $('.newimg').delegate('.icon-close', 'click', function () {
+          var id = '';
+          $(this).parent().remove();
+          stopAdd();
+          $('.checkimg').each(function (i) {
+              id += $('.checkimg').eq(i).attr('data-id') + ',';
+          });
+          var aa = id.substring(0, id.length - 1);
+          $api.setStorage('img', aa);
+          if(aa < 1) {
+              $('.editor-bar').attr('hasimg',0);
+          }
+      });
+      //志朋有时间把开关滑块这块代码优化一下---杨澍15-12-05
+      $('.switch').attr('num', '1');
+      $api.setStorage('isPublic', '1');
+      $('.switch').on('touchend', function () {
+          if ($('.switch').attr('class') == 'switch switch2') {
+              $('.switch').attr('num', '1');
+              $api.setStorage('isPublic', '1');
+              $('.switch').removeClass('switch2');
+              $('.switch p').removeClass('switchp1');
+              $('.switch span').removeClass('switchpsp');
+              $('.switch span').html('私人');
+          } else {
+              $('.switch').attr('num', '0');
+              $api.setStorage('isPublic', '0');
+              $('.switch').addClass('switch2');
+              $('.switch p').addClass('switchp1');
+              $('.switch span').addClass('switchpsp');
+              $('.switch span').html('公开');
+          }
+      });
+    </script>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      //定义变量
+      var course_detail;//课程详情
+      var task_info;//任务详情
+      var isPublic = false;//true笔记公开，false不公开
+      var screenImgs;//截屏图片
+      var progress;
+      
+      var chapters_info;//当前一级章节信息
+      var chapters_ch;
+      var  ild_info;//当前二级章节信息
+      var lx_soundPath = '';
+      var lx_lens = 0;
+      apiready = function () {
+          //监听发布新笔记事件
+          api.addEventListener({
+              name: 'createquestion_yf'
+          }, function (ret) {
+              if (ret && ret.value) {
+                  isPublic = ret.value.isPublic;
+                  var uploadimage = ret.value.img;//用户上传的图片
+                  var soundPath = ret.value.soundPath;//用户上传的录音
+                  var soundLen = ret.value.lx_duration;//用户上传的录音时长
+                  createQuestion(uploadimage, soundPath, soundLen);
+              }
+          });
+          course_detail = api.pageParam.course_detail;//课程详情
+          task_info = api.pageParam.task_info;//任务详情
+          progress = api.pageParam.progress;//任务进度
+          chapters_info = api.pageParam.chapter_info;//当前一级章节信息
+          if (!isEmpty(api.pageParam.content)) {
+              $('.lx_content').html(api.pageParam.content);
+          }
+         var mytitle= !isEmpty(api.pageParam.title) ? api.pageParam.title :  api.pageParam.chapterName;
+          if(isEmpty(mytitle)){
+              mytitle='请选择课程章节';
+          }
+          $('.title ').html(mytitle);
+          if (!isEmpty(api.pageParam.updateTime)) {
+              $('#pubTime').html(formatDate(api.pageParam.updateTime, 'Y') + '-' + formatDate(api.pageParam.updateTime, 'M') + '-' + formatDate(api.pageParam.updateTime, 'D'));
+          }
+          $('.icon-arrow-right').show();
+          $('.tag-video-time').hide();
+          if(api.pageParam.from=='video_page' || api.pageParam.from=='examPage'){
+              if (task_info.taskType == 'exam') {
+                  $('#playTime').html('第' + progress + '题');
+              } else if (task_info.taskType == 'video') {
+                  $('#playTime').html(formatSec(progress));
+              } else {
+                  $('#playTime').html('第' + progress + '页');
+              }
+              $('.tag-video-time').show();
+              $('.icon-arrow-right').hide();
+              $('.chapter-bar').removeAttr('onclick');
+          }
+          if (!isEmpty(api.pageParam.img)) {
+              var imgPath = api.pageParam.img;
+              var img = imgPath.split(',');
+              var str = '';
+              $.each(img, function(i, item) {
+                  var url = static_url + item;
+                  str += '<div class="checkimg" data-id="' + item + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+              });
+              $('.addimg').after(str);
+              $('.editor-bar').attr('hasimg',1);
+              var chang = '';
+              $('.checkimg').each(function(i) {
+                  chang += $('.checkimg').eq(i).attr('data-id') + ',';
+              });
+              var aa = chang.substring(0, chang.length - 1);
+              $api.setStorage('img',aa);
+          }
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              api.closeFrame();
+          });
+          //重新切换章节
+          api.addEventListener({
+              name: 'select_chapter'
+          }, function (ret, err) {
+              $('.title').html(ret.value.title);
+          });
+          api.addEventListener({
+              name: 'course_select_chapter'
+          }, function (ret, err) {
+              $('.title').html(ret.value.title);
+          });
+          //判断是新建或者修改
+          if(api.pageParam.editNew == 'edit') {//修改
+              getData();
+          }else if(api.pageParam.qf == 'small'){  //小窗口的新建
+              $('.chapter-bar').click(function () {
+                  api.closeFrame({name: 'course-note-edit'});
+                  //myFrame('course-chapter-list', 'small-h');
+                  api.openFrame({
+                      delay:200,
+                      name: 'course-chapter-list',
+                      url: 'course-chapter-list.html',
+                      bgColor: '#ffffff',
+                      rect: {
+                          x: leftSw,
+                          y: headLh,
+                          w: api.winWidth - leftSw,
+                          h: headLh
+                      },
+                      pageParam:api.pageParam,
+                      bounces: false
+                  });
+              });
+          }else if(api.pageParam.da == 'da'){//大窗口的新建
+              $('.chapter-bar').click(function(){
+                  var _onVideo = $(this).attr('video');
+                  if(_onVideo == 'yes'){
+      
+                  }else{
+                      //myFrame('note-chapter-list', 'large-h');
+                      var par = api.pageParam;
+                      api.closeFrame({name: 'my-note-edit'});
+                      api.closeFrame({name: 'course-note-edit'});
+                      par.test = 'notes';
+                      api.openFrame({
+                          delay:200,
+                          name: 'note-chapter-list',
+                          url: 'note-chapter-list.html',
+                          rect: {
+                              x: leftLw,
+                              y: 0,
+                              w: api.winWidth - leftLw,
+                              h: headLh
+                          },
+                          pageParam: par,
+                          bounces: false
+                      });
+                  }
+              });
+          }
+      };
+      function upperCase(){
+          var content = $('.lx_content').val();
+          if(!isEmpty(content)){
+              $api.setStorage('content', content);
+          }
+      }
+      function getData() {
+          var param = {
+              token: $api.getStorage('token'),
+              id: api.pageParam.id,
+              pageNo: 1,
+              pageSize: 5
+          };
+          ajaxRequest('api/studytools/nodedetail/v2.1', 'get', param, function (ret, err) {//003.114  笔记详情
+              if (err) {
+                  api.toast({
+                      msg: err.msg,
+                      location: 'middle'
+                  });
+                  return false;
+              }
+              if (ret && ret.state == 'success') {
+                  //-if(api.pageParam.qf == '5' || api.pageParam.qf == '1'){ //--只用保留是否修改判断，其它就是新建---杨澍2016-01-06
+                  if(api.pageParam.editNew == 'edit'){//修改
+                      $('textarea').val(ret.data.content);
+                      $api.setStorage('content', ret.data.content);
+                      $api.setStorage('lx_soundPath', ret.data.soundPath);
+                      $api.setStorage('lx_lens', ret.data.soundlen);
+                      if(!isEmpty(ret.data.imgPath)){
+                          $api.setStorage('img', ret.data.imgPath);
+                          var imgPath = ret.data.imgPath.split(',');
+                          var str = '';
+                          $.each(imgPath, function (i, item) {
+                              var url = static_url + item;
+                              str += '<div class="checkimg" data-id="' + item + '" style="background-image:url(' + url + ')" ><i class="icon-close"></i></div>';
+                          });
+                          $('.addimg').after(str);
+                          $('.editor-bar').attr('hasimg',1);
+                      }
+                      if(ret.data.isPublic == 0){
+                          $('.switch').attr('num', '0');
+                          $api.setStorage('isPublic', ret.data.isPublic);
+                          $('.switch').addClass('switch2');
+                          $('.switch p').addClass('switchp1');
+                          $('.switch span').addClass('switchpsp');
+                          $('.switch span').html('公开');
+                      }else if(ret.data.isPublic == 1){
+                          $api.setStorage('isPublic', ret.data.isPublic);
+                      }
+                      lx_lens = ret.data.soundlen;
+                      lx_soundPath = ret.data.soundPath;
+                      $api.setStorage('lx_lens', ret.data.soundlen);
+                      $api.setStorage('lx_soundPath', ret.data.soundPath);
+                      if (lx_lens == 0 || lx_lens == '' || lx_soundPath == '') {
+      
+                      } else {
+                          $('.newaudio').append('<div class="voice-player" tapmode, url="' + static_url + ret.data.soundPath + '", onclick="playAudio(this)", bg, time="' + ret.data.soundlen + '"></div>');
+                          $('.editor-bar').attr('hasaud',1);
+      
+      
+                          /*$('#audio').removeClass('ing').addClass('end');
+                          $('.icon-play').attr('url', static_url + ret.data.soundPath);
+                          var cirVal = parseInt(ret.data.soundlen);
+                          var cirW = parseInt($('#audio').width());
+                          var cirI = $('#audio circle').eq(1);
+                          var percent = cirVal / 1800, perimeter = Math.PI * 0.9 * cirW;
+                          $(cirI).css('stroke-dasharray', perimeter * percent + " " + perimeter * (1 - percent));
+                          $('.newtip').text((cirVal * .1).toFixed(1));*/
+      
+                      }
+                      audioDom();
+                      /*api.sendEvent({
+                          name: 'notes_bj_lx',
+                          extra: {key1: ret.data.imgPath, soundPath: ret.data.soundPath, soundlen: ret.data.soundlen}
+                      });*/
+                  }
+              }
+          });
+      }
+      //创建笔记
+      function createNote(imgPath, soundPath, soundLen) {
+          var title = $.trim($('#courseName').text());
+          var content = $.trim($('#note_content').val());
+          if (content != '') {
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              var param = {};
+              param.token = $api.getStorage('token'); //必须
+              param.content = content; //笔记内容，必须
+              param.imgPath = imgPath;//图片数组，图片路径（以’，’分隔）,非必须
+              param.soundPath = soundPath;//声音文件单一,非必须
+              param.courseId = !isEmpty(course_detail.courseId) ? course_detail.courseId : api.pageParam.courseId;//课程id，必须
+              param.taskId = !isEmpty(task_info.taskId) ? task_info.taskId : api.pageParam.taskId;//任务id,非必须
+              param.taskProgress = progress ? progress : 0;//任务进度,非必须,int,非必须
+              param.taskType = !isEmpty(task_info.taskType) ? task_info.taskType : '';//非必须，任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+              param.clientType = appType;//客户端类型：iphone,必须
+              param.id = '';//笔记id，如果为空，则为添加，否则为修改
+              param.title = title;//必须，笔记标题
+              param.isPublic = isPublic;//必须，bool: true笔记公开，false不公开
+              param.subjectId = !isEmpty(course_detail.subjectId) ? course_detail.subjectId : api.pageParam.subjectId;//必须，科目id
+              param.categoryId = !isEmpty(course_detail.categoryId) ? course_detail.categoryId : api.pageParam.categoryId;//必须，string:证书id
+              param.chapterId = !isEmpty(chapters_info.chapterId) ? chapters_info.chapterId : api.pageParam.charpterid;//必须，string:章节id
+              param.soundLen = soundLen;//string:声音文件的时长，如果有声音文件，此字段必传
+              param.subjectName = !isEmpty(course_detail.subjectName) ? course_detail.subjectName : api.pageParam.subjectName;//必须，科目名称
+              param.categoryName = !isEmpty(course_detail.categoryName) ? course_detail.categoryName : api.pageParam.categoryName;//必须，证书名称
+              param.courseName = !isEmpty(course_detail.courseName) ? course_detail.courseName : api.pageParam.courseName;//必须，课程名称
+              param.chapterName = !isEmpty(chapters_info.chapterTitle) ? chapters_info.chapterTitle : api.pageParam.chapterName;//必须，章节名称
+              param.task = !isEmpty(task_info.title) ? task_info.title : api.pageParam.chapterName;//必须，任务名称
+              api.showProgress({
+                  title: '发布中',
+                  modal: true
+              });
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116.1  发布或修改笔记
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      $api.rmStorage('content');
+                      $api.rmStorage('title');
+                      $api.rmStorage('img');
+                      $api.rmStorage('lx_duration');
+                      $api.rmStorage('soundPath');
+                      $api.rmStorage('isPublic');
+                      $api.rmStorage('lx_lens');
+                      $api.rmStorage('lx_soundPath');
+                      api.alert({
+                          title: '温馨提示',
+                          msg: '发布成功',
+                          buttons: ['返回']
+                      }, function (ret, err) {
+                          if (ret.buttonIndex == 1) {
+                              api.sendEvent({
+                                  name: 'closeRightNote'
+                              });
+                              //关闭页面
+                              api.sendEvent({
+                                  name: 'continue_video',
+                                  extra: {'times': api.pageParam.times}
+                              });
+                              //继续播放
+                          }
+                      });
+                  }
+              });
+          } else {
+              api.toast({
+                  msg: '请填写正文',
+                  location: 'middle'
+              });
+          }
+      }
+    </script>
+  </body>
+</html>

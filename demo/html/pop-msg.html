@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="transparent">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>消息中心</title>
+  </head>
+  <body>
+    <div class="pop-msg">
+      <div id="head1" class="title">
+        <div class="left">消息中心</div>
+        <div class="right">
+          <div style="color:#ccc;" class="btn-group btn-success">
+            <div class="btn active">个人动态</div>
+            <div class="btn">站内短信</div>
+          </div>
+        </div>
+      </div>
+      <div id="head2" class="title none">
+        <div tapmode onclick="backMsgList()" class="left"><i class="icon-back"></i></div>
+        <div class="center"> 消息详情</div>
+      </div>
+      <div class="null_box"></div>
+    </div>
+    <div tapmode onclick="closeFrame()" class="backdrop"></div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function backMsgList() {
+          $('#head2').hide();
+          $('#head1').show(300);
+          api.closeFrame({name: 'pop-msg-f'});
+      }
+      function closeFrame(){
+          api.closeFrame({name: 'pop-msg-f'});
+          api.closeFrameGroup({
+              name: 'pop_message_group'
+          });
+          api.closeFrame()
+      }
+      
+      $('.btn-group.btn-success .btn').on('touchend',function(){
+          var i = $(this).index();
+          $(this).addClass('active').siblings().removeClass('active');
+          $('.info_des').eq(i).show().siblings('.info_des').hide();
+          api.setFrameGroupIndex({
+              name: 'pop_message_group',
+              index: i
+          });
+      });
+      var pop_x=$('.null_box').offset().left;
+      var pop_y=$('.null_box').offset().top;
+      var pop_w=$('.null_box').width();
+      var pop_h=$('.null_box').height();
+      apiready = function () {
+          api.openFrameGroup({
+              name: 'pop_message_group',
+              scrollEnabled: true,
+              rect: {x: pop_x, y: pop_y, w: pop_w, h:pop_h},
+              index: 0,
+              frames: [{
+                  name: 'pop-msg-self',
+                  url: 'pop-msg-self.html',
+                  pageParam:{px: pop_x, py: pop_y, pw: pop_w, ph:pop_h}
+              }, {
+                  name: 'pop-msg-instation',
+                  url: 'pop-msg-instation.html',
+                  pageParam:{px: pop_x, py: pop_y, pw: pop_w, ph:pop_h}
+              }]
+          },function(ret){
+              var index = ret.index;
+              $('.btn-group.btn-success .btn').eq(index).addClass('active').siblings().removeClass('active');
+          });
+      
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              closeFrame()
+          });
+          api.addEventListener({
+              name: 'msgDetail'
+          }, function () {
+              $('#head1').hide();
+              $('#head2').show(300);
+          });
+      }
+    </script>
+  </body>
+</html>

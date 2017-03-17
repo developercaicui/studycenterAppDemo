@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>课程章节</title>
+  </head>
+  <body>
+    <div class="s-head">
+      <div class="center">课程章节</div>
+      <ul class="right">
+        <li tapmode onclick="rightcancel($(this))" class="none">
+          <div class="btn btn-o">取消</div>
+        </li>
+        <li tapmode onclick="allremove($(this))" class="none">
+          <div class="btn btn-o red">批量删除</div>
+        </li>
+        <li tapmode onclick="righttrash($(this))"><i class="icon-trash"></i></li>
+      </ul>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      apiready = function(){
+          api.addEventListener({
+              name : 'cancle_del'
+              }, function(ret) {
+                  $('.btn').addClass('none');
+              });
+          myFrame('course-chapter-f','small',true);
+      };
+      //删除
+      function righttrash (obj){
+          obj.addClass('none').siblings().removeClass('none');
+          checkremove(1);
+      }
+      //取消
+      function rightcancel(obj){
+          obj.addClass('none').next('li').addClass('none').next('li').removeClass('none');
+          checkremove(2);
+      }
+      //批量移除
+      function allremove (obj){
+          obj.addClass('none').prev('li').addClass('none');
+          obj.next('li').removeClass('none');
+          checkremove(3);
+      }
+      function checkremove(e){
+          api.sendEvent({
+              name: 'del_cache',
+              extra: {type: e}
+          });
+      }
+    </script>
+  </body>
+</html>

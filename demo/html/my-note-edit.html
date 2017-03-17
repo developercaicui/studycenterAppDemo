@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>笔记编辑</title>
+  </head>
+  <body>
+    <div id="header" class="header header-white">
+      <div tapmode onclick="closeMe()" class="left"><i class="icon-back"></i></div>
+      <div class="center none xj">新建笔记</div>
+      <div id="xj" onclick="newNote()" class="right none"><i class="icon-check"></i></div>
+      <div class="center none xg">修改笔记</div>
+      <div id="xg" onclick="xgNote()" class="right none"><i class="icon-check"></i></div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMe() {
+          api.closeFrame({
+              name:'my-note-edit-f'
+          });
+          api.closeFrame();
+      }
+      //修改笔记
+      function xgNote(){
+          if(is_click == true){
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              if ($api.getStorage('lx_duration') == '' || $api.getStorage('lx_duration') == 0 || $api.getStorage('lx_duration') == undefined) {
+                  var lx_lens =   $api.getStorage('lx_lens');
+                  $api.setStorage('lx_duration',lx_lens);
+              }
+              if ($api.getStorage('soundPath') == '' || $api.getStorage('soundPath') == 0 || $api.getStorage('soundPath') == undefined ) {
+                  var lx_soundPath = $api.getStorage('lx_soundPath');
+                  $api.setStorage('soundPath', lx_soundPath);
+              }
+              if(isEmpty($api.getStorage('content'))){
+                  api.toast({msg:'内容不能为空'});
+                  return false;
+              }
+              if(api.pageParam.courseId == ''){
+                  api.toast({msg: '章节id不能为空'});
+                  return false;
+              }
+              if(api.pageParam.id == ''){
+                  api.toast({msg: '笔记id不能为空'});
+                  return false;
+              }
+              var param = {
+                  token: $api.getStorage('token'),
+                  content: $api.getStorage('content'),
+                  title: 'title',//title获取不到，但是必须赋值
+                  imgPath: isEmpty($api.getStorage('img')) ? '' : $api.getStorage('img'),
+                  isPublic: $api.getStorage('isPublic'), // 笔记是否公开
+                  soundLen: isEmpty($api.getStorage('lx_duration')) ? '' : $api.getStorage('lx_duration'),
+                  soundPath: isEmpty($api.getStorage('soundPath')) ? '' : $api.getStorage('soundPath'),
+                  courseId: courseId, // 课程id
+                  clientType: appType, //客户端类型：iphone
+                  id: api.pageParam.id, //笔记id，如果为空，则为添加，否则为修改
+                  subjectId: 'subjectid', //科目id(暂无)
+                  categoryId: 'categoryId', // 证书（暂无）
+                  chapterId: charpterid, //章节id
+                  subjectName: 'subjectName',// 科目名称
+                  categoryName: 'categoryName', //证书名称
+                  courseName: 'courseName',//课程名称
+                  chapterName: 'chapterName',//章节名称
+                  taskId: api.pageParam.taskId,//任务id
+                  taskProgress:api.pageParam.taskProgress ,//任务进度
+                  taskType: api.pageParam.taskType,//任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+                  taskName: 'taskName' //任务名称
+              };
+              if(param.content.length < 10){
+                  api.toast({msg:'内容不能少于10个字'});
+                  is_click = true;
+                  return false;
+              }
+              api.showProgress({
+                  title: '处理中',
+                  modal: true
+              });
+              is_click = false;
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116  修改笔记
+                  api.hideProgress();
+                  if (err) {
+                      is_click = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                     /* api.sendEvent({
+                          name: 'nana'
+                      });*/
+                      api.closeFrame({
+                          name:'my-note-detail-f'
+                      });
+                      api.openFrame({
+                          delay:200,
+                          name: 'my-note-detail-f',
+                          url: 'note-detail.html',
+                          bgColor: '#fff',
+                          rect: {
+                              x: leftLw,
+                              y: headLh,
+                              w: api.winWidth - leftLw,
+                              h: api.winHeight - headLh
+                          },
+                          pageParam: api.pageParam,
+                          bounces: true
+                      });
+                      window.localStorage.noteChange = '1';
+                      api.sendEvent({
+                          name: 'chapter',
+                          extra: {charpterid: charpterid, courseId: courseId, typ: 'self'}
+                      });
+                      $api.rmStorage('content');
+                      $api.rmStorage('img');
+                      $api.rmStorage('lx_duration');
+                      $api.rmStorage('soundPath');
+                      $api.rmStorage('isPublic');
+                      $api.rmStorage('lx_lens');
+                      $api.rmStorage('lx_soundPath');
+                      setTimeout(function(){
+                          closeMe();
+                      },500);
+                  }else{
+                      is_click = true;
+                  }
+              });
+          }
+          //api.sendEvent({
+          //    name: 'xg-notes'
+          //});
+      }
+      //新建笔记
+      var is_click = true;
+      function newNote(){
+          if(is_click == true){
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'ipad';
+              } else if (systype == 'android') {
+                  appType = 'apad';
+              }
+              if (isEmpty($api.getStorage('content')) && isEmpty(api.pageParam.title)) {
+                  api.toast({msg: '内容不能为空',location:'middle'});
+                  is_click = true;
+                  return false;
+              }
+              if(api.pageParam.id == ''){
+                  api.toast({msg: '章节id不能为空'});
+                  is_click = true;
+                  return false;
+              }
+              var content = '';
+              var img = '';
+              var soundPath = '';
+              var lx_duration = '';
+              if(!isEmpty($api.getStorage('content'))){
+                  content = $api.getStorage('content');
+              }else{
+                  content = api.pageParam.content;
+              }
+              if(!isEmpty($api.getStorage('soundPath'))){
+                  soundPath = $api.getStorage('soundPath');
+              }else{
+                  soundPath = api.pageParam.soundPath;
+              }
+              if(!isEmpty($api.getStorage('lx_duration'))){
+                  lx_duration = $api.getStorage('lx_duration');
+              }else{
+                  lx_duration = api.pageParam.lx_duration;
+              }
+              var param = {
+                  token: $api.getStorage('token'),
+                  content: content,
+                  imgPath: isEmpty($api.getStorage('img')) ? '' : $api.getStorage('img'), //图片数组，图片路径（以’，’分隔）
+                  soundLen: isEmpty(lx_duration) ? '' : lx_duration, //声音文件的长度
+                  soundPath: isEmpty(soundPath) ? '' : soundPath,
+                  courseId: courseId, // 课程id
+                  clientType: appType, //客户端类型：iphone
+                  id: '', //笔记id，如果为空，则为添加，否则为修改
+                  title: 'title',
+                  isPublic: $api.getStorage('isPublic'), // 笔记是否公开
+                  subjectId: 'subjectid', //科目id(暂无)
+                  categoryId: 'categoryId', // 证书（暂无）
+                  chapterId: charpterid, //章节id
+                  subjectName: 'subjectName',// 科目名称
+                  categoryName: 'categoryName', //证书名称
+                  courseName: 'courseName',//课程名称
+                  chapterName: 'chapterName',//章节名称
+                  taskName: 'taskName',//任务名称
+                  taskId:'',//任务id
+                  taskProgress:'',//任务进度
+                  taskType:''//任务类型: 任务类型有视频(video)、测试题(exam)、文档(doc) 、词汇(vocabulary)
+              };
+              if(param.content.length < 10){
+                  is_click = true;
+                  api.toast({msg:'内容不能少于10个字'});
+                  return false;
+              }
+              api.showProgress({
+                  title: '处理中',
+                  modal: true
+              });
+              is_click = false;
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116.1 发布或修改笔记（new）
+                  api.hideProgress();
+                  if (err) {
+                      is_click = true;
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      $api.rmStorage('content');
+                      $api.rmStorage('img');
+                      $api.rmStorage('lx_duration');
+                      $api.rmStorage('soundPath');
+                      $api.rmStorage('isPublic');
+                      $api.rmStorage('lx_lens');
+                      $api.rmStorage('lx_soundPath');
+                      var jsfun = "getData(1);";
+                      api.execScript({
+                          name: 'root',
+                          frameName: 'my-note',
+                          script: jsfun
+                      });
+                      api.closeFrame({name:'my-note-list'});
+                      api.closeFrame({name:'my-note-list-f'});
+                      api.openFrame({
+                          delay:200,
+                          name: 'my-note-list',
+                          url: 'my-note-list.html',
+                          bgColor: 'rgba(0,0,0,0)',
+                          rect: {
+                              x: leftLw,
+                              y: 0,
+                              w: api.winWidth - leftLw,
+                              h: api.winHeight
+                          },
+                          pageParam:{charpterid:charpterid,courseId:courseId,title:api.pageParam.title},
+                          bounces: false
+                      });
+                      closeMe();
+                  }else{
+                      is_click = true;
+                      /*api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });*/
+                  }
+              });
+          }
+      }
+      var courseId = '';
+      var charpterid = '';
+      apiready = function () {
+          $api.rmStorage('content');
+          $api.rmStorage('img');
+          $api.rmStorage('lx_duration');
+          $api.rmStorage('soundPath');
+          $api.rmStorage('isPublic');
+          $api.rmStorage('lx_lens');
+          $api.rmStorage('lx_soundPath');
+          courseId = api.pageParam.courseId;
+          charpterid = api.pageParam.charpterid;
+          var header = $api.byId('header');
+          $api.fixIos7Bar(header);
+          if(api.pageParam.editNew == 'edit'){
+              $('.xg,#xg').show();
+          }else{
+              $('.xj,#xj').show();
+          }
+          api.addEventListener({
+              name: 'select_chapter'
+          }, function (ret, err) {
+              //api.pageParam.courseId=ret.value.courseId;
+              //api.pageParam.charpterid=ret.value.chapterId;
+              courseId = ret.value.courseId;
+              charpterid = ret.value.chapterId;
+          });
+          var par = api.pageParam;
+          par.da = 'da';
+          api.openFrame({
+              delay:200,
+              name: 'my-note-edit-f',
+              url: 'note-edit-f.html',
+              rect: {
+                  x: leftLw,
+                  y: headLh,
+                  w: api.winWidth - leftLw,
+                  h: api.winHeight - headLh
+              },
+              pageParam: par,
+              bounces: false,
+              reload:true
+          });
+      
+          api.addEventListener({
+              name: 'closeFrameAll'
+          }, function () {
+              closeMe();
+          });
+      
+          /*
+          api.addEventListener({
+              name: 'new-notes-hq'
+          }, function (ret) {
+              if($api.getStorage('content') == ''){
+                  api.toast({msg:'内容不能为空'});
+                  return false;
+              }
+              if(api.pageParam.id == ''){
+                  api.toast({msg: '章节id不能为空'});
+                  return false;
+              }
+              var param = {
+                  token: $api.getStorage('token'),
+                  content: $api.getStorage('content'),
+                  title: 'title',
+                  imgPath: isEmpty(ret.value.img) ? '' : ret.value.img,
+                  courseId: api.pageParam.courseId, // 课程id
+                  clientType: 'pc', //客户端类型：iphone
+                  id: '', //笔记id，如果为空，则为添加，否则为修改
+                  isPublic : ret.value.isPublic, // 笔记是否公开
+                  subjectId : 'subjectid', //科目id(暂无)
+                  categoryId : 'categoryId', // 证书（暂无）
+                  chapterId : api.pageParam.charpterid, //章节id
+                  subjectName : 'subjectName',// 科目名称
+                  categoryName : 'categoryName', //证书名称
+                  courseName : 'courseName',//课程名称
+                  chapterName : 'chapterName',//章节名称
+                  taskName : 'taskName', //任务名称
+                  soundLen : isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration,
+                  soundPath:ret.value.soundPath
+              };
+              if(param.content == '' || !param.content) {
+                  api.toast({msg: '内容不能为空'});
+                  return false;
+              }
+              api.showProgress({
+                  title : '处理中',
+                  modal : false
+              });
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116.1 发布或修改笔记（new）
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.sendEvent({
+                          name: 'chapter-notes-f',
+                          extra: {charpterid: api.pageParam.charpterid,courseId:api.pageParam.courseId,typ: 'self'}
+                      });
+                      api.sendEvent({
+                          name: 'chapter',
+                          extra: {charpterid: api.pageParam.charpterid, courseId: api.pageParam.courseId, typ: 'self'}
+                      });
+                      api.closeFrame({
+                          name:'note-edit-f'
+                      });
+                      api.closeFrame({
+                          name:'footer-editor'
+                      });
+                      $api.rmStorage('content');
+                      api.closeFrame();
+                  }
+                  else {
+                      api.toast({
+                          msg: ret.msg,
+                          location: 'middle'
+                      });
+                  }
+              });
+          });
+          api.addEventListener({
+              name: 'editor-notes-hq'
+          }, function (ret) {
+              var systype = api.systemType;
+              var appType;
+              if (systype == 'ios') {
+                  appType = 'iphone';
+              } else if (systype == 'android') {
+                  appType = 'aphone';
+              }
+              if($api.getStorage('content') == ''){
+                  api.toast({msg:'内容不能为空'});
+                  return false;
+              }
+              if(api.pageParam.courseId == ''){
+                  api.toast({msg: '章节id不能为空'});
+                  return false;
+              }
+              if(api.pageParam.id == ''){
+                  api.toast({msg: '笔记id不能为空'});
+                  return false;
+              }
+              var param = {
+                  token: $api.getStorage('token'),
+                  content: ret.value.content,
+                  title: 'title',//title获取不到，但是必须赋值
+                  imgPath: isEmpty(ret.value.img) ? '' : ret.value.img,
+                  courseId: api.pageParam.courseId, // 课程id
+                  clientType: appType, //客户端类型：iphone
+                  id: api.pageParam.id, //笔记id，如果为空，则为添加，否则为修改
+                  isPublic: ret.value.isPublic, // 笔记是否公开
+                  subjectId: 'subjectid', //科目id(暂无)
+                  categoryId: 'categoryId', // 证书（暂无）
+                  chapterId: api.pageParam.charpterid, //章节id
+                  subjectName: 'subjectName',// 科目名称
+                  categoryName: 'categoryName', //证书名称
+                  courseName: 'courseName',//课程名称
+                  chapterName: 'chapterName',//章节名称
+                  taskName: 'taskName', //任务名称
+                  soundLen: isEmpty(ret.value.lx_duration) ? '' : ret.value.lx_duration,
+                  soundPath: ret.value.soundPath
+              };
+              if(param.content == '') {
+                  api.toast({msg: '内容不能为空'});
+                  return false;
+              }
+              api.showProgress({
+                  title : '处理中',
+                  modal : false
+              });
+              ajaxRequest('api/studytools/nodesave/v2.1', 'post', param, function (ret, err) {//003.116  修改笔记
+                  api.hideProgress();
+                  if (err) {
+                      api.toast({
+                          msg: err.msg,
+                          location: 'middle'
+                      });
+                      return false;
+                  }
+                  if (ret && ret.state == 'success') {
+                      api.toast({msg: '成功'});
+                      api.sendEvent({
+                          name: 'bjxq',
+                          extra: {id: api.pageParam.id}
+                      });
+                      api.closeFrame({
+                          name:'note-edit-f'
+                      });
+                      api.closeFrame({
+                          name:'footer-editor'
+                      });
+                      api.closeFrame();
+                  }
+              });
+          });
+          */
+      
+      };
+    </script>
+  </body>
+</html>

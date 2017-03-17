@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css">
+    <link rel="stylesheet" type="text/css" href="../css/font-icon.css">
+    <link rel="stylesheet" type="text/css" href="../css/caicui.css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/zepto.js"></script>
+    <title>我的笔记-笔记列表头部</title>
+  </head>
+  <body>
+    <div class="s-head">
+      <div tapmode onclick="closeMyNote()" class="left"><i class="icon-back"></i></div>
+      <div class="center">章节列表</div>
+    </div>
+    <script type="text/javascript" src="../script/comm.js"></script>
+    <script type="text/javascript" src="../script/doT.min.js"></script>
+    <script type="text/javascript" src="../script/caicui.js"></script>
+    <script type="text/javascript" src="../script/db.js"></script>
+    <script type="text/javascript" src="../script/saveTasksProgress.js"></script>
+    <script type="text/javascript">
+      function closeMyNote() {
+          api.closeFrame({
+              name: 'course-chapter-list-f'
+          });
+          api.closeFrame({
+              name: 'course-note-edit-f'
+          });
+          api.closeFrame();
+      }
+      apiready = function () {
+          api.openFrame({
+              name: 'course-chapter-list-f',
+              url: 'course-chapter-list-f.html',
+              bgColor: '#ffffff',
+              rect: {
+                  x: leftSw,
+                  y: headSh,
+                  w: api.winWidth - leftSw,
+                  h: api.winHeight - headSh
+              },
+              pageParam: api.pageParam,
+              bounces: false,
+              delay: 200
+          });
+          /*api.addEventListener({
+           name: 'closeFrameAll'
+           }, function () {
+           api.closeFrame({
+           name: 'note-chapter-list-f'
+           });
+           api.closeFrame();
+           });*/
+      };
+                                                    
+    </script>
+  </body>
+</html>

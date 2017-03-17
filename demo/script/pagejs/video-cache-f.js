@@ -439,6 +439,7 @@ apiready = function() {
     //        msg:JSON.stringify(ret)
     //    })
     //});
+
     api.showProgress({
         title: '加载中',
         modal: false
