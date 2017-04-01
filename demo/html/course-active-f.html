@@ -55,20 +55,22 @@
       apiready = function () {
           api.addEventListener({
               name: 'exam_time'
-          }, function (ret, err) {
+          }, function (ret, err) { 
               $('.tit').html('考试时间  ' + ret.value.time);
           });
       
       
-          data = JSON.parse(api.pageParam.data);
+          data = JSON.parse(api.pageParam.data.replace(/<[^<]*>/g,""));
+
           var tpl = $('#tpl').html();
           var content = doT.template(tpl)(data);
           $('#content').html(content);
-      
+          
       
           var param = {};
           param.token = $api.getStorage('token');
           param.courseId = data.courseId;
+          
           ajaxRequest('api/v2/exam/timeList', 'get', param, function (ret, err) {//004.010 查询课程考试时间
               if (err) {
                   api.toast({

@@ -6,7 +6,7 @@ block head
 block body
     .section-note.message-center#content
     mixin lst
-        .section-note-content.note-content-Img.msg-list(tapmode,onclick='noteEvent(this)',data-id='{{=it[p].id}}',data-sender='{{=it[p].sender}}',data-content='{{=it[p].content}}',data-sentTime='{{=it[p].sentTime}}',data-title='{{=it[p].title}}')
+        .section-note-content.note-content-Img.msg-list(tapmode,onclick='noteEvent(this)',data-id='{{=it[p].id}}',data-sender='{{=it[p].sender}}',data-content='{{=it[p].content.replace(/\n|\r|\t|<[^<]*>/g,'')}}',data-sentTime='{{=it[p].sentTime}}',data-title='{{=it[p].title}}')
             .section-note-top
                 .note-img
                     | {{ if(isEmpty(it.headImg)) { }}

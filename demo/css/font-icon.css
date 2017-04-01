@@ -325,3 +325,30 @@
 	content: "\e96b";
 }
 
+.icon-down1:before {
+	content: "\e922";
+}
+.icon-down2:before {
+	content: "\e972";
+}
+.icon-down3:before {
+	content: "\e973";
+}
+.icon-down4:before {
+	content: '\e913';
+}
+.icon-ondemand_video:before {
+  content: "\e900";
+}
+.icon-notebook:before {
+  content: "\e970";
+}
+.icon-video:before {
+  content: "\e902";
+}
+/*.icon-pause:before {
+  content: "\e972";
+}
+.icon-play:before {
+  content: "\e973";
+}*/

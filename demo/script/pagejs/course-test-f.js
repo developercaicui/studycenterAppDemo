@@ -54,8 +54,6 @@ apiready = function() {
 			var exam_tpl = $('#exam_tpl').html();
 			var content = doT.template(exam_tpl);
 			$('#exam_content').html(content(exam_info));
-
-
 			start_time = get_now_dates();
 			//开始做题的时间
 			$('#result_question').html('本次测试共' + exam_info.totalCount + '道题，<span>' + exam_info.totalCount + '</span>题错误');

@@ -7,7 +7,7 @@ block body
     div.section-note.mine-question#content
     mixin lst
         | {{for(var p in it){ }}
-        .section-note-content.note-content-Img.msg-list(tapmode,onclick="noteEvent(this)",data-id='{{=it[p].id}}',data-sender='{{=it[p].sender}}',data-content='{{=it[p].content}}',data-sentTime='{{=it[p].sentTime}}',data-title='{{=it[p].title}}')
+        .section-note-content.note-content-Img.msg-list(tapmode,onclick="noteEvent(this)",data-id='{{=it[p].id}}',data-sender='{{=it[p].sender}}',data-content='{{=it[p].content.replace(/\n|\r|\t|<[^<]*>/g,'')}}',data-sentTime='{{=it[p].sentTime}}',data-title='{{=it[p].title}}')
             .course-question-title.mine-question-title
                 p {{=it[p].title}}
             .section-note-top

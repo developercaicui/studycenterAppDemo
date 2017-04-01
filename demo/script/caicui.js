@@ -334,6 +334,10 @@ function toggleChild(e) {
 		$(e).parents('dl').parent().toggleClass('hide-child');
 }
 
+//章节折叠、显示任务
+function toggleTasks(e) {
+	$(e).parents('dl').parent().siblings(".taskList").toggleClass('hide-child');
+}
 
 /**
  * 获取课程里所有的任务

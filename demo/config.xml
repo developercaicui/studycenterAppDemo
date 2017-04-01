@@ -17,7 +17,7 @@
   <preference name="fullScreen" value="false"/>  
   <preference name="autoUpdate" value="true"/>  
   <preference name="smartUpdate" value="true"/>  
-  <preference name="debug" value="false"/>  
+  <preference name="debug" value="true"/>  
   <preference name="iOS7StatusBarAppearance" value="true"/>  
   <preference name="allowKeyboardExtension" value="false"/>  
   <permission name="readPhoneState"/>  
@@ -49,5 +49,7 @@
   <feature name="lbbVideo"> 
     <param name="UserId" value="E5DD260925A6084B"/>  
     <param name="apiKey" value="3tF0Ao1MWHEdFp4Lf4LuEgkU8LKpOPLi"/> 
-  </feature> 
+  </feature>
+  <feature name="fs">  
+  </feature>  
 </widget>

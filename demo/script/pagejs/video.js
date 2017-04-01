@@ -83,6 +83,7 @@ apiready = function() {
 
     task_info = api.pageParam.task_info; //任务信息
     videoid = task_info.videoCcid;
+    //alert(JSON.stringify(task_info))
     videoTimes = task_info.videoTime;
     if (!isEmpty(api.pageParam.last_progress)) {
         last_progress = api.pageParam.last_progress;
@@ -178,8 +179,8 @@ apiready = function() {
     }, function(ret, err) {
         
                 //last_progress = getVideoProgress(videoid);
-                last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
-            
+            last_progress = DB.getTaskProgressSync(task_info.taskId).progress;
+
         closeThisWin(last_progress);
         //关闭页面
     });
@@ -308,7 +309,6 @@ function play_video() {
             }
 
             demo.open(param, function(ret, err) {
-
                 //4G下是否播放视频
                 if ((isEmpty($api.getStorage(videoid)) || $api.getStorage(videoid) != 'YES')) {
                     if(api.connectionType == '4g' || api.connectionType == '4G' && (ret.btnType != 1 && ret.btnType !=2 && ret.btnType!=3&& ret.btnType != 4 && ret.btnType !=5 && ret.btnType!=6&& ret.btnType != 7 && ret.btnType !=8 && ret.btnType!=9 && ret.btnType!=-1 && ret.btnType!='-1' && ret.btnType!='play')){

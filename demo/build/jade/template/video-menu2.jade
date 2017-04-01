@@ -1,0 +1,146 @@
+extends ../layout/layout
+block html
+    -var htmlClass = "transparent video-menu"
+block head
+    link(rel='stylesheet', href='../css/about-video.css')
+block body
+    mixin testUI
+        ul
+            li
+                .title(class="{{=isShow(key,'title')}}",onclick="showHide(this)",tapmode)
+                    i.icon-arrow-right
+                    i.bt {{=res.chapterTitle}}
+                ul.con_b(class="{{=isShow(key,'ul')}}")
+                    li
+                        .li-left.clearfix(class='{{=isNowChapter(key,key2)}}')
+                            i.dot-status(data-chapId='{{=value.chapterId}}')
+                            span.span1(onclick="changeCharpter(this,{{=key}},{{=key2}})") {{=value.chapterTitle}}
+                            .li-right
+                                dl.console
+                                    dd
+                                        span.down_speed.none
+                                        .down-progress(id='{{=value.chapterId}}',tapmode,status='ing',courseid='{{=it.courseId}}',chapterida='{{=res.chapterId}}',chapteridb='{{=value.chapterId}}',type='1',onclick="down(this)")
+                                            i.icon-download3
+                                            .val 23
+    .backdrop(onclick="closeThis()",tapmode)
+    div(style="opacity:.0001; position: absolute; top: 50%;z-index:-1")
+        #svgDown.down-progress
+    .about-video
+        .video-title
+            ul
+                li#NavTask.vList-selected(data-name='chaTask',onclick="changeNav(this,1)",tapmode) 本章任务
+                li(data-name='chaList',onclick="changeNav(this,2)",tapmode) 章节列表
+                li(data-name='chaAppendix',onclick="changeNav(this,3)",tapmode) 本章附件
+                li(data-name='chaRead',onclick="changeNav(this,4)",tapmode) 扩展阅读
+        .video-body
+            // 章节任务
+            #chaTask.about-video-content.chapter-task
+            // 章节列表
+            #chaList.none
+            //- +testUI
+            // 本章附件
+            #chaAppendix.about-video-content.chapter-task.chapter-appendix.none
+                ul#file_ul
+                    li.appendix-p
+                        span
+                        div
+                            p.v-name 你刚才说得是什么
+                            p.v-data
+                                span 2014-05-23
+                                span 580KB
+
+            // 扩展阅读
+            #chaRead.about-video-content.chapter-task.none
+                ul#extend_ul
+                    li 1.Part A  Accoununting oh yeah
+
+
+    //本章任务
+    script(id='task_tpl',type='text/x-dot-template')
+        ul
+            | {{~it:val:key}}
+            | {{ if(val.taskType=='video'){ }}
+            li.video-catego(onclick="task_event(this,'{{=key}}','{{=val.taskId}}')",tapmode)
+                span
+                div
+                    p.v-name
+                        span.span11 {{=val.title}}
+                        span {{=formatSec(val.videoTime)}}
+                    p.v-progress
+                        span.taskProgress(style="font-size: 0;",data-taskid="{{=val.taskId}}")
+            | {{ }else if(val.taskType=='exam'){ }}
+            li.note-catego(onclick="task_event(this,'{{=key}}','{{=val.taskId}}')",tapmode)
+                span
+                div
+                    p.v-name
+                        span {{=val.title}}
+                        span {{=val.totalCount}}
+                    p.v-progress
+                        span.taskProgress(style="font-size: 0;",data-taskid="{{=val.taskId}}")
+            | {{ }else if(val.taskType=='pdfread'){ }}
+            li.courseware-catego(onclick="task_event(this,'{{=key}}','{{=val.taskId}}')",tapmode)
+                span
+                div
+                    p.v-name
+                        span {{=val.title}}
+                        span {{=val.totalCount}}
+                    p.v-progress
+                        span.taskProgress(style="font-size: 0;",data-taskid="{{=val.taskId}}")
+            | {{ }else{ }}
+            li.courseword-catego(onclick="task_event(this,'{{=key}}','{{=val.taskId}}')",tapmode)
+                span
+                div
+                    p.v-name
+                        span {{=val.title}}
+                        span
+                    p.v-progress
+                        span.taskProgress(style='font-size: 0;',data-taskid="{{=val.taskId}}")
+            | {{ } }}
+            | {{~}}
+    //本章附件
+    script(id='file_tpl',type='text/x-dot-template')
+        | {{~it:val}}
+        | {{ if(val.type=='docx'){ }}
+        li.appendix-w(onclick="downloadFile('{{=val.url}}','{{=val.type}}')",tapmode)
+            span
+            div
+                p.v-name {{=val.title}}
+                p.v-data
+                    span {{=timetoDate(val.updateTime/1000)}}
+                    span {{=val.size}}KB
+        | {{ }else if(val.type=='pdf'){ }}
+        li.appendix-pdf(onclick="downloadFile('{{=val.url}}','{{=val.type}}')",tapmode)
+            span
+            div
+                p.v-name {{=val.title}}
+                p.v-data
+                    span {{=timetoDate(val.updateTime/1000)}}
+                    span {{=val.size}}KB
+        | {{ }else if(val.type=='zip'){ }}
+        li.appendix-zip(onclick="downloadFile('{{=val.url}}','{{=val.type}}')",tapmode)
+            span
+            div
+                p.v-name {{=val.title}}
+                p.v-data
+                    span {{=timetoDate(val.updateTime/1000)}}
+                    span {{=val.size}}KB
+        | {{ }else{ }}
+        li.appendix-p(onclick="downloadFile('{{=val.url}}','{{=val.type}}')",tapmode)
+            span
+            div
+                p.v-name {{=val.title}}
+                p.v-data
+                    span {{=timetoDate(val.updateTime/1000)}}
+                    span {{=val.size}}KB
+        | {{ } }}
+        | {{~}}
+    //扩展阅读
+    script(id='extend_tpl',type='text/x-dot-template')
+        | {{~it:val:key}}
+        li(onclick="lookExtend('{{=val.id}}','{{=val.url}}','{{=val.title}}')")
+            | {{=(key+1)}}.{{=val.title}}
+        | {{~}}
+    //章节列表
+    include ../modules/_chapter-list
+block scripts
+    script(type='text/javascript', src='../script/pagejs/video-menu.js')

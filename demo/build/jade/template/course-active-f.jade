@@ -45,7 +45,7 @@ block scripts
             });
 
 
-            data = JSON.parse(api.pageParam.data);
+            data = JSON.parse(api.pageParam.data.replace(/<[^<]*>/g,""));
             var tpl = $('#tpl').html();
             var content = doT.template(tpl)(data);
             $('#content').html(content);

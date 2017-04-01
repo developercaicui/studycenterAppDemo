@@ -61,7 +61,7 @@ block scripts
             });
         }
         function active() {
-            var data = JSON.parse(api.pageParam.data);
+            var data = JSON.parse(api.pageParam.data.replace(/<[^<]*>/g,""));
 
             var params = {};
             params.token = $api.getStorage('token');

@@ -2,6 +2,28 @@ extends ../layout/layout
 block head
     link(rel='stylesheet', type='text/css', href='../css/z_style.css')
     link(rel='stylesheet', type='text/css', href='../css/Sstyle.css')
+    style(type="text/css").
+	  .taskList dl{
+        padding-left: .5rem;
+      }
+      .taskList.hide-child{
+        display: none;
+      }
+      .count{
+        white-space: nowrap;
+        display: inline-block;
+        float:right;
+        padding-right: .3rem;
+      }
+      .cache-list .list .list .list dl dt p {
+          padding-right: 2rem;
+      }
+      .cache-list > .list > dl dt p {
+          padding-right: 2rem;
+      }
+      .cache-list .list .list > .list dl dt p {
+          padding-right: 2rem;
+      }
 block body
     #content
 block scripts

@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="../css/Sstyle.css">
   </head>
   <body>
-    <div id="content"></div>
+    <div id=""></div>
+    <ul id="content"></ul>
     <script id="tpl" type="text/x-dot-template">{{for(var p in it){ }}
           <div class="course-stydy">
             <div tapmode data-chaptername="{{=it[p].chapterName}}" data-coursename="{{=it[p].courseName}}" onclick="course_det(this,'course-studying-top','{{=it[p].courseId}}','{{=it[p].chapterId}}','{{=it[p].categoryId}}','{{=it[p].subjectID}}')" class="courseStyTp clearfix"><img src="{{=static_url+it[p].courseBkImage}}" class="pic">

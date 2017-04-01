@@ -1,0 +1,240 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    |     
+    meta(name="viewport", content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0")
+    |     
+    meta(name="format-detection", content="telephone=no")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/api.css")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/common.css")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/common-component.css")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/font-icon.css")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/reset.css")
+    |     
+    link(rel="stylesheet", type="text/css", href="../css/caicui.css")
+    |     
+    script(type="text/javascript", src="../script/api.js")
+    |     
+    script(type="text/javascript", src="../script/zepto.js")
+    |     
+    link(rel="stylesheet", href="../css/about-video.css")
+    |     
+    style(type="text/css").
+      .about-video-content {
+        margin-top: 0;
+      }
+      .chapter-task ul {
+        margin-top:0;
+      }
+      .chapter-task li {
+        color:#000;
+        display: table;
+      }
+      .chapter-task li p span {
+        color:#000;
+      }
+      .chapter-task li .v-name span:nth-child(1) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 3.2rem;
+      }
+      .chapter-task li .v-name span:nth-child(2) {
+        position: absolute;
+        right: 0;
+        top: -0.2rem;
+        color: #00a085;
+        font-size: .3rem;
+      }
+      .chapter-task .video-catego>span {
+        background: url(../image/tv.png) no-repeat;
+        background-size: 100% 100%;
+      }
+      .chapter-task li>span {
+        height: 0.54rem;
+        width: 0.64rem;
+      }
+      .chapter-task li .v-progress {
+        width: 82%;
+        background-color: #b7e6de;
+      }
+      .about-video-content ul li {
+        border-bottom: 1px solid #d4d4d4;
+      }
+      .about-video-content ul li:last-child {
+        border-bottom: 1px solid #d4d4d4;
+      }
+      .down-progress {
+        color: #00a186;
+        position: absolute;
+        right: 0.2rem;
+      }
+      .chapter-task .icon-check {
+        display: none;
+        position: absolute;
+        top: 0.3rem;
+        right: 0.3rem;
+        font-size: 0.2rem;
+        background: #fff;
+        padding-top: 0.05rem;
+        border-radius: 0.08rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        border: 1px solid rgba(0,0,0,0.2);
+        color: #fff;
+        padding-left: 0.1rem;
+      }
+      .chapter-task .icon-check.active {
+        text-shadow: 0 1px 0 #00a085;
+        color: #00a085;
+        border-color: #00a085;
+      }
+      .checking .chapter-task .icon-check {
+        display: block;
+      }
+      .checking .chapter-task .down-progress {
+        display: none;
+      }
+      .taskList{width: 100%;}
+      .taskList dt, .taskList dd {
+        height: 1rem;
+        padding: 0 0 0 0.2rem;
+      }
+      .taskList dt {
+        width: 85%;
+        float: left;
+      }
+      .taskList dd {
+        width: 15%;
+        float: right;
+      }
+      @font-face {
+        font-family: 'icomoon';
+        src: url("../fonts/icomoon2.ttf");
+        font-weight: normal;
+        font-style: normal;
+      }
+  |   
+  body(style="background: #fff")
+    #chaTask.about-video-content.chapter-task
+    // 本章任务
+    script#task_tpl(type="text/x-dot-template").
+      <ul>
+      {{~it:val:key}}
+      {{ if(val.taskType=='video'){ }}
+      <li class="video-catego"><i class="icon-video" style="font-size:.5rem;"></i>
+      <div>
+      <dl class="taskList">
+      <dt onclick="task_event(this,'{{=key}}','{{=val.taskId}}')" tapmode >
+      <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 3.2rem;">{{=val.title}}</p>
+      <p class="v-name"><span class="span11"></span><span>{{=val.videoTime}}</span></p>
+      <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
+      </dt>
+      <dd>
+      <i dataid="{{=val.chapterId}}" class="icon-check chapterb"></i>
+      <span class="down_speed none"></span>
+      <div id="" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
+      <div class="val"></div>
+      </div>
+      </dd>
+      </dl>
+      </div>
+      <!-- <div>
+      <i dataid="{{=val.chapterId}}" class="icon-check chapterb"></i>
+      <p class="v-name"><span></span><span>{{=val.videoTime}}</span></p>
+      <p class="v-progress"><span style="font-size: 0;width: 50%" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p><div id="" courseid="" chapterida="" chapteridb="" chapteridc="" type="" class="down-progress"><i class="icon-down1"></i>
+      <div class="val"></div>
+      </div>
+      </div> -->
+      </li>{{ }else if(val.taskType=='exam'){ }}
+      <li onclick="task_event(this,'{{=key}}','{{=val.taskId}}')" tapmode class="note-catego"><span></span>
+      <div>
+      <p class="v-name"><span>{{=val.title}}</span><span>{{=val.totalCount}}</span></p>
+      <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
+      </div>
+      </li>{{ }else if(val.taskType=='pdfread'){ }}
+      <li onclick="task_event(this,'{{=key}}','{{=val.taskId}}')" tapmode class="courseware-catego"><span></span>
+      <div>
+      <p class="v-name"><span>{{=val.title}}</span><span>{{=val.totalCount}}</span></p>
+      <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
+      </div>
+      </li>{{ }else{ }}
+      <li onclick="task_event(this,'{{=key}}','{{=val.taskId}}')" tapmode class="courseword-catego"><span></span>
+      <div>
+      <p class="v-name"><span>{{=val.title}}</span><span></span></p>
+      <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
+      </div>
+      </li>{{ } }}
+      {{~}}
+      </ul>
+    |     
+    |     
+    script(type="text/javascript", src="../script/jquery.min.js")
+    |     
+    script(type="text/javascript", src="../script/comm.js")
+    |     
+    script(type="text/javascript", src="../script/doT.min.js")
+    |     
+    script(type="text/javascript", src="../script/caicui.js")
+    |     
+    script(type="text/javascript", src="../script/db.js")
+    |     
+    script(type="text/javascript", src="../script/saveTasksProgress.js")
+    |     
+    script(type="text/javascript", src="../script/tasks-cache-f.js")
+    |     
+    script(type="text/javascript").
+      var is_debug = true;
+      function tasksCache(){
+      if(is_debug){
+      var arr = [{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"DE3A00C3A7FF861F9C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-a ","taskId":"8a22ecb557d16e020157d1f31cfd1e2a","taskLevel":null,"id":"8a22ecb557c831f00157d0a032a80025"},{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"C0120B91BFC60E0E9C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-c-测评练习","taskId":"8a22ecb557d16e020157d1f34c391e2b","taskLevel":null,"id":"8a22ecb557c831f00157d09d9e0c0016"},{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"0A7E6A7E2F0BA1149C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-b","taskId":"8a22ecb557d16e020157d1f787a81e2c","taskLevel":null,"id":"8a22ecb557c831f00157d0a05dca0029"}];
+      var task_tpl = $('#task_tpl').html();
+      var content = doT.template(task_tpl);
+      $('#chaTask').html(content(arr)).show();
+      init_check()
+      return false;
+      }
+      var tasks = api.pageParam;
+      var task_tpl = $('#task_tpl').html();
+      var content = doT.template(task_tpl);
+      $('#chaTask').html(content(tasks)).show();
+      }
+      function task_event(event){
+      alert(1)
+      }
+      tasksCache();
+      apiready = function(){
+      tasksCache()
+      init_check()
+      api.addEventListener({
+      name: 'opena'
+      }, function(ret) {
+      if (ret.value.sethomepage == 1) { //删除
+      $('body').addClass('checking');
+      // api.showProgress({
+      //     title: '删除中',
+      //     modal: true
+      // });
+      } else if (ret.value.sethomepage == 2) { //取消
+      $('body').removeClass('checking');
+      $('.icon-check').removeClass('active');
+      } else if (ret.value.sethomepage == 3) { //全选
+      $('.icon-check').addClass('active');
+      }
+      });
+      }
+      function init_check() {
+      $('.chapter-task').on("click",".icon-check",function() {
+      if ($(this).hasClass('active')) {
+      $(this).removeClass('active')
+      } else {
+      $(this).addClass('active');
+      }
+      });
+      }

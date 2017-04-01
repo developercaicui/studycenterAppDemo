@@ -17,14 +17,14 @@
   <body>
     <div id="content" class="section-note mine-question"></div>
     <script id="tpl" type="text/x-dot-template">{{for(var p in it){ }}
-          <div tapmode onclick="noteEvent(this)" data-id="{{=it[p].id}}" data-sender="{{=it[p].sender}}" data-content="{{=it[p].content}}" data-sentTime="{{=it[p].sentTime}}" data-title="{{=it[p].title}}" class="section-note-content note-content-Img msg-list">
+          <div tapmode onclick="noteEvent(this)" data-id="{{=it[p].id}}" data-sender="{{=it[p].sender}}" data-content="{{=it[p].content.replace(/\n|\r|\t|<[^<]*>/g,'')}}" data-sentTime="{{=it[p].sentTime}}" data-title="{{=it[p].title}}" class="section-note-content note-content-Img msg-list">
             <div class="course-question-title mine-question-title">
               <p>{{=it[p].title}}</p>
             </div>
             <div class="section-note-top">
               <div class="note-img">{{if(isEmpty(it.headImg)){ }}<img src="{{=default_img}}" alt="">{{ }else { }}<img src="{{=static_url+it.headImg}}" alt="">{{ } }}</div>
               <div class="note-font">
-                <p>{{=it[p].content}}</p>
+                <p>{{=it[p].content.replace(/<[^<]*>/g,"")}}</p>
               </div>
             </div>
             <div class="section-note-message"><span><b>{{=formatDate(it[p].sentTime,'Y')+'-'+formatDate(it[p].sentTime,'M')+'-'+formatDate(it[p].sentTime,'D')}}</b><b>{{=formatDate(it[p].sentTime,'h')+':'+formatDate(it[p].sentTime,'m')}}</b><b>{{=it[p].sender}}</b></span><span class="none"><i><img src="../image/note-message-o.png" alt=""></i><b>22</b></span></div>
