@@ -181,13 +181,10 @@ function get_data() {
         if(!isEmpty(api.pageParam.courseId)){
             
             cache_model.getCourseTaskWithCourseId({"userId":memberId,"courseId":api.pageParam.courseId},function(ret,err){
-                // var ret_data = ret.data;
-                // var courseJson = JSON.parse(JSON.parse(ret_data)[0].courseJson);
-                var ret_data = ret;
-                alert(JSON.stringify(ret_data))
-                var courseJson = JSON.parse(ret_data.courseJson)
+                alert(JSON.stringify(ret))
+                var ret_data = JSON.parse(ret.data.courseJson)
                 var res = {
-                    data: courseJson
+                    data: ret_data[0]
                 };
                 mydata.push(res);
                 
