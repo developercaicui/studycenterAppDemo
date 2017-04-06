@@ -1120,7 +1120,7 @@
                     if (cache_model == null) {
                         cache_model = api.require('lbbVideo');
                     }
-                    cache_model.downloadStop(function(ret, err) {
+                    cache_model.downloadStop({"userId":memberId},function(ret, err) {
 
                         set_down({
                             type: 1,
@@ -1175,7 +1175,7 @@
                 if (cache_model == null) {
                     cache_model = api.require('lbbVideo');
                 }
-                cache_model.downloadStop(function(ret, err) {
+                cache_model.downloadStop({"userId":memberId},function(ret, err) {
 
                     set_down({
                         type: 1,
@@ -1211,7 +1211,7 @@
                 }
                 if (api.connectionType == 'unknown' || api.connectionType == 'none') {
 
-                    cache_model.downloadStop(function(ret, err) {
+                    cache_model.downloadStop({"userId":memberId},function(ret, err) {
 
                         set_down({
                             type: 'shut_network',
@@ -1225,7 +1225,7 @@
                     });
                 } else if (api.connectionType == '2g' || api.connectionType == '3g' || api.connectionType == '4g' || api.connectionType == '2G' || api.connectionType == '3G' || api.connectionType == '4G') {
                     window.shut_network = false;
-                    cache_model.downloadStop(function(ret, err) {
+                    cache_model.downloadStop({"userId":memberId},function(ret, err) {
 
                         set_down({
                             type: 'not_wifi',
@@ -1262,7 +1262,7 @@
                     if (cache_model == null) {
                         cache_model = api.require('lbbVideo');
                     }
-                    cache_model.downloadStop(function(ret, err) {
+                    cache_model.downloadStop({"userId":memberId},function(ret, err) {
 
                         set_down({
                             type: 'not_wifi',

@@ -120,17 +120,17 @@
       <ul>
         {{~it:val:key}}
         {{ if(val.taskType=='video'){ }}
-        <li class="video-catego"><i class="icon-video" style="font-size:.5rem;"></i>
+        <li class="video-catego" style="display: none"><i class="icon-video" style="font-size:.5rem;"></i>
         <div>
               <dl class="taskList">
                 <dt onclick="next(this,'{{=key}}','{{=val.courseId}}')" tapmode >
                   <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 3.2rem;">{{=val.title}}</p>
-                  <p class="v-name"><span class="span11"></span><span>{{=val.videoTime}}</span></p>
+                  <p class="v-name"><span class="span11"></span><span>0%</span></p>
                   <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                 </dt>
                 <dd>
                   <i dataid="{{=val.chapterId}}" class="icon-check chapterb"></i>
-                  <div id="" onclick="down(this)" class="down-progress"><i class="icon-down1"></i>
+                  <div id="" onclick="down(this)" class="down-progress task{{=val.videoCcid}}"><i class="icon-down1"></i>
                     <div class="val"></div>
                   </div>
                   <div class="down_data none">{{=JSON.stringify(val)}}</div>
@@ -152,6 +152,14 @@
     <script type="text/javascript">
 
     var is_debug = false;
+    var getStatusTime = null;
+    var videoDownInfo =new Object(); //缓存每个节点的下载状态，一个节点一个id
+    var videochangelist = $api.getStorage("videochangelist") ? $api.getStorage("videochangelist") : ""; //记录每次定时器和数据库同步数据后发生改变的dom节点id
+    var couselist = ""; //记录缓存包括的课程id
+    var lastgettime = 1388509261;//记录每次获取数据库的时间点，下次获取就只获取该时间点之后变化的记录(第一次获取可以获取2014年1月1日1时1分1秒//)
+
+
+
     function tasksCache(){
         if(is_debug){
           var arr = [{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"DE3A00C3A7FF861F9C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-a ","taskId":"8a22ecb557d16e020157d1f31cfd1e2a","taskLevel":null,"id":"8a22ecb557c831f00157d0a032a80025"},{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"C0120B91BFC60E0E9C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-c-测评练习","taskId":"8a22ecb557d16e020157d1f34c391e2b","taskLevel":null,"id":"8a22ecb557c831f00157d09d9e0c0016"},{"attachmentPath":"","apiKey":"q6pLhLMSit3QuuYAD4TIyQ3pJNKiY0Ez","videoCcid":"0A7E6A7E2F0BA1149C33DC5901307461","videoSiteId":"D550E277598F7D23","videoTime":"500M/600M","taskType":"video","title":"战略规划概述-b","taskId":"8a22ecb557d16e020157d1f787a81e2c","taskLevel":null,"id":"8a22ecb557c831f00157d0a05dca0029"}];
@@ -163,14 +171,53 @@
         }
         
     }
-   
-    //tasksCache();
+   function initDomDownStatus(){
+    if(isEmpty($api.getStorage("videochangelist"))){
+        return false;
+    }
 
-    apiready = function(){
+    var strs = $api.getStorage("videochangelist").split(","); //字符分割
+    var pathlen = strs.length;
+    //从1开始，因为拼接videochangelist的时候用,开始的
+    // alert(strs+"====="+JSON.stringify(videoDownInfo))
+    for (j=1; j<pathlen;j++ ){
+        var domInfo = videoDownInfo[strs[j]];
+        var domid = strs[j];
+        // alert(JSON.stringify(domInfo))
+        if(!isEmpty(domInfo)){
+            var domprogress = videoDownInfo[strs[j]].progress;
+            var domstatus = videoDownInfo[strs[j]].status;
+            var domtasknum = videoDownInfo[strs[j]].tasknum;
+            // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
+            $(".task"+domid).parents("li").show();
+            $(".task"+domid).attr("type",domstatus);
+            $(".task"+domid).find(".val").html(domprogress);
+            $(".task"+domid).parent().prev().find(".v-progress").find("span").css("width",domprogress+"%");
+            $(".task"+domid).parent().prev().find(".v-name").find("span").eq(1).text(domprogress+"%");
+        } 
+    }
+    //处理进度条
+    
+
+}
+    //tasksCache();
+    function initDom(){
       var tasks = api.pageParam;
       var task_tpl = $('#task_tpl').html();
       var content = doT.template(task_tpl);
       $('#chaTask').html(content(tasks)).show();
+      initDomDownStatus();
+    }
+    apiready = function(){
+      
+      //1:获取所有下载记录并解析
+      getdownrecord();
+      //2:根据couselist获取所有缓存课程的章节详情，如果在线，从服务器获取，否则本地数据库获取
+      initDom();
+      clearInterval(getStatusTime);
+      getStatusTime = setInterval(function(){
+          getdownrecord();
+      },2000)
       init_check();
       api.addEventListener({
           name: 'opena'
@@ -178,10 +225,10 @@
           if (ret.value.sethomepage == 1) { //删除
               $('body').addClass('checking');
               
-              api.showProgress({
-                  title: '删除中',
-                  modal: true
-              });
+              // api.showProgress({
+              //     title: '删除中',
+              //     modal: true
+              // });
              
           } else if (ret.value.sethomepage == 2) { //取消
               $('body').removeClass('checking');

@@ -284,7 +284,7 @@ apiready = function() {
     chapter_data = res;
     */
     task_arr = save_tasks(course_detail);
-alert(JSON.stringify(course_detail))
+
     task_info_detail = task_arr[task_info.taskId];
     //展示本章任务信息
     getChapterTask();

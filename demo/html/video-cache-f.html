@@ -55,7 +55,7 @@
                 <div class="progress2">
                   <div role="progressbar" min="0" max="0" class="progress-bar2"></div>
                 </div>
-                <div class="progress-val2">17/91</div>
+                <div class="progress-val2"></div>
               </div>
             </dt>
             <dd><i dataid="{{=it[k].data.courseId}}" class="icon-check courseid"></i></dd>
@@ -88,9 +88,9 @@
                   <i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i>
                     <p>{{=val3.chapterTitle}}</p>
                   </dt>
-                  <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;">2/4</span><i dataid="{{=val3.chapterId}}" class="icon-check chapterc"></i>{{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
-                    <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
-                      <div class="val {{=is_show}}">{{=progress}}</div>
+                  <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val3.chapterId}}" class="icon-check chapterc"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+                    <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="3" onclick="down(this)" class="down-progress task{{=val3.chapterId}}"><i class="icon-download3"></i>
+                      <div class="val {{=is_show}}"></div>
                     </div>
                     <div class="down_data none">{{=JSON.stringify(val3.tasks)}}</div>
                   </dd><i class="icon-arrow-right"></i>
@@ -107,9 +107,9 @@
                 <i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i>
                   <p>{{=val2.chapterTitle}}</p>
                 </dt>
-                <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;">24/40</span><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i>{{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
-                  <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
-                    <div class="val {{=is_show}}">{{=progress}}</div>
+                <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+                  <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val2.chapterId}}"><i class="icon-download3"></i>
+                    <div class="val {{=is_show}}"></div>
                   </div>
                   <div class="down_data none">{{=JSON.stringify(val2.tasks)}}</div>
                 </dd><i class="icon-arrow-right"></i>
@@ -129,9 +129,9 @@
               <i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i>
                 <p> {{=val.chapterTitle}}</p>
               </dt>
-              <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;">2/4</span><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i>{{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span>
-                <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="{{=state}}" onclick="down(this)" class="down-progress"><i class="icon-download3"></i>
-                  <div class="val {{=is_show}}">{{=progress}}</div>
+              <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
+                <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val.chapterId}}"><i class="icon-download3"></i>
+                  <div class="val {{=is_show}}"></div>
                 </div>
                 <div class="down_data none">{{=JSON.stringify(val.tasks)}}</div>
               </dd><i class="icon-arrow-right"></i>

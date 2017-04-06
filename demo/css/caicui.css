@@ -831,9 +831,11 @@ ul.download .down-progress {
 }
 .down-progress[status='wait'] i:before,
 .down-progress.wait i:before,
-.down-progress[type='2'] i:before {
+.down-progress[type='2'] i:before,
+ .down-progress[type='5'] i:before {
   content: '\e909';
 }
+
 .down-progress i {
   top: 50%;
   left: 50%;
