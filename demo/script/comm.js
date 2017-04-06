@@ -903,6 +903,11 @@ function set_down(data) {
         frameName: 'video-menu',
         script: jsfun
     });
+    api.execScript({
+        name: 'tasks-cache',
+        frameName: 'tasks-cache-f',
+        script: jsfun
+    });
 }
 
 var is_added = true;
@@ -975,25 +980,6 @@ function mydown(result) {
     
 
  
-    // cache_model = api.require('lbbVideo');
-    // var param = {
-    //     userId : memberId,
-    //     courseId : result.courseId,
-    //     courseName : result.courseName,
-    //     videoId : result.tasks.videoCcid,
-    //     expirationTime : result.expirationTime,
-    //     path : result.path,
-    //     pathName : result.pathname,
-    //     isbuy : result.isbuy,
-    //     islock : result.islock,
-    //     activestate : result.activestate,
-    //     videoNum : 10
-    // }
-    // //alert(JSON.stringify(param))
-    // cache_model.insertDowndCourseState(param,function(ret,err){
-    //     //alert(JSON.stringify(ret))
-    // })
-    
     switch (type) {
         case '1':
         case 1:

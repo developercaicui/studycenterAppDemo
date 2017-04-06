@@ -5,17 +5,19 @@ var couselist = ""; //记录缓存包括的课程id
 var lastgettime = 1388509261;//记录每次获取数据库的时间点，下次获取就只获取该时间点之后变化的记录(第一次获取可以获取2014年1月1日1时1分1秒//)
 
 
-function tasksCache(obj){
+function tasksCache(obj,data){
     var tasks = $(obj).next().find(".down_data").html();
     var taskList = JSON.parse(tasks);
+    course_detail = data;
     for(var i=0;i<taskList.length;i++){
         taskList[i].courseId = api.pageParam.courseId;
     }
+    alert(JSON.stringify(course_detail))
     api.openWin({
         name : "tasks-cache",
         url : 'tasks-cache.html',
         delay : 200,
-        pageParam: taskList
+        pageParam: course_detail
     });
 }
 function init_check() {
