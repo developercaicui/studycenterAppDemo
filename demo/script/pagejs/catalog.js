@@ -563,10 +563,10 @@ function getVersionId(data){
     var coursestatus ={};
     ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
         if(ret.state == "success"){
-            var lockStatusNum = -1;
+            var lockStatusNum = 0;
             for(var i=0;i<ret.data.length;i++){
                 if(ret.data[i].lockStatus == 0){
-                    lockStatusNum++;
+                    lockStatusNum = i;
                 }   
             }
             coursestatus.islock = ret.data[lockStatusNum].lockStatus;
