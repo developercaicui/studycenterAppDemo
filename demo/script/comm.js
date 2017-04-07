@@ -838,6 +838,7 @@ function getFixName(filename) { //获取文件后缀名
 //下载按钮点击
 function down(_this) {
     var memberId = getstor('memberId');
+    var path = "";
     var courseId = $(_this).attr('courseid'),
         type = $(_this).attr('type'),
         chapterIdA = $(_this).attr('chapterida'),
@@ -858,6 +859,15 @@ function down(_this) {
         });
         return false;
     }
+    if(!isEmpty(chapterIdA) && isEmpty(chapterIdB) && isEmpty(chapterIdC)){
+        path = chapterIdA;
+    }
+    if(!isEmpty(chapterIdA) && !isEmpty(chapterIdB) && isEmpty(chapterIdC)){
+        path = chapterIdA + "//"+chapterIdB;
+    }
+    if(!isEmpty(chapterIdC) && !isEmpty(chapterIdA) && !isEmpty(chapterIdB)){
+        path = chapterIdA + "//"+chapterIdB + "//" + chapterIdC;
+    }
     var param = {
         courseId: courseId,
         courseName : courseName,
@@ -865,7 +875,7 @@ function down(_this) {
         chapterIdA: chapterIdA,
         chapterIdB: chapterIdB,
         chapterIdC: chapterIdC,
-        path : courseId+"//"+chapterIdA+"//"+chapterIdB+"//"+chapterIdC+"//"+JSON.parse(tasks).videoCcid,
+        path : courseId+"//"+path+"//"+JSON.parse(tasks).videoCcid,
         pathname : courseName+"//"+chapterNameA+"//"+chapterNameB+"//"+chapterNameC+"//"+JSON.parse(tasks).title,
         index : index,
         tasks: JSON.parse(tasks)
@@ -1909,6 +1919,7 @@ function initDomDownStatus(){
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
             var domtasknum = videoDownInfo[strs[j]].tasknum;
+            // alert(domid+"==="+domprogress)
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
             $(".task"+domid).attr("type",domstatus);
             $(".task"+domid).find(".val").html(domprogress);

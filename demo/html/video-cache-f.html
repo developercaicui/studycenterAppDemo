@@ -84,7 +84,7 @@
                   {{var state=3;}}
                   {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','{{=val3.chapterId}}');}}
                   <!-- <dt tapmode="tapcolor" onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}','{{=it[k].data.courseId}}',this)"> -->
-                  <dt tapmode="tapcolor" onclick="tasksCache(this)">
+                  <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
                   <i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i>
                     <p>{{=val3.chapterTitle}}</p>
                   </dt>
@@ -92,7 +92,7 @@
                     <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="3" onclick="down(this)" class="down-progress task{{=val3.chapterId}}"><i class="icon-download3"></i>
                       <div class="val {{=is_show}}"></div>
                     </div>
-                    <div class="down_data none">{{=JSON.stringify(val3.tasks)}}</div>
+                    <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
                   </dd><i class="icon-arrow-right"></i>
                 </dl>
               </li>{{~}}
@@ -103,7 +103,7 @@
               {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','');}}
               <dl>
                 <!-- <dt tapmode="tapcolor" onclick="next(2,'{{=key}}','{{=key2}}',-1,'{{=it[k].data.courseId}}',this)"> -->
-                <dt tapmode="tapcolor" onclick="tasksCache(this)">
+                <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
                 <i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i>
                   <p>{{=val2.chapterTitle}}</p>
                 </dt>
@@ -111,7 +111,7 @@
                   <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val2.chapterId}}"><i class="icon-download3"></i>
                     <div class="val {{=is_show}}"></div>
                   </div>
-                  <div class="down_data none">{{=JSON.stringify(val2.tasks)}}</div>
+                  <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
                 </dd><i class="icon-arrow-right"></i>
               </dl>
             </ul>{{ } }}
@@ -125,7 +125,7 @@
           <li class="list mycaptA {{=is_show}}">
             <dl>
               <!-- <dt tapmode="tapcolor" onclick="next(1,'{{=key}}',-1,-1,'{{=it[k].data.courseId}}',this)"> -->
-              <dt tapmode="tapcolor" onclick="tasksCache(this)">
+              <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
               <i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i>
                 <p> {{=val.chapterTitle}}</p>
               </dt>
@@ -133,7 +133,7 @@
                 <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val.chapterId}}"><i class="icon-download3"></i>
                   <div class="val {{=is_show}}"></div>
                 </div>
-                <div class="down_data none">{{=JSON.stringify(val.tasks)}}</div>
+                <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
               </dd><i class="icon-arrow-right"></i>
             </dl>
           </li>

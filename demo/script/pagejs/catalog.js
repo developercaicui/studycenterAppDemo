@@ -139,6 +139,7 @@ function initDomDownStatus(){
         var domInfo = videoDownInfo[strs[j]];
         var domid = strs[j];
         // alert(JSON.stringify(domInfo))
+    
         if(!isEmpty(domInfo)){
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;

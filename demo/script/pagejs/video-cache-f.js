@@ -5,19 +5,17 @@ var couselist = ""; //记录缓存包括的课程id
 var lastgettime = 1388509261;//记录每次获取数据库的时间点，下次获取就只获取该时间点之后变化的记录(第一次获取可以获取2014年1月1日1时1分1秒//)
 
 
-function tasksCache(obj,data){
+function tasksCache(obj){
     var tasks = $(obj).next().find(".down_data").html();
     var taskList = JSON.parse(tasks);
-    course_detail = data;
     for(var i=0;i<taskList.length;i++){
         taskList[i].courseId = api.pageParam.courseId;
     }
-    alert(JSON.stringify(course_detail))
     api.openWin({
         name : "tasks-cache",
         url : 'tasks-cache.html',
         delay : 200,
-        pageParam: course_detail
+        pageParam: taskList
     });
 }
 function init_check() {
@@ -205,7 +203,45 @@ function get_data() {
            })
         }
         
+      //更新界面下载状态有变化的下载节点
+function initDomDownStatus(){
+    if(isEmpty($api.getStorage("videochangelist"))){
+        return false;
+    }
+
+    var strs = $api.getStorage("videochangelist").split(","); //字符分割
+    var pathlen = strs.length;
+    //从1开始，因为拼接videochangelist的时候用,开始的
+    // alert(strs+"====="+JSON.stringify(videoDownInfo))
+    for (j=1; j<pathlen;j++ ){
+        var domInfo = videoDownInfo[strs[j]];
+        var domid = strs[j];
+        // alert(JSON.stringify(domInfo))
+        if(!isEmpty(domInfo)){
+            var domprogress = videoDownInfo[strs[j]].progress;
+            var domstatus = videoDownInfo[strs[j]].status;
+            var domtasknum = videoDownInfo[strs[j]].tasknum;
+            alert(domid+"==="+domprogress+"==="+domstatus)
+            // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
+            if(domprogress == 100){
+                $(".task"+domid).attr("type",4);
+                $(".task"+domid).find(".val").html(domprogress);
+                
+            }else{
+                $(".task"+domid).attr("type",domstatus);
+                $(".task"+domid).find(".val").html(domprogress);
+            }
       
+            // alert($(".task"+domid).html())
+        }    
+    }
+    //处理圈圈
+    isSolidcircle('circle', '', '');
+    init_process();
+    //------------------设置结束--------------------------
+    // console.log(strs[j]);
+    // console.log(domInfo);
+}
 //1:获取所有下载记录并解析
 getdownrecord();
 //2:根据couselist获取所有缓存课程的章节详情，如果在线，从服务器获取，否则本地数据库获取

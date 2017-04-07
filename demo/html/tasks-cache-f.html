@@ -183,7 +183,7 @@
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
         var domid = strs[j];
-        // alert(JSON.stringify(domInfo))
+
         if(!isEmpty(domInfo)){
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
@@ -197,15 +197,15 @@
         } 
     }
     //处理进度条
-    
 
 }
     //tasksCache();
     function initDom(){
-      var tasks = api.pageParam;
+      var course_detail = api.pageParam;
+      alert(JSON.stringify(course_detail));
       var task_tpl = $('#task_tpl').html();
       var content = doT.template(task_tpl);
-      $('#chaTask').html(content(tasks)).show();
+      $('#chaTask').html(content(course_detail)).show();
       initDomDownStatus();
     }
     apiready = function(){
@@ -237,6 +237,8 @@
               $('.icon-check').addClass('active');
           }
       });
+
+
     }
       
     function init_check() {
