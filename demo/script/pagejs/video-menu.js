@@ -360,11 +360,11 @@ function getChapterTask() {
                 arr.push(task_arr[i]['taskInfo']);
             }
         }
-        
+        // var arr = api.pageParam.course_detail;
         var task_tpl = $('#task_tpl').html();
         var content = doT.template(task_tpl);
         //$('#chaTask').html(content(chapter_data)).show().siblings().hide();
-        $('#chaTask').html(content(arr)).show().siblings().hide();
+        $('#chaTask').html(content(arr)).show();
         is_over_task = true;
         isSolidcircle('progress', task_info_detail.chapterId, '', courseId, 'video-menu');
         //已加载完毕

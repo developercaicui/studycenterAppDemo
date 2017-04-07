@@ -85,7 +85,7 @@ function procRecord(videorecord){
                 //如果子节点有一个处于下载，则为下载，如果没有，如果有一个在队列，则为队列，如果没有，则为停止，如果全部下载完成，则为下载完成
                 //0:停止  1:等待  2:下载中  3: 下载完成
                 //以下节点下载状态叶子节点是准的,父节点不准,没考虑其它子节点的下载状态
-                if(videoDownInfo[strs[j]].progress == 100 || videoDownInfo[strs[j]].status == 4){
+                if(videoDownInfo[strs[j]].progress == 100){
                     videoDownInfo[strs[j]].status = 4;
                 }else{
                     videoDownInfo[strs[j]].status = videorecord.state;
@@ -113,7 +113,7 @@ function procRecord(videorecord){
             //如果子节点有一个处于下载，则为下载，如果没有，如果有一个在队列，则为队列，如果没有，则为停止，如果全部下载完成，则为下载完成
             //0:停止  1:等待  2:下载中  3: 下载完成
             //以下节点下载状态叶子节点是准的,父节点不准,没考虑其它子节点的下载状态
-            if(videoDownInfo[strs[j]].progress == 100 || videoDownInfo[strs[j]].status == 4){
+            if(videoDownInfo[strs[j]].progress == 100){
                 videoDownInfo[strs[j]].status = 4;
             }else{
                 videoDownInfo[strs[j]].status = videorecord.state;
@@ -260,6 +260,7 @@ initDom();
 
 getStatusTime = setInterval(function(){
     getdownrecord();
+    setSpace();
 },2000)
 //3:定时器调用获取变化的数据，并调整界面下载状态
 // getdownrecord();
@@ -282,6 +283,14 @@ getStatusTime = setInterval(function(){
 		height : '0px'
 	});
 }
+
+function setSpace(){
+    api.getFreeDiskSpace(function(ret, err) {
+         var size = (ret.size / 1000 / 1000).toFixed(2);
+         $(".space").html("可用空间" + size + "MB<span></span>");
+     });
+}
+
 function setTask(){
     //console.log( $(".down_data"))
     $(".down_data").each(function(){
@@ -563,10 +572,10 @@ function getVersionId(data){
     var coursestatus ={};
     ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
         if(ret.state == "success"){
-            var lockStatusNum = 0;
+            var lockStatusNum = -1;
             for(var i=0;i<ret.data.length;i++){
                 if(ret.data[i].lockStatus == 0){
-                    lockStatusNum = i;
+                    lockStatusNum++;
                 }   
             }
             coursestatus.islock = ret.data[lockStatusNum].lockStatus;

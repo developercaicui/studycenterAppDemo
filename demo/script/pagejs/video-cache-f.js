@@ -5,17 +5,13 @@ var couselist = ""; //记录缓存包括的课程id
 var lastgettime = 1388509261;//记录每次获取数据库的时间点，下次获取就只获取该时间点之后变化的记录(第一次获取可以获取2014年1月1日1时1分1秒//)
 
 
-function tasksCache(obj){
+function tasksCache(obj,chapterId){
     var tasks = $(obj).next().find(".down_data").html();
-    var taskList = JSON.parse(tasks);
-    for(var i=0;i<taskList.length;i++){
-        taskList[i].courseId = api.pageParam.courseId;
-    }
     api.openWin({
         name : "tasks-cache",
         url : 'tasks-cache.html',
         delay : 200,
-        pageParam: taskList
+        pageParam: {data:tasks,chapterId:chapterId}
     });
 }
 function init_check() {
@@ -221,26 +217,56 @@ function initDomDownStatus(){
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
             var domtasknum = videoDownInfo[strs[j]].tasknum;
-            alert(domid+"==="+domprogress+"==="+domstatus)
+            // alert(domid+"==="+domprogress+"==="+domstatus)
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
-            if(domprogress == 100){
-                $(".task"+domid).attr("type",4);
-                $(".task"+domid).find(".val").html(domprogress);
-                
-            }else{
-                $(".task"+domid).attr("type",domstatus);
-                $(".task"+domid).find(".val").html(domprogress);
-            }
-      
+            
+            $(".task"+domid).attr("type",domstatus);
+            $(".task"+domid).find(".val").html(domprogress);
             // alert($(".task"+domid).html())
         }    
     }
+    setCapterState();
     //处理圈圈
     isSolidcircle('circle', '', '');
     init_process();
     //------------------设置结束--------------------------
     // console.log(strs[j]);
     // console.log(domInfo);
+}
+function setCapterState(){
+    if(isEmpty($api.getStorage("videochangelist"))){
+        return false;
+    }
+
+    var strs = $api.getStorage("videochangelist").split(","); //字符分割
+    var pathlen = strs.length;
+    //从1开始，因为拼接videochangelist的时候用,开始的
+    // alert(strs+"====="+JSON.stringify(videoDownInfo))
+    for (j=1; j<pathlen;j++ ){
+        var domInfo = videoDownInfo[strs[j]];
+        var domid = strs[j];
+        // alert(JSON.stringify(domInfo))
+        if(!isEmpty(domInfo)){
+            var domprogress = videoDownInfo[strs[j]].progress;
+            var domstatus = videoDownInfo[strs[j]].status;
+            var domtasknum = videoDownInfo[strs[j]].tasknum;
+            
+            var taskList = $(".task"+domid).closest(".list").nextAll(".taskList");
+            $.each(taskList,function(v,k){
+                if($(this).find(".down-progress").attr("type") == 1){
+                    domstatus = 1;
+                    return false;
+                }else if($(this).find(".down-progress").attr("type") == 2){
+                    domstatus = 2;
+                }else if($(this).find(".down-progress").attr("type") == 5){
+                    domstatus = 5;
+                }
+            })
+            $(".task"+domid).attr("type",domstatus);
+            $(".task"+domid).find(".val").html(domprogress);
+            // alert($(".task"+domid).html())
+        }    
+    }
 }
 //1:获取所有下载记录并解析
 getdownrecord();

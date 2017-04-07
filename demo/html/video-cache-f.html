@@ -84,36 +84,78 @@
                   {{var state=3;}}
                   {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','{{=val3.chapterId}}');}}
                   <!-- <dt tapmode="tapcolor" onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}','{{=it[k].data.courseId}}',this)"> -->
-                  <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
+                  <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=val3.chapterId}}')">
                   <i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i>
                     <p>{{=val3.chapterTitle}}</p>
                   </dt>
                   <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val3.chapterId}}" class="icon-check chapterc"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
-                    <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="3" onclick="down(this)" class="down-progress task{{=val3.chapterId}}"><i class="icon-download3"></i>
+                    <div id="{{=val3.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" type="3" class="down-progress task{{=val3.chapterId}}"><i class="icon-download3"></i>
                       <div class="val {{=is_show}}"></div>
                     </div>
                     <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
                   </dd><i class="icon-arrow-right"></i>
                 </dl>
-              </li>{{~}}
+              </li>
+              {{~val3.tasks:val4:key4}}
+            {{ if(val4.taskType=='video'){ }}
+            <div class="taskList {{=is_show}} none">
+              <dl style="padding-left: .8rem;">
+          
+                <dt onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                  <p style="padding-left: .9rem;">{{=val4.title}}</p>
+                  <!--p  {{=progress+'='+val2.chapterId}}-->
+                </dt>
+                <dd>
+                 <!--  {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}} -->
+                  <div id="{{=val3.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="{{=val3.chapterTitle}}" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                    <div class="val"></div>
+                  </div>
+                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                </dd>
+              </dl>
+            </div>{{ } }}
+            {{~}}
+              {{~}}
             </ul>{{ }else{ }}
             {{ var is_show=is_loadB(val2.chapterId);}}
             <ul class="list mycaptB {{=is_show}}">
               {{var state=3;}}
               {{var progress=get_dowm('{{=val.chapterId}}','{{=val2.chapterId}}','');}}
+              <li class="list {{=is_show}}">
               <dl>
                 <!-- <dt tapmode="tapcolor" onclick="next(2,'{{=key}}','{{=key2}}',-1,'{{=it[k].data.courseId}}',this)"> -->
-                <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
+                <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=val2.chapterId}}')">
                 <i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i>
                   <p>{{=val2.chapterTitle}}</p>
                 </dt>
                 <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
-                  <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val2.chapterId}}"><i class="icon-download3"></i>
+                  <div id="{{=val2.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" type="3" class="down-progress task{{=val2.chapterId}}"><i class="icon-download3"></i>
                     <div class="val {{=is_show}}"></div>
                   </div>
                   <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
                 </dd><i class="icon-arrow-right"></i>
               </dl>
+              </li>
+              {{~val2.tasks:val4:key4}}
+            {{ if(val4.taskType=='video'){ }}
+            <div class="taskList {{=is_show}} none">
+              <dl>
+                <dt onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                  <p style="padding-left: .9rem;">{{=val4.title}}</p>
+                  <!--p  {{=progress+'='+val2.chapterId}}-->
+                </dt>
+                <dd>
+                  <!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}} -->
+                  <div id="{{=val2.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                    <div class="val"></div>
+                  </div>
+                  
+                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                </dd>
+              </dl>
+            </div>
+            {{ } }}
+            {{~}}
             </ul>{{ } }}
             {{~}}
           </li>
@@ -125,18 +167,38 @@
           <li class="list mycaptA {{=is_show}}">
             <dl>
               <!-- <dt tapmode="tapcolor" onclick="next(1,'{{=key}}',-1,-1,'{{=it[k].data.courseId}}',this)"> -->
-              <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=it[k].data}}')">
+              <dt tapmode="tapcolor" onclick="tasksCache(this,'{{=val.chapterId}}')">
               <i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i>
                 <p> {{=val.chapterTitle}}</p>
               </dt>
               <dd><span style="font-size: .3rem;position: absolute;right: 1.4rem;top: .3rem;"></span><i dataid="{{=val.chapterId}}" class="icon-check chaptera"></i><!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}}<span class="down_speed none"></span> -->
-                <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="3" onclick="down(this)" class="down-progress task{{=val.chapterId}}"><i class="icon-download3"></i>
+                <div id="{{=val.chapterId}}" courseid="{{=it[k].data.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" type="3" class="down-progress task{{=val.chapterId}}"><i class="icon-download3"></i>
                   <div class="val {{=is_show}}"></div>
                 </div>
                 <div class="down_data none">{{=JSON.stringify(it[k].data)}}</div>
               </dd><i class="icon-arrow-right"></i>
             </dl>
           </li>
+          {{~val.tasks:val4:key4}}
+            {{ if(val4.taskType=='video'){ }}
+            <div class="taskList {{=is_show}} none">
+      
+              <dl>
+                <dt onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
+                  <p style="padding-left: .9rem;">{{=val4.title}}</p>
+                  <!--p  {{=progress+'='+val2.chapterId}}-->
+                </dt>
+                <dd>
+                  <!-- {{ if(progress==0 ){state=3;}else if(progress>=100){state=4}else if(progress>0 &&  progress<100){state=2}}} -->
+                  <div id="{{=val.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}"  type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
+                    <div class="val"></div>
+                  </div>
+                  <div class="down_data none">{{=JSON.stringify(val4)}}</div>
+                </dd>
+              </dl>
+            </div>
+            {{ } }}
+            {{~}}
         </ul>{{ } }}
         {{~}}
       </div>{{~}}
