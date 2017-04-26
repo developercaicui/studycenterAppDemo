@@ -41,9 +41,16 @@
           color: #00a085;
           font-size: .3rem;
       }
-      .chapter-task .video-catego>span {
+      /*.chapter-task .video-catego>span {
         background: url(../image/tv.png) no-repeat;
         background-size: 100% 100%;
+      }*/
+      .chapter-task .video-catego>span {
+          display: inline-block;
+        background: url(../image/video.png) no-repeat;
+        background-size: 100% 100%;
+        width: 0.60rem;
+        height: 0.5rem;
       }
       .chapter-task li>span {
           height: 0.54rem;
@@ -103,6 +110,7 @@
           width: 15%;
           float: right;
       }
+      
       @font-face {
         font-family: 'icomoon';
         src: url("../fonts/icomoon2.ttf");
@@ -111,7 +119,7 @@
       }
     </style>
   </head>
-  <body style="background: #fff">
+  <body>
    
    <div id="chaTask" class="about-video-content chapter-task"></div>
    
@@ -125,7 +133,7 @@
           
             {{~val3.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><i class="icon-video" style="font-size:.5rem;"></i>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
             <div>
                   <dl class="taskList">
                     <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}')">
@@ -134,7 +142,7 @@
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
-                      <i dataid="{{=val3.chapterId}}" class="icon-check chapterb"></i>
+                      <i dataid="{{=val3.chapterId}}" dataccid="{{=val4.videoCcid}}" class="icon-check chapterb"></i>
                       <div id="{{=val3.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="{{=val3.chapterId}}" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="{{=val3.chapterTitle}}" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>
@@ -150,16 +158,16 @@
           {{ }else{ }}
             {{~val2.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><i class="icon-video" style="font-size:.5rem;"></i>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
             <div>
                   <dl class="taskList">
-                    <dt tapmode  onclick="next(3,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')">
+                    <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}')">
                       <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 3.2rem;">{{=val4.title}}</p>
                       <p class="v-name"><span class="span11"></span><span>0%</span></p>
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
-                      <i dataid="{{=val2.chapterId}}" class="icon-check chapterb"></i>
+                      <i dataid="{{=val2.chapterId}}" dataccid="{{=val4.videoCcid}}" class="icon-check chapterb"></i>
                       <div id="{{=val2.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="{{=val2.chapterId}}" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="{{=val2.chapterTitle}}" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>
@@ -176,16 +184,16 @@
       {{ }else{ }}
         {{~val.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <li class="video-catego" style="display: none;"><i class="icon-video" style="font-size:.5rem;"></i>
+            <li class="video-catego" style="display: none;"><span class="taskVideo"></span>
             <div>
                   <dl class="taskList">
-                    <dt tapmode  onclick="next(3,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')">
+                    <dt tapmode  onclick="task_event(this,'{{=key4}}','{{=val4.taskId}}')">
                       <p style="color:#000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 3.2rem;">{{=val4.title}}</p>
                       <p class="v-name"><span class="span11"></span><span>0%</span></p>
                       <p class="v-progress"><span style="font-size: 0;" data-taskid="{{=val.taskId}}" class="taskProgress"></span></p>
                     </dt>
                     <dd>
-                      <i dataid="{{=val.chapterId}}" class="icon-check chapterb"></i>
+                      <i dataid="{{=val.chapterId}}" dataccid="{{=val4.videoCcid}}" class="icon-check chapterb"></i>
                       <div id="{{=val.chapterId}}" courseid="{{=it.courseId}}" chapterida="{{=val.chapterId}}" chapteridb="" chapteridc="" chapterNamea="{{=val.chapterTitle}}" chapterNameb="" chapterNamec="" courseName="{{=it.courseName}}" versionid="{{=it.versionId}}" type="3" onclick="down(this)" class="down-progress task{{=val4.videoCcid}}"><i class="icon-download3"></i>
                     <div class="val"></div>
                   </div>

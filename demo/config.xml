@@ -49,7 +49,6 @@
   <feature name="lbbVideo"> 
     <param name="UserId" value="E5DD260925A6084B"/>  
     <param name="apiKey" value="3tF0Ao1MWHEdFp4Lf4LuEgkU8LKpOPLi"/> 
-  </feature>
-  <feature name="fs">  
   </feature>  
+  <feature name="fs"/> 
 </widget>

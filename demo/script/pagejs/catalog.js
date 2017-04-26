@@ -50,13 +50,25 @@ function getdownrecord(){
     cache_model.getTaskData(param,function(ret,err){
         //------------------结束获取--------------------------
         var saverecordObj = JSON.parse(ret.data);
-        // alert(JSON.stringify(ret))
+//      alert(JSON.stringify(ret))
         ///设置下一次读取下载的某个时间之后变化的所有记录
         lastgettime = saverecordObj.readTime;
         //循环处理每一条返回的下载记录，并统计分析最后变化值
+        var downloadIng = 0;
         for(i=0;i< saverecordObj.data.length;i++){
+            if(saverecordObj.data[i].state == "1"){
+              downloadIng++;
+            }
             procRecord(saverecordObj.data[i]);
         }
+        if(downloadIng){
+          $api.setStorage('downloadIng',1);
+
+        }else{
+          $api.setStorage('downloadIng',0);
+
+        }
+
     })
     
 }
@@ -119,7 +131,6 @@ function procRecord(videorecord){
                 videoDownInfo[strs[j]].status = videorecord.state;
             }
         }
-
     }
     $api.setStorage("videochangelist",videochangelist);
     initDomDownStatus();
@@ -490,9 +501,10 @@ function set_down_status(str){
             clearTimeout(down_setTimeout);
             is_count = false;
             //下载中->暂停
-            $('.down-progress[type="1"]').attr({
-                type : 2
-            }).siblings('.down_speed').html('').addClass('none');
+            // $('.down-progress[type="1"]').attr({
+            //     type : 2
+            // }).siblings('.down_speed').html('').addClass('none');
+
             $(obj).attr({
                 'type' : 2
             });
@@ -500,33 +512,53 @@ function set_down_status(str){
         case '2':
         case 2:
             //暂停->下载中
-            $('.down-progress[type="1"]').attr({
-                type : 2
-            });
-            $('.down_speed').html('').addClass('none');
+            // $('.down-progress[type="1"]').attr({
+            //     type : 2
+            // });
+            // $('.down_speed').html('').addClass('none');
             $(obj).attr({
                 type : 1
             });
             break;
         case '5':
         case 5:
-            //暂停->下载中
-            $('.down-progress[type="1"]').attr({
+            //等待->下载中
+            // $('.down-progress[type="1"]').attr({
+            //     type : 2
+            // });
+            // $('.down_speed').html('').addClass('none');
+            // $(obj).attr({
+            //     type : 1
+            // });
+
+            var type1 = $('.down-progress[type="1"]');
+            if(type1 && type1.length){
+              type1.attr({
                 type : 2
-            });
-            $('.down_speed').html('').addClass('none');
+              })
+            }
             $(obj).attr({
                 type : 1
             });
+
             break;
         case '3':
         case 3:
-            $('.down-progress[type="1"]').attr({
-                type : 2
-            });
-            $(obj).attr({
-                type : 1
-            });
+            var type1 = $('.down-progress[type="1"]');
+            if(type1 && type1.length){
+              $(obj).attr({
+                  type : 5
+              });
+            }else{
+              // $('.down-progress[type="1"]').attr({
+              //     type : 2
+              // });
+              $(obj).attr({
+                  type : 1
+              });
+            }
+            
+            
             break;
         case 'ing':
             $('.down-progress[type="1"]').attr({
@@ -572,10 +604,10 @@ function getVersionId(data){
     var coursestatus ={};
     ajaxRequest('api/v2.1/study/coursestatus', 'get',{"token":$api.getStorage('token'),"versionId":versionId}, function(ret, err) {
         if(ret.state == "success"){
-            var lockStatusNum = -1;
+            var lockStatusNum = 0;
             for(var i=0;i<ret.data.length;i++){
                 if(ret.data[i].lockStatus == 0){
-                    lockStatusNum++;
+                    lockStatusNum = i;
                 }   
             }
             coursestatus.islock = ret.data[lockStatusNum].lockStatus;
@@ -614,9 +646,13 @@ apiready = function() {
   	api.addEventListener({
   		name : 'flush_catalog'
   	}, function(ret) {
-
   		getData();
   	});
+  	api.addEventListener({
+        name: 'reloadPage'
+    }, function(ret, err) {
+        location.reload();
+    });
     api.addEventListener({
         name : 'down_speed'
     }, function(ret) {

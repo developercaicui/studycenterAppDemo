@@ -170,12 +170,6 @@ function get_data() {
     $('body').removeClass('checking');
     /*后台代码*/
      memberId = getstor('memberId');
-    var data = $api.getStorage(memberId + 'video-buffer');
-    if (isEmpty(data) || data.length == 0) { //没有下载列表
-        $('#content').html('');
-        $('body').addClass('null');
-        return false;
-    }
     mydata = [];
     set_data(0);
     // var len = Object.keys(data).length; //  2
@@ -187,13 +181,21 @@ function get_data() {
         }
         function initDom() {
            cache_model.getCourseJsonWithCourseId(param,function(ret,err){
-                $.each(ret.data,function(k,v){
-                    var ret_data = JSON.parse(v)
+
+           if(ret.data.length<1){
+           		$('#content').html('');
+        		$('body').addClass('null');
+        		return false;
+           }
+                $.each(JSON.parse(ret.data),function(k,v){
+                    var ret_data = JSON.parse(v.courseJson);
                     var res = {
                         data: ret_data[0]
                     };
                     mydata.push(res); 
+                    
                 })
+                
                 init_data();
                 initDomDownStatus();
            })
@@ -208,7 +210,7 @@ function initDomDownStatus(){
     var strs = $api.getStorage("videochangelist").split(","); //字符分割
     var pathlen = strs.length;
     //从1开始，因为拼接videochangelist的时候用,开始的
-    // alert(strs+"====="+JSON.stringify(videoDownInfo))
+//     alert(strs+"====="+JSON.stringify(videoDownInfo))
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
         var domid = strs[j];
@@ -268,6 +270,7 @@ function setCapterState(){
         }    
     }
 }
+
 //1:获取所有下载记录并解析
 getdownrecord();
 //2:根据couselist获取所有缓存课程的章节详情，如果在线，从服务器获取，否则本地数据库获取
@@ -555,6 +558,12 @@ apiready = function() {
         mydata = [];
         get_data();
     });
+    
+    api.addEventListener({
+        name: 'reloadPage'
+    }, function(ret, err) {
+        location.reload();
+    });
     api.addEventListener({
         name: 'down_speed'
     }, function(ret) {
@@ -595,23 +604,23 @@ apiready = function() {
         mydata = [];
         get_data();
     });
-    api.addEventListener({
-        name: 'opena'
-    }, function(ret) {
-        if (ret.value.sethomepage == 1) { //删除
-            $('body').addClass('checking');
-            var courseid = get_input('courseid');
-            var chaptera = get_input('chaptera');
-            var chapterb = get_input('chapterb');
-            var chapterc = get_input('chapterc');
-            var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
-            if ((isEmpty(courseid) && isEmpty(chaptera) && isEmpty(chapterb) && isEmpty(chapterc)) || isEmpty(mydata)) {
-                return false;
-            }
-            api.showProgress({
-                title: '删除中',
-                modal: true
-            });
+//  api.addEventListener({
+//      name: 'opena'
+//  }, function(ret) {
+//      if (ret.value.sethomepage == 1) { //删除
+//          $('body').addClass('checking');
+//          var courseid = get_input('courseid');
+//          var chaptera = get_input('chaptera');
+//          var chapterb = get_input('chapterb');
+//          var chapterc = get_input('chapterc');
+//          var downed = isEmpty($api.getStorage(memberId + 'downed')) ? '' : $api.getStorage(memberId + 'downed');
+//          if ((isEmpty(courseid) && isEmpty(chaptera) && isEmpty(chapterb) && isEmpty(chapterc)) || isEmpty(mydata)) {
+//              return false;
+//          }
+//          api.showProgress({
+//              title: '删除中',
+//              modal: true
+//          });
             // var Queue;
             // read_file(memberId + 'Queue.db', function(res, err) {
             //     if (res.status && res.data) {
@@ -811,13 +820,13 @@ apiready = function() {
             //         }, 1000);
             //     });
             // });
-        } else if (ret.value.sethomepage == 2) { //取消
-            $('body').removeClass('checking');
-            $('.icon-check').removeClass('active');
-        } else if (ret.value.sethomepage == 3) { //全选
-            $('.icon-check').addClass('active');
-        }
-    });
+//      } else if (ret.value.sethomepage == 2) { //取消
+//          $('body').removeClass('checking');
+//          $('.icon-check').removeClass('active');
+//      } else if (ret.value.sethomepage == 3) { //全选
+//          $('.icon-check').addClass('active');
+//      }
+//  });
 };
 var course_detail;
 

@@ -1727,6 +1727,7 @@ ul.download .down-progress {
 .cache-list .hide-child .icon-arrow-down {
   -webkit-transform: rotate(-90deg);
 }
+
 .cache-list .hide-child ul,
 .cache-list .hide-child li {
   display: none;
@@ -1773,7 +1774,7 @@ ul.download .down-progress {
 }
 .cache-list dl {
   display: table;
-  background: #fff;
+  /* background: #fff; */
   width: 100%;
   position: relative;
   border-bottom: 1px solid rgba(160,160,160,0.2);

@@ -726,12 +726,12 @@ function video_cache(method, title, ccid, UserId, apiKey, callback) {
                 //});
                 
                 cache_model.download(param, function(ret, err) {
-                    //alert(JSON.stringify(ret))
+
                     if (api.systemType == "ios" && parseInt(ret.status) == 2) {
                         return false;
                     }
                     
-                    //callback(ret, err);
+//                    callback(ret, err);
                 });
             }
         });
@@ -978,6 +978,17 @@ function mydown(result) {
         cache_model.insertDowndCourseState(downObj,function(ret,err){
             //
         })
+        cache_model = api.require('lbbVideo');
+        var param = {
+            "userId" : getstor('memberId'),
+            "readTime" : 1388509261
+        }
+        cache_model.getTaskData(param,function(ret,err){
+          //------------------结束获取--------------------------
+          var saverecordObj = JSON.parse(ret.data);
+          alert(JSON.stringify(ret))
+        })
+
         // 保存课程信息库
         cache_model.inserCourseDetailJson({
             "userId" : memberId,
@@ -989,7 +1000,7 @@ function mydown(result) {
     }
     
 
- 
+
     switch (type) {
         case '1':
         case 1:
@@ -999,8 +1010,9 @@ function mydown(result) {
                     return false;
                 }
                 // $api.rmStorage(memberId + 'downed');
-                data.type = 1;
+                data.type = 2;
                 set_down(data);
+                $api.setStorage('downloadIng',0);
             });
             break;
         case '2':
@@ -1012,20 +1024,24 @@ function mydown(result) {
                 }
                 // $api.rmStorage(memberId + 'downed');
                 result.type = 3;
+                set_down(data);
+                $api.setStorage('downloadIng',1);
                 mydown(result);
             // });
             break;
         case '5':
         case 5:
             //暂停-》开始下载
-            // stop_down(function(r) {
+            stop_down(function(r) {
                 if (api.systemType == "ios" && parseInt(r.status) == 0) {
                     return false;
                 }
                 // $api.rmStorage(memberId + 'downed');
                 result.type = 3;
+                set_down(data);
+                $api.setStorage('downloadIng',1);
                 mydown(result);
-            // });
+            });
             break;
         case '3':
         case 3:
@@ -1035,8 +1051,18 @@ function mydown(result) {
                     data.type = 'less_space';
                     set_down(data);
                 } else {
+
                     //暂停/(未下载过)-》下载中
                     //开始下载
+                    var downloadIng = $api.getStorage('downloadIng');
+                    if(downloadIng){
+                      result.type = 5;
+                      set_down(data);
+                    }else{
+                      $api.setStorage('downloadIng',1);
+                      result.type = 1;
+                      set_down(data);
+                    }
                     var task_data = [];
     
                     for (var p in tasks) {
@@ -1090,8 +1116,9 @@ function mydown(result) {
                                 if (res.status && res.data) {
                                     var Queue = JSON.parse(res.data);
                                     ////变成等待中的状态
-                                    data.type = 'wait';
-                                    set_down(data);
+                                    // data.type = 'wait';
+                                    // data.type = 5;
+                                    // set_down(data);
                                     var flag = true;
                                     for (var p in Queue) {
                                         //一级章节下载记录
@@ -1126,8 +1153,9 @@ function mydown(result) {
                             return false;
                         }
                         //下载中ui监听
-                        data.type = 'ing';
-                        set_down(data);
+                        // data.type = 'ing';
+                        // data.type = 1;
+                        // set_down(data);
 
                         var lslcallback = function(ret, err) {
                             //alert(JSON.stringify(ret));
@@ -1168,8 +1196,9 @@ function mydown(result) {
                                     clearInterval(down_timer);
                                     clearTimeout(down_setTimeout);
                                     is_count = false;
-                                    data.type = 'wait';
-                                    set_down(data);
+                                    // data.type = 'wait';
+                                    // data.type = 5;
+                                    // set_down(data);
                                     return false;
                                 }
                             }
@@ -1183,8 +1212,9 @@ function mydown(result) {
                                 $api.setStorage(videoCcid, ret.finish);
                                 if (is_added) {
                                     //下载中ui监听
-                                    data.type = 'ing';
-                                    set_down(data);
+                                    // data.type = 'ing';
+                                    // data.type = 1;
+                                    // set_down(data);
                                     //下载队列
                                     read_file(memberId + 'Queue.db', function(res, err) {
                                         if (res.status && res.data) {
@@ -1351,11 +1381,11 @@ function mydown(result) {
                                             return false;
                                         }
                                         //下载进度回调
-                                        data.type = 'progress';
+                                        // data.type = 'progress';
                                         data.size = size;
                                         // data.progress = num;
                                         data.progress = ret.progress;
-                                        set_down(data);
+                                        // set_down(data);
                                         count_speed();
 
 
@@ -1403,7 +1433,8 @@ function mydown(result) {
                                                 }
                                                 //下载完成
                                                 $api.rmStorage(memberId + 'downed');
-                                                data.type = 'end';
+                                                // data.type = 'end';
+                                                data.type = 4;
                                                 set_down(data);
                                                 //删除下载队列  接着下一下载
                                                 //下载队列
@@ -1741,8 +1772,18 @@ window.shut_network = false;
 function delVideoFile(videoId) {
     //  alert(videoId);
     var userid = getstor("memberId");
-    var courseArr = $api.getStorage(userid + "video-buffer");
-    var videoIdArr = [];
+    $api.rmStorage(videoId);
+    cache_model.downloadStop(function(){});
+    $api.rmStorage('cache' + videoId);
+    cache_model.rmVideo({
+    	userId : userid,
+     	videoId: videoId 
+     });
+    
+    
+    return false;
+    
+    
     if (!isEmpty(courseArr)) {
         for (var key in courseArr) {
             var courseId = courseArr[key];
@@ -1817,7 +1858,7 @@ function delVideoFile(videoId) {
 }
 
 function getdownrecord(){
-
+	
     cache_model = api.require('lbbVideo');
     var param = {
         "userId" : getstor('memberId'),

@@ -98,7 +98,7 @@
               </li>
               {{~val3.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <div class="taskList {{=is_show}} none">
+            <div class="taskList {{=is_show}}">
               <dl style="padding-left: .8rem;">
           
                 <dt onclick="next(3,'{{=key}}','{{=key2}}','{{=key3}}',this,'{{=val3.chapterId}}')"><i type="1" data-chapId="{{=val3.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
@@ -138,7 +138,7 @@
               </li>
               {{~val2.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <div class="taskList {{=is_show}} none">
+            <div class="taskList {{=is_show}}">
               <dl>
                 <dt onclick="next(2,'{{=key}}','{{=key2}}',-1,this,'{{=val2.chapterId}}')"><i type="1" data-chapId="{{=val2.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>
                   <p style="padding-left: .9rem;">{{=val4.title}}</p>
@@ -181,7 +181,7 @@
           </li>
           {{~val.tasks:val4:key4}}
             {{ if(val4.taskType=='video'){ }}
-            <div class="taskList {{=is_show}} none">
+            <div class="taskList {{=is_show}}">
       
               <dl>
                 <dt onclick="next(1,'{{=key}}',-1,-1,this,'{{=val.chapterId}}')"><i type="1" data-chapId="{{=val.chapterId}}" class="dot-status"></i><i class="icon-video" style="font-size: .3rem;margin-left:.45rem;"></i>

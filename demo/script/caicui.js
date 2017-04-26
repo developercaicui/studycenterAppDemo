@@ -328,15 +328,21 @@ function progressBar() {
 				});
 		}, 500);
 }
-
 //课程折叠、显示章节
 function toggleChild(e) {
 		$(e).parents('dl').parent().toggleClass('hide-child');
+		$(e).parents('dl').parent().find(".fath").toggleClass('hide-child');
 }
+function toggleCapt(e) {
+		$(e).parents('dl').parent().toggleClass('hide-child');
+		$(".fath").removeClass("hide-child")
 
+}
 //章节折叠、显示任务
 function toggleTasks(e) {
-	$(e).parents('dl').parent().siblings(".taskList").toggleClass('hide-child');
+	$(".list").removeClass("activeTask");
+	$(e).closest(".list").next(".fath").toggleClass('hide-child');
+	$(e).closest(".list").addClass("activeTask");
 }
 
 /**

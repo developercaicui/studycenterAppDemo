@@ -85,6 +85,9 @@ apiready = function() {
     videoid = task_info.videoCcid;
     //alert(JSON.stringify(task_info))
     videoTimes = task_info.videoTime;
+    
+    isFinish = api.pageParam.isFinish;
+    
     if (!isEmpty(api.pageParam.last_progress)) {
         last_progress = api.pageParam.last_progress;
     }
@@ -284,8 +287,8 @@ function play_video() {
                 UserId: UserId,
                 isEncryption: isEmpty(CCconfig[UserId]) ? 0 : 1
             };
-            param.isFinish = !isEmpty($api.getStorage(param.videoId)) && $api.getStorage(param.videoId) == 'YES' ? true : false;
-
+//          param.isFinish = !isEmpty($api.getStorage(param.videoId)) && $api.getStorage(param.videoId) == 'YES' ? true : false;
+			param.isFinish = isFinish;
             param.definition = isEmpty($api.getStorage('Video_quilty')) || $api.getStorage('Video_quilty') == 1 ? 1 : 2;
 
             if (!is_check) {
@@ -310,7 +313,8 @@ function play_video() {
 
             demo.open(param, function(ret, err) {
                 //4G下是否播放视频
-                if ((isEmpty($api.getStorage(videoid)) || $api.getStorage(videoid) != 'YES')) {
+//              if ((isEmpty($api.getStorage(videoid)) || $api.getStorage(videoid) != 'YES')) {
+                if (!isFinish) {
                     if(api.connectionType == '4g' || api.connectionType == '4G' && (ret.btnType != 1 && ret.btnType !=2 && ret.btnType!=3&& ret.btnType != 4 && ret.btnType !=5 && ret.btnType!=6&& ret.btnType != 7 && ret.btnType !=8 && ret.btnType!=9 && ret.btnType!=-1 && ret.btnType!='-1' && ret.btnType!='play')){
                         demo.stop();
                         api.confirm({

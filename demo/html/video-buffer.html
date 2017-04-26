@@ -51,6 +51,10 @@
           api.sendEvent({
               name: 'flush_catalog'
           });
+          
+          api.sendEvent({
+              name: 'reloadPage'
+          });
           api.closeWin();
       }
       apiready = function () {

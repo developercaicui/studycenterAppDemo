@@ -6,7 +6,7 @@ var courseId; //课程id
 
 var is_debug = false;
     var getStatusTime = null;
-    var videoDownInfo =new Object(); //缓存每个节点的下载状态，一个节点一个id
+      var videoDownInfo =new Object(); //缓存每个节点的下载状态，一个节点一个id
     var videochangelist = $api.getStorage("videochangelist") ? $api.getStorage("videochangelist") : ""; //记录每次定时器和数据库同步数据后发生改变的dom节点id
     var couselist = ""; //记录缓存包括的课程id
     var lastgettime = 1388509261;//记录每次获取数据库的时间点，下次获取就只获取该时间点之后变化的记录(第一次获取可以获取2014年1月1日1时1分1秒//)
@@ -23,7 +23,9 @@ var is_debug = false;
         }
         
     }
+    
    function initDomDownStatus(){
+
     if(isEmpty($api.getStorage("videochangelist"))){
         return false;
     }
@@ -31,16 +33,17 @@ var is_debug = false;
     var strs = $api.getStorage("videochangelist").split(","); //字符分割
     var pathlen = strs.length;
     //从1开始，因为拼接videochangelist的时候用,开始的
-    // alert(strs+"====="+JSON.stringify(videoDownInfo))
+       // alert(strs+"====="+JSON.stringify(videoDownInfo))
     for (j=1; j<pathlen;j++ ){
         var domInfo = videoDownInfo[strs[j]];
         var domid = strs[j];
-
+		
         if(!isEmpty(domInfo)){
             var domprogress = videoDownInfo[strs[j]].progress;
             var domstatus = videoDownInfo[strs[j]].status;
             var domtasknum = videoDownInfo[strs[j]].tasknum;
             // ------------------设置界面对应id节点dom下载状态，并设置为可见--------------------------
+//          alert(domid+"==="+api.pageParam.chapterId);
             if($(".task"+domid).attr("id") == api.pageParam.chapterId){
                 $(".task"+domid).parents("li").show();
             }
@@ -50,19 +53,27 @@ var is_debug = false;
             $(".task"+domid).parent().prev().find(".v-name").find("span").eq(1).text(domprogress+"%");
         } 
     }
-    //处理进度条
-
 }
+
     // tasksCache();
     function initDom(){
-      course_detail = JSON.parse(api.pageParam.data.replace(/\n|\r|\t|\\|<[^<]*>/g,''));
-      var task_tpl = $('#task_tpl').html();
-      var content = doT.template(task_tpl);
-      $('#chaTask').html(content(course_detail)).show();
-      initDomDownStatus();
+	     setTimeout(function() {
+	         api.hideProgress();
+	         api.refreshHeaderLoadDone();
+	     }, 100);
+	     $('body').removeClass('checking');
+	     var len = 0; 
+	      course_detail = JSON.parse(api.pageParam.data.replace(/\n|\r|\t|\\|<[^<]*>/g,''));
+	      var task_tpl = $('#task_tpl').html();
+	      var content = doT.template(task_tpl);
+	      $('#chaTask').html(content(course_detail)).show();
+	      initDomDownStatus();
+	      
+
     }
-    
+
     apiready = function(){
+      
       
       //1:获取所有下载记录并解析
       getdownrecord();
@@ -73,17 +84,76 @@ var is_debug = false;
           getdownrecord();
       },2000)
       init_check();
+      
+//    api.setRefreshHeaderInfo({
+//      visible: true,
+//      loadingImg: 'widget://image/arrow-down-o.png',
+//      bgColor: '#f3f3f3',
+//      textColor: '#787b7c',
+//      textDown: '下拉更多',
+//      textUp: '松开刷新',
+//      showTime: false
+//    }, function(ret, err) {
+//      initDom();
+//    });
+      
+      
       api.addEventListener({
           name: 'opena'
       }, function(ret) {
           if (ret.value.sethomepage == 1) { //删除
               $('body').addClass('checking');
-              
-              // api.showProgress({
-              //     title: '删除中',
-              //     modal: true
-              // });
+              var ccids = [];
+             $.each($(".video-catego"),function(k,v){
+             	if($(v).css("display") != "none"){
+             		if($(v).find(".icon-check").hasClass("active")){
+             			var ccid = $(v).find(".icon-check").attr("dataccid");
+             			ccids.push(ccid);
+        
+             		}
+             	}
+             })
              
+             
+             
+             if(ccids.length<1){ return false; };
+            var jsfun = 'down_stop(function(){});';
+            api.execScript({
+                name: 'root',
+                script: jsfun
+            });
+             api.showProgress({
+                 title: '删除中',
+                 modal: true
+             });
+             
+             var jsfun = "rmVideo('" + JSON.stringify(ccids) + "');";
+             api.execScript({
+                name: 'root',
+                script: jsfun
+             });
+             //获取新内容
+             setTimeout(function() {
+             	$.each($(".video-catego"),function(k,v){
+             		if($(v).find(".icon-check").hasClass("active")){
+             			$(v).hide();
+             		}
+	             	
+	             })
+	             api.hideProgress();            	
+              	var len = 0;
+				$.each($(".video-catego"),function(k,v){
+		         	 if($(v).css("display") != "none"){
+		         		len++;
+		         	 }
+		        })
+	            if(len<1){
+	          	   $('#chaTask').html('');
+	    		   $('body').addClass('null');
+	    		   return false;
+	            }
+
+	         },1000)
           } else if (ret.value.sethomepage == 2) { //取消
               $('body').removeClass('checking');
               $('.icon-check').removeClass('active');
@@ -453,7 +523,7 @@ function set_down_status(str){
 function task_event(obj, num, task_id) {
     task_info = task_arr[task_id].taskInfo; //任务信息
     // 如果要打开新的窗口，则关闭旧窗口
-    
+    var downState = $(obj).next().find(".down-progress").attr("type");
         //传递的页面参数
         var page_param = {
             courseId: courseId, //课程id
@@ -462,6 +532,14 @@ function task_event(obj, num, task_id) {
             task_info: task_info, //任务信息
             type: 'task'
         };
+        
+        if(downState == 4){
+      	   page_param.isFinish = true;
+        }else{
+      	   page_param.isFinish = false;
+        }
+        
+        
         //判断当前任务类型
         if (task_info.taskType == 'video') {
             var winName = 'video';
